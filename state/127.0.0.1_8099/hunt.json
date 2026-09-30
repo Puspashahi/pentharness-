@@ -1,9 +1,17 @@
 {
   "tool": "pentharness",
   "target": "http://127.0.0.1:8099",
-  "startedAt": "2026-09-30T11:37:21.687Z",
-  "durationSec": 16,
+  "startedAt": "2026-09-30T14:19:08.525Z",
+  "durationSec": 41,
   "steps": [
+    {
+      "step": "change",
+      "detail": "since 2026-09-30 14:19:08: 1 endpoint(s) never probed, 1 previous finding(s) no longer reproduce"
+    },
+    {
+      "step": "change",
+      "detail": "1 endpoint(s) never probed in any run — untested surface is not a clean result"
+    },
     {
       "step": "map",
       "detail": "httpx: 1 host"
@@ -11,6 +19,10 @@
     {
       "step": "map",
       "detail": "katana: 1 url -> 1 shapes, kept 1"
+    },
+    {
+      "step": "subs",
+      "detail": "no subdomains discovered"
     },
     {
       "step": "  form",
@@ -59,6 +71,14 @@
     {
       "step": "chain",
       "detail": "0 composable attack path(s)"
+    },
+    {
+      "step": "change",
+      "detail": "since 2026-09-30 14:19:08: 1 endpoint(s) never probed"
+    },
+    {
+      "step": "change",
+      "detail": "snapshot saved: 3 endpoint(s), 1 host(s), 2 probed"
     }
   ],
   "coverage": {
@@ -91,9 +111,28 @@
   ],
   "suppressed": [],
   "proof": {
-    "nonce": "dfa25472e47e",
+    "nonce": "10807099ab00",
     "proven": 1,
     "refuted": 0,
     "hypothesis": 0
+  },
+  "change": {
+    "firstRun": false,
+    "since": "2026-09-30T14:19:08.425Z",
+    "newHosts": [],
+    "newEndpoints": [],
+    "newParams": [],
+    "goneHosts": [],
+    "goneEndpoints": [],
+    "untested": [
+      "127.0.0.1:8099/search?q=1"
+    ],
+    "resolvedFindings": [],
+    "summary": "1 endpoint(s) never probed",
+    "untestedKnown": [
+      "http://127.0.0.1:8099/search",
+      "http://127.0.0.1:8099"
+    ],
+    "pendingFindingCompare": false
   }
 }

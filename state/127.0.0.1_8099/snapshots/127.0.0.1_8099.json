@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "target": "http://127.0.0.1:8099",
+  "ts": "2026-09-30T14:19:49.882Z",
+  "endpoints": [
+    "127.0.0.1:8099",
+    "127.0.0.1:8099/search",
+    "127.0.0.1:8099/search?q=1"
+  ],
+  "hosts": [
+    "127.0.0.1"
+  ],
+  "params": [
+    "q"
+  ],
+  "findings": [
+    {
+      "id": "ce3db884d29471b5",
+      "title": "PROVEN INJECTION in 'q'",
+      "severity": "high"
+    }
+  ],
+  "testedEndpoints": [
+    "http://127.0.0.1:8099/search",
+    "http://127.0.0.1:8099"
+  ]
+}

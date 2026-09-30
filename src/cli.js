@@ -50,7 +50,7 @@ const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, skipChange: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -84,6 +84,7 @@ function parseArgs(argv) {
       case '--skip-evidence-audit': o.skipEvidenceAudit = true; break;
       case '--build-prior-art': o.buildPriorArt = true; break;
       case '--prior-art-index': o.priorArtIndex = next(); break;
+      case '--diff-only': o.diffOnly = true; break;
       case '--ask-prior-art': (o.askPriorArt = o.askPriorArt || []).push(next()); break;
       case '--skip-js': o.skipJs = true; break;
       case '--skip-browser': o.skipBrowser = true; break;
@@ -92,6 +93,7 @@ function parseArgs(argv) {
       case '--domain': o.domain = next(); break;
       case '--max-subs': o.maxSubs = parseInt(next(), 10) || 0; break;
       case '--skip-takeover': o.skipTakeover = true; break;
+      case '--skip-change': o.skipChange = true; break;
       case '--max-takeover': o.maxTakeover = parseInt(next(), 10) || 0; break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
@@ -758,7 +760,7 @@ async function runHunt(o) {
     target: o.target, stateDir: dir,
     concurrency: o.concurrency, maxEndpoints: o.maxPages,
     oobServer: o.oobServer, oobOff: o.oobOff, oobBin: o.oobBin, oobPollMs: o.oobPollMs, identities: o.identity,
-    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy, skipJs: o.skipJs, skipBrowser: o.skipBrowser, skipSubs: o.skipSubs, skipTakeover: o.skipTakeover, maxTakeover: o.maxTakeover, scope: o.scope, domain: o.domain, maxSubs: o.maxSubs, maxBrowserPages: o.maxBrowserPages, storageState: o.storageState, maxScripts: o.maxScripts,
+    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy, skipJs: o.skipJs, skipBrowser: o.skipBrowser, skipSubs: o.skipSubs, skipTakeover: o.skipTakeover, skipChange: o.skipChange, maxTakeover: o.maxTakeover, scope: o.scope, domain: o.domain, maxSubs: o.maxSubs, maxBrowserPages: o.maxBrowserPages, storageState: o.storageState, maxScripts: o.maxScripts,
     skipScan: o.noScan, skipProbe: o.skipProbe, headful: o.headful,
   });
   const b = C.b, dim = C.dim, cyn = C.cyn, grn = C.grn, yel = C.yel, r = C.r;
@@ -986,6 +988,22 @@ async function main() {
   }
   // Build the disclosed-exploit index over real public data.
   if (o.buildPriorArt) return buildPriorArtCommand(o);
+
+  // What changed since the last run? Cheap: no requests, just a diff.
+  if (o.diffOnly) {
+    const dir = path.join(STATE, slug(o.target || ''));
+    const prev = require('./change').loadLast(dir, o.target);
+    if (!prev) {
+      console.log(`  change: no baseline for ${o.target} yet — run a hunt first`);
+      return 1;
+    }
+    const d = require('./change').diff(require('./change').take(o.target, { endpoints: new Map(), params: new Set() }), prev);
+    console.log(`  change: since ${(d.since || '').slice(0, 19).replace('T', ' ')} — ${d.summary}`);
+    for (const p of require('./change').prioritise(d, { limit: 15 })) {
+      console.log(`    ${String(p.score).padStart(3)}  ${p.kind.padEnd(9)}${p.value}  ${p.why}`);
+    }
+    return 0;
+  }
 
   // Query the index against a live target fingerprint.
   if (o.askPriorArt && o.askPriorArt.length) return askPriorArtCommand(o);

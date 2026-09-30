@@ -43,6 +43,7 @@ const browser = require('./browser');
 const identity = require('./identity');
 const subdomains = require('./subdomains');
 const takeover = require('./takeover');
+const change = require('./change');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -90,6 +91,51 @@ async function hunt(o) {
   // which made the later phases throw "hp is not defined" whenever they ran.
   const hp = o.headerPolicy || new HeaderPolicy();
   hpRef = hp;
+
+  // ---- 0b. WHAT CHANGED SINCE LAST TIME ----
+  // A rescan that prints the same list teaches nothing. This is the difference
+  // between being thorough and being fast: new surface is where findings live,
+  // and it is usually only available to whoever spots it first.
+  let changeDiff = null;
+  let prevSnapshot = null;
+  if (!o.skipChange) {
+    const dir0 = o.stateDir;
+    const prev = change.loadLast(dir0, o.target);
+    prevSnapshot = prev;
+    changeDiff = change.diff(change.take(o.target, kb, { findings: [] }), prev);
+    // Carry the previous run's probed set forward; the KB is empty at this point
+    // because the map has not run yet, so the early diff can only say what was
+    // known before, not what was probed during this run.
+    changeDiff.untestedKnown = prev ? (prev.testedEndpoints || []) : [];
+    // The early diff runs before the map, so `current` has no findings yet.
+    // Comparing an empty finding set against the previous one makes every
+    // finding look resolved on every run, which is worse than not reporting it.
+    // Finalise this verdict after the gate instead.
+    changeDiff.resolvedFindings = null;
+    changeDiff.pendingFindingCompare = true;
+    if (!changeDiff.firstRun) {
+      const prio = change.prioritise(changeDiff, { limit: 8 });
+      const earlyParts = [];
+      if (changeDiff.newHosts.length) earlyParts.push(`${changeDiff.newHosts.length} new host(s)`);
+      if (changeDiff.newEndpoints.length) earlyParts.push(`${changeDiff.newEndpoints.length} new endpoint(s)`);
+      if (changeDiff.newParams.length) earlyParts.push(`${changeDiff.newParams.length} new parameter(s)`);
+      if (changeDiff.goneHosts.length) earlyParts.push(`${changeDiff.goneHosts.length} host(s) gone`);
+      log('change', `since ${(changeDiff.since || '').slice(0, 19).replace('T', ' ')}: ${earlyParts.join(', ') || 'no new surface'}`);
+      for (const p of prio.slice(0, 6)) log('  new', `${String(p.score).padStart(3)}  ${p.kind} ${p.value} — ${p.why}`);
+      if (changeDiff.untested.length) {
+        log('change', `${changeDiff.untested.length} endpoint(s) never probed in any run — untested surface is not a clean result`);
+      }
+      for (const e of changeDiff.newEndpoints.slice(0, 40)) store.add(makeLead({
+        cls: 'recon', title: `New since last run: ${e}`,
+        url: e.startsWith('http') ? e : `${o.target.replace(/\/$/, '')}/${e.replace(/^\//, '')}`,
+        source: 'change-detection', severity_hint: 'medium',
+        evidence: 'not present in the previous snapshot; untested surface is where fresh findings live',
+        tags: ['new', 'change'],
+      }));
+    } else {
+      log('change', changeDiff.summary);
+    }
+  }
 
   // ---- 1. MAP (never hunt before mapping) ----
   coverage.phase('recon');
@@ -414,6 +460,45 @@ async function hunt(o) {
   };
   fs.writeFileSync(path.join(dir, 'hunt.json'), JSON.stringify(out, null, 2));
   fs.writeFileSync(path.join(dir, 'findings.json'), JSON.stringify(findings, null, 2));
+
+  // ---- 9. SNAPSHOT ----
+  // Saved last, once the findings are final. Records which endpoints were
+  // genuinely exercised, because "never probed" is only meaningful if the
+  // probed set is real rather than everything.
+  if (!o.skipChange) {
+    try {
+      const tested = [];
+      for (const l of store.all()) if (l.url) tested.push(l.url);
+      for (const e of (probeOut && probeOut.evidence) || []) if (e.ship) tested.push(e.url);
+      const snap = change.take(o.target, kb, {
+        findings: findings.map((f) => ({ id: f.id || f.title, title: f.title, severity: f.severity })),
+      });
+      snap.testedEndpoints = [...new Set(tested)];
+      change.save(dir, snap);
+      // Now that findings are final, redo the finding comparison honestly.
+      if (changeDiff && changeDiff.pendingFindingCompare) {
+        const fresh = change.diff(snap, prevSnapshot);
+        changeDiff.resolvedFindings = fresh.resolvedFindings;
+        changeDiff.pendingFindingCompare = false;
+        // The early summary was computed against an empty finding set, so it
+        // claimed every previous finding had stopped reproducing. Recompute it
+        // now that the comparison is honest.
+        changeDiff.summary = change.buildSummary(changeDiff);
+        const earlyParts = [];
+      if (changeDiff.newHosts.length) earlyParts.push(`${changeDiff.newHosts.length} new host(s)`);
+      if (changeDiff.newEndpoints.length) earlyParts.push(`${changeDiff.newEndpoints.length} new endpoint(s)`);
+      if (changeDiff.newParams.length) earlyParts.push(`${changeDiff.newParams.length} new parameter(s)`);
+      if (changeDiff.goneHosts.length) earlyParts.push(`${changeDiff.goneHosts.length} host(s) gone`);
+      log('change', `since ${(changeDiff.since || '').slice(0, 19).replace('T', ' ')}: ${earlyParts.join(', ') || 'no new surface'}`);
+      }
+      out.change = changeDiff;
+      log('change', `snapshot saved: ${snap.endpoints.length} endpoint(s), ${snap.hosts.length} host(s), ${snap.testedEndpoints.length} probed`);
+      // Rewrite hunt.json now that `change` is populated.
+      fs.writeFileSync(path.join(dir, 'hunt.json'), JSON.stringify(out, null, 2));
+    } catch (e) {
+      log('change', `snapshot failed: ${String(e.message || e).slice(0, 90)}`);
+    }
+  }
   fs.writeFileSync(path.join(dir, 'leads.json'), JSON.stringify(store.toJSON(), null, 2));
   kb.endRun({ hunt: true, findings: findings.length, chains: chains.length, complete: cov.complete });
   kb.save(path.join(dir, 'knowledge.json'));

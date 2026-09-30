@@ -17,12 +17,12 @@
       "Is the identical behaviour reproducible against a known-good baseline, measured in the same run?",
       "Is this documented or intended behaviour rather than a defect?"
     ],
-    "tsv": "2026-09-30T11:37:37.812Z",
+    "tsv": "2026-09-30T14:19:08.245Z",
     "tags": [],
     "chain_hints": [],
     "priority": 88,
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   },
   {
     "id": "04829d6ace89b78b",
@@ -38,12 +38,12 @@
     "proof_needed": [
       "manual confirmation"
     ],
-    "tsv": "2026-09-30T11:37:22.982Z",
+    "tsv": "2026-09-30T14:18:28.467Z",
     "tags": [],
     "chain_hints": [],
     "priority": 40,
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   },
   {
     "id": "8e0a5ff52f3a6f2d",
@@ -59,15 +59,15 @@
     "proof_needed": [
       "manual confirmation"
     ],
-    "tsv": "2026-09-30T11:37:37.665Z",
+    "tsv": "2026-09-30T14:19:08.137Z",
     "tags": [
       "browser",
       "sqli"
     ],
     "chain_hints": [],
     "priority": 40,
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   },
   {
     "id": "ad9e1122fc4906fd",
@@ -77,19 +77,19 @@
     "source": "katana",
     "severity_hint": "info",
     "confidence": "unverified",
-    "evidence": "{\"timestamp\":\"2026-09-30T17:07:23.614474939+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"http://127.0.0.1:8099\",\"raw\":\"GET / HTTP/1.1\\r\\nHost: 127.0.0.1:8099\\r\\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36\\r\\nAccept",
+    "evidence": "{\"timestamp\":\"2026-09-30T19:48:29.15757829+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"http://127.0.0.1:8099\",\"raw\":\"GET / HTTP/1.1\\r\\nHost: 127.0.0.1:8099\\r\\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36\\r\\nAccept-",
     "asset": "127.0.0.1:8099",
     "identity": "anonymous",
     "proof_needed": [
       "manual confirmation"
     ],
-    "tsv": "2026-09-30T11:37:33.624Z",
+    "tsv": "2026-09-30T14:18:39.168Z",
     "tags": [],
     "chain_hints": [],
     "priority": 40,
     "crawl_total": 1,
     "shape": "127.0.0.1:8099/",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   }
 ]

@@ -1,39 +1,39 @@
 {
   "target": "http://127.0.0.1:8099",
-  "created": "2026-09-30T11:37:21.687Z",
-  "updated": "2026-09-30T11:37:38.041Z",
+  "created": "2026-09-30T14:18:27.134Z",
+  "updated": "2026-09-30T14:19:49.884Z",
   "tech": [],
   "endpoints": [
     [
       "http://127.0.0.1:8099",
       {
-        "first_seen": "2026-09-30T11:37:33.625Z",
+        "first_seen": "2026-09-30T14:18:39.169Z",
         "params": [],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T11:37:37.629Z"
+        "last_seen": "2026-09-30T14:19:49.502Z"
       }
     ],
     [
       "http://127.0.0.1:8099/search?q=1",
       {
-        "first_seen": "2026-09-30T11:37:36.152Z",
+        "first_seen": "2026-09-30T14:19:06.663Z",
         "params": [],
-        "forms": 1,
+        "forms": 2,
         "has_auth": false,
-        "last_seen": "2026-09-30T11:37:36.152Z"
+        "last_seen": "2026-09-30T14:19:48.089Z"
       }
     ],
     [
       "http://127.0.0.1:8099/search",
       {
-        "first_seen": "2026-09-30T11:37:36.152Z",
+        "first_seen": "2026-09-30T14:19:06.663Z",
         "params": [
           "q"
         ],
-        "forms": 1,
+        "forms": 2,
         "has_auth": false,
-        "last_seen": "2026-09-30T11:37:37.630Z"
+        "last_seen": "2026-09-30T14:19:49.542Z"
       }
     ]
   ],
@@ -61,7 +61,14 @@
       "findings": 1,
       "chains": 0,
       "complete": false,
-      "tsv": "2026-09-30T11:37:38.041Z"
+      "tsv": "2026-09-30T14:19:08.426Z"
+    },
+    {
+      "hunt": true,
+      "findings": 1,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T14:19:49.884Z"
     }
   ]
 }
