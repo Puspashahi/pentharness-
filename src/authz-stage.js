@@ -42,7 +42,7 @@ async function runAuthzStage(pw, opts) {
   const browser = await pw.chromium.launch({ headless: opts.headful ? false : true });
   try {
     // 1. Provision both identities.
-    const prov = await ID.provision(browser, loginUrl, accounts, path.join(stateDir, 'captures'), { baseUrl: target, headful: opts.headful, mode: opts.mode, oauth: opts.oauth, selectors: opts.selectors, routes: opts.routes, headerPolicy: opts.headerPolicy });
+    const prov = await ID.provision(browser, loginUrl, accounts, path.join(stateDir, 'captures'), { baseUrl: target, headful: opts.headful, mode: opts.mode, oauth: opts.oauth, selectors: opts.selectors, routes: opts.routes, headerPolicy: opts.headerPolicy, reuseStorage: opts.reuseStorage, reuseIdentity: opts.reuseIdentity });
     out.identities = prov.identities;
     out.notes.push(...prov.notes);
     if (prov.usable.length < 2) { await browser.close().catch(() => {}); return out; }

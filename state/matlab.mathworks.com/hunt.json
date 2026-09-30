@@ -1,7 +1,7 @@
 {
   "tool": "pentharness",
   "target": "https://matlab.mathworks.com",
-  "startedAt": "2026-09-30T11:40:37.042Z",
+  "startedAt": "2026-09-30T11:54:01.034Z",
   "durationSec": 150,
   "steps": [
     {
@@ -13,12 +13,24 @@
       "detail": "katana: 772 url -> 237 shapes, kept 80"
     },
     {
-      "step": "js",
-      "detail": "1 script(s), 2014KB, 1 minified, 0 from source maps"
+      "step": "auth",
+      "detail": "userA authenticated (13 cookies) — JS, browser and crawl phases now run logged in"
+    },
+    {
+      "step": "  form",
+      "detail": "GET / [q]"
     },
     {
       "step": "js",
-      "detail": "33 endpoint(s) from JS (18 never crawled before)"
+      "detail": "1 form(s) parsed for parameters"
+    },
+    {
+      "step": "js",
+      "detail": "2 script(s), 2103KB, 2 minified, 0 from source maps"
+    },
+    {
+      "step": "js",
+      "detail": "36 endpoint(s) from JS (21 never crawled before)"
     },
     {
       "step": "  js",
@@ -70,7 +82,11 @@
     },
     {
       "step": "browser",
-      "detail": "2 page(s) visited by clicking, 0 form(s) examined"
+      "detail": "crawling with an authenticated session"
+    },
+    {
+      "step": "browser",
+      "detail": "2 page(s) visited by clicking, 2 form(s) examined"
     },
     {
       "step": "browser",
@@ -78,23 +94,23 @@
     },
     {
       "step": "predict",
-      "detail": "2 parameter(s) ranked; top: cid(), s_tid()"
+      "detail": "3 parameter(s) ranked; top: q(xss/injection), cid(), s_tid()"
     },
     {
       "step": "execute",
-      "detail": "probed 0 hypothesis/hypotheses; 0 proven"
+      "detail": "probed 2 hypothesis/hypotheses; 0 proven"
     },
     {
       "step": "prove",
-      "detail": "proven 0, refuted 0, hypothesis 0"
+      "detail": "proven 0, refuted 2, hypothesis 0"
     },
     {
       "step": "authz",
-      "detail": "userA: authenticated, replayed 15 route(s) -> [object Object]"
+      "detail": "userA: reused existing session, replayed 15 route(s) -> /home/batist/tools/pentharness/state/matlab.mathworks.com/captures/userA.jsonl (15 row(s))"
     },
     {
       "step": "authz",
-      "detail": "userB: authenticated, replayed 15 route(s) -> [object Object]"
+      "detail": "userB: authenticated, replayed 15 route(s) -> /home/batist/tools/pentharness/state/matlab.mathworks.com/captures/userB.jsonl (15 row(s))"
     },
     {
       "step": "chain",
@@ -103,23 +119,23 @@
   ],
   "coverage": {
     "pages": 1,
-    "endpoints": 99,
-    "params": 2,
+    "endpoints": 104,
+    "params": 3,
     "lenses": 3,
     "identities": 2,
     "complete": false,
     "gaps": [
       "pages: 1/5"
     ],
-    "statement": "Coverage: 1 page(s), 99 endpoint(s), 2 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5. Treat results as partial, not as an absence of findings."
+    "statement": "Coverage: 1 page(s), 104 endpoint(s), 3 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5. Treat results as partial, not as an absence of findings."
   },
   "chains": [],
   "findings": [],
   "suppressed": [],
   "proof": {
-    "nonce": "d7690e1a787a",
+    "nonce": "e2471615ee3b",
     "proven": 0,
-    "refuted": 0,
+    "refuted": 2,
     "hypothesis": 0
   }
 }

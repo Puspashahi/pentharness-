@@ -1,0 +1,143 @@
+{
+  "tool": "pentharness",
+  "target": "http://127.0.0.1:8098",
+  "startedAt": "2026-09-30T11:53:12.475Z",
+  "durationSec": 19,
+  "steps": [
+    {
+      "step": "map",
+      "detail": "httpx: 1 host"
+    },
+    {
+      "step": "map",
+      "detail": "katana: 1 url -> 1 shapes, kept 1"
+    },
+    {
+      "step": "auth",
+      "detail": "alice authenticated (1 cookies) — JS, browser and crawl phases now run logged in"
+    },
+    {
+      "step": "js",
+      "detail": "no application scripts captured"
+    },
+    {
+      "step": "browser",
+      "detail": "crawling with an authenticated session"
+    },
+    {
+      "step": "browser",
+      "detail": "no pages reachable in the browser"
+    },
+    {
+      "step": "predict",
+      "detail": "0 parameter(s) ranked; top: none"
+    },
+    {
+      "step": "execute",
+      "detail": "skipped — no parameters known yet"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 0, refuted 0, hypothesis 0"
+    },
+    {
+      "step": "authz",
+      "detail": "alice: reused existing session, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/alice.jsonl (30 row(s))"
+    },
+    {
+      "step": "authz",
+      "detail": "bob: authenticated, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/bob.jsonl (30 row(s))"
+    },
+    {
+      "step": "authz",
+      "detail": "enumeration: 4 object URL(s) walked as alice"
+    },
+    {
+      "step": "authz",
+      "detail": "enumeration: 4 object URL(s) walked as bob"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/100: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/102: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/104: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/106: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/101: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/103: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/105: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "enumerate",
+      "detail": "/cases/107: 6/12 adjacent objects exposed another identity (50%)"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8098/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8098/api/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8098/gql: no __schema in response"
+    },
+    {
+      "step": "chain",
+      "detail": "0 composable attack path(s)"
+    }
+  ],
+  "coverage": {
+    "pages": 1,
+    "endpoints": 1,
+    "params": 0,
+    "lenses": 3,
+    "identities": 2,
+    "complete": false,
+    "gaps": [
+      "pages: 1/5",
+      "endpoints: 1/3"
+    ],
+    "statement": "Coverage: 1 page(s), 1 endpoint(s), 0 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5; endpoints: 1/3. Treat results as partial, not as an absence of findings."
+  },
+  "chains": [],
+  "findings": [
+    {
+      "type": "finding",
+      "id": "enum-ae882dc8f4ec",
+      "title": "PROVEN object enumeration: 6/12 adjacent IDs on /cases/:id expose another identity's object",
+      "severity": "high",
+      "target": "http://127.0.0.1:8098/cases/100",
+      "category": "authz",
+      "description": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
+      "evidence": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
+      "tool_used": "enumerate",
+      "confidence": "confirmed"
+    }
+  ],
+  "suppressed": [],
+  "proof": {
+    "nonce": "178729e368e5",
+    "proven": 0,
+    "refuted": 0,
+    "hypothesis": 0
+  }
+}

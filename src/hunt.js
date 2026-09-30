@@ -40,6 +40,7 @@ const { runAuthzStage } = require('./authz-stage');
 const { HeaderPolicy } = require('./headerpolicy');
 const jscapture = require('./jscapture');
 const browser = require('./browser');
+const identity = require('./identity');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -109,6 +110,48 @@ async function hunt(o) {
     const shapes = N.dedupeCrawl(raw, { maxPaths: 80 });
     for (const l of shapes.leads) { store.add(l); kb.learnEndpoint(l.url); coverage.endpoint(l.url); }
     if (raw.length) log('map', `katana: ${raw.length} url -> ${shapes.uniqueShapes} shapes, kept ${shapes.leads.length}`);
+  }
+
+  // ---- 1a. AUTHENTICATE FIRST ----
+  // Authentication has to happen before any surface discovery, not after. An
+  // anonymous crawl only ever sees the login page: no application JavaScript,
+  // no forms beyond the sign-in one, no authenticated endpoints. Every
+  // high-value finding lives behind auth, so the session is established up front
+  // and every later phase reuses it.
+  //
+  // Only the FIRST usable identity is used for discovery. A second identity is
+  // only needed later for the authorization diff, and using it here would
+  // conflate "what the app exposes" with "what differs between users".
+  let session = null;
+  if (o.accounts && Object.keys(o.accounts).length && o.loginUrl) {
+    coverage.phase('authenticate');
+    const pwA = loadPlaywright();
+    if (!pwA) {
+      log('auth', 'playwright unavailable — cannot authenticate; discovery will be anonymous');
+    } else {
+      let bA = null;
+      try {
+        bA = await pwA.chromium.launch({ headless: !o.headful });
+        const first = Object.keys(o.accounts)[0];
+        const creds = o.accounts[first];
+        const r = await identity.login(bA, o.loginUrl, creds, {
+          headerPolicy: o.headerPolicy, timeout: o.timeoutMs || 30000,
+          mode: o.authMode, selectors: o.selectors,
+        }).catch((e) => ({ ok: false, reason: String(e.message || e).slice(0, 100) }));
+        if (r.ok && r.storage) {
+          session = { identity: first, storage: r.storage };
+          o.storageState = r.storage;
+          log('auth', `${first} authenticated (${r.storage.cookies.length} cookies) — JS, browser and crawl phases now run logged in`);
+        } else {
+          log('auth', `${first}: ${r.reason}`);
+          if (r.blocked && r.blocked.length) log('auth', `blocked by ${r.blocked.join(', ')} — needs a human`);
+        }
+      } catch (e) {
+        log('auth', `failed: ${String(e.message || e).slice(0, 100)}`);
+      } finally {
+        if (bA) await bA.close().catch(() => {});
+      }
+    }
   }
 
   // ---- 1b. JAVASCRIPT SURFACE ----
@@ -255,7 +298,7 @@ async function hunt(o) {
     const stage = await runAuthzStage(loadPlaywright(), {
       target: o.target, loginUrl: o.loginUrl, accounts: o.accounts, stateDir: dir,
       headful: o.headful, maxEnumTargets: o.maxEnum, enumSamples: o.enumSamples,
-      mode: o.authMode, oauth: o.authMode === 'oauth', selectors: o.selectors, routes: o.routes, headerPolicy: o.headerPolicy,
+      mode: o.authMode, oauth: o.authMode === 'oauth', selectors: o.selectors, routes: o.routes, headerPolicy: o.headerPolicy, reuseStorage: session ? session.storage : null, reuseIdentity: session ? session.identity : null,
     });
     for (const l of stage.leads) store.add(l);
     for (const n of stage.notes) log('authz', n);
@@ -351,17 +394,11 @@ async function jsPhase(o, kb, store, coverage, log) {
     const ctxOpts = { ignoreHTTPSErrors: true };
     if (hp.active) ctxOpts.extraHTTPHeaders = hp.playwright();
     const context = await browser.newContext(ctxOpts);
-    // Authenticated runs must see authenticated bundles, so reuse a session
-    // when one was captured.
-    if (o.identities && o.identities.length) {
-      try {
-        const st = path.join(o.stateDir || '', 'captures');
-        const first = fs.existsSync(st) ? fs.readdirSync(st).find((f) => f.endsWith('.jsonl')) : null;
-        if (first) {
-          const raw = JSON.parse(fs.readFileSync(path.join(st, first), 'utf8').split('\n')[0] || '{}');
-          if (raw && raw.cookies) { context.addCookies(raw.cookies); log('js', `reusing session from ${first}`); }
-        }
-      } catch { /* no session reuse; unauthenticated capture still useful */ }
+    // Reuse the session established in the auth phase. Without it this phase
+    // only ever sees the login page's bundle, which is precisely the surface
+    // least likely to hold a finding.
+    if (o.storageState && o.storageState.cookies && o.storageState.cookies.length) {
+      try { context.addCookies(o.storageState.cookies); } catch { /* fall back to anonymous */ }
     }
     const page = await context.newPage();
     // capture() performs the navigation itself: the response listener has to be
@@ -468,6 +505,9 @@ async function browserPhase(o, kb, store, coverage, log) {
     if (o.storageState) ctxOpts.storageState = o.storageState;
     const context = await browserProc.newContext(ctxOpts);
 
+    if (o.storageState && o.storageState.cookies && o.storageState.cookies.length) {
+      log('browser', 'crawling with an authenticated session');
+    }
     const page = await context.newPage();
     const res = await browser.crawl(page, o.target, {
       maxPages: o.maxBrowserPages || 12,

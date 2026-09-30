@@ -280,6 +280,17 @@ async function provision(browser, loginUrl, accounts, outDir, opts = {}) {
 
   for (const [id, creds] of Object.entries(accounts)) {
     if (!creds || !creds.username) { notes.push(`${id}: no username supplied, skipped`); continue; }
+    // Reuse an already-established session rather than logging in again. A
+    // second login for the same account is wasted requests against a target
+    // that may be rate-limiting us, and it is pure risk for no gain.
+    if (opts.reuseStorage && opts.reuseIdentity === id) {
+      const rows = await replay(browser, opts.reuseStorage, opts.baseUrl || '', opts.routes || ROUTES);
+      const f = writeCaptureSafe(path.join(outDir, `${id}.jsonl`), rows, id);
+      const cap = f && typeof f === 'object' ? `${f.file} (${f.count} row(s))` : f;
+      identities[id] = { ok: true, storage: opts.reuseStorage, cookies: (opts.reuseStorage.cookies || []).map((c) => c.name), reused: true };
+      notes.push(`${id}: reused existing session, replayed ${rows.length} route(s) -> ${cap}`);
+      continue;
+    }
     let r;
     if (opts.mode === 'oauth' || opts.oauth) {
       // Delegated authentication: drive the IdP chain, then replay routes with

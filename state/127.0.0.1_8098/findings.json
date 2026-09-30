@@ -1,0 +1,14 @@
+[
+  {
+    "type": "finding",
+    "id": "enum-ae882dc8f4ec",
+    "title": "PROVEN object enumeration: 6/12 adjacent IDs on /cases/:id expose another identity's object",
+    "severity": "high",
+    "target": "http://127.0.0.1:8098/cases/100",
+    "category": "authz",
+    "description": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
+    "evidence": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
+    "tool_used": "enumerate",
+    "confidence": "confirmed"
+  }
+]
