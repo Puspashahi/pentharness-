@@ -41,6 +41,7 @@ const { HeaderPolicy } = require('./headerpolicy');
 const jscapture = require('./jscapture');
 const browser = require('./browser');
 const identity = require('./identity');
+const subdomains = require('./subdomains');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -110,6 +111,23 @@ async function hunt(o) {
     const shapes = N.dedupeCrawl(raw, { maxPaths: 80 });
     for (const l of shapes.leads) { store.add(l); kb.learnEndpoint(l.url); coverage.endpoint(l.url); }
     if (raw.length) log('map', `katana: ${raw.length} url -> ${shapes.uniqueShapes} shapes, kept ${shapes.leads.length}`);
+  }
+
+  // ---- 0. SUBDOMAINS ----
+  // Single-host testing is the practical ceiling on "works on any target": most
+  // real findings sit on a host nobody links from the homepage. Enumeration is
+  // scope-gated before a single request, because a program that scopes
+  // "target.tld" usually does not mean every subdomain of it.
+  if (!o.skipSubs && o.enumSubs !== false) {
+    coverage.phase('subs');
+    const subRes = await subdomainPhase(o, kb, store, coverage, log);
+    if (subRes.totals.discovered) {
+      log('subs', `${subRes.totals.discovered} discovered, ${subRes.totals.inScope} in scope, ${subRes.totals.outOfScope} out of scope, ${subRes.totals.thirdParty} third-party`);
+      for (const h of subRes.inScope.slice(0, 10)) {
+        log('  sub', `${String(h.score).padStart(3)}  https://${h.host}${h.title ? '  ' + h.title.slice(0, 40) : ''}${h.reasons.length ? '  (' + h.reasons[0] + ')' : ''}`);
+      }
+      if (subRes.outOfScope.length) log('subs', `${subRes.outOfScope.length} host(s) excluded by scope and never contacted`);
+    }
   }
 
   // ---- 1a. AUTHENTICATE FIRST ----
@@ -527,6 +545,44 @@ async function browserPhase(o, kb, store, coverage, log) {
   } finally {
     if (browserProc) await browserProc.close().catch(() => {});
   }
+}
+
+/** Discover subdomains, enforce scope, and record what is worth testing. */
+async function subdomainPhase(o, kb, store, coverage, log) {
+  const empty = { inScope: [], outOfScope: [], thirdParty: [], totals: { discovered: 0, inScope: 0, outOfScope: 0, thirdParty: 0 } };
+  let host = '';
+  try { host = new URL(o.target).hostname; } catch { return empty; }
+  const domain = o.domain || host.replace(/^www\./, '');
+  const scope = o.scope && o.scope.length ? o.scope : [domain];
+
+  const sf = which('subfinder');
+  if (!sf) { log('subs', 'subfinder not installed — skipping enumeration'); return empty; }
+
+  let out = '';
+  try {
+    out = await run(sf, ['-d', domain, '-silent', '-all'], o.timeoutMs || 120000);
+  } catch (e) {
+    log('subs', `subfinder failed: ${String(e.message || e).slice(0, 80)}`);
+    return empty;
+  }
+  const hosts = subdomains.parseSubfinder(out.stdout || out || '');
+  if (!hosts.length) { log('subs', 'no subdomains discovered'); return empty; }
+
+  const triaged = subdomains.triage(hosts, scope, new Map());
+  for (const h of triaged.inScope) {
+    kb.learnEndpoint(`https://${h.host}`);
+    coverage.endpoint(`https://${h.host}`);
+  }
+  // High-value hosts become leads so the queue surfaces them.
+  for (const h of triaged.inScope.slice(0, 20)) {
+    store.add(makeLead({
+      cls: 'recon', title: `Subdomain: ${h.host}${h.reasons.length ? ' — ' + h.reasons[0] : ''}`,
+      url: `https://${h.host}`, source: 'subfinder', severity_hint: h.score >= 8 ? 'medium' : 'info',
+      evidence: `score ${h.score}; discovered via ${h.source}${h.cname ? '; CNAME ' + h.cname : ''}`,
+      tags: ['subdomain', ...(h.score >= 8 ? ['interesting'] : [])],
+    }));
+  }
+  return triaged;
 }
 
 function makeHttpContext() {

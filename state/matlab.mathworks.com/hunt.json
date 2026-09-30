@@ -1,8 +1,8 @@
 {
   "tool": "pentharness",
   "target": "https://matlab.mathworks.com",
-  "startedAt": "2026-09-30T11:54:01.034Z",
-  "durationSec": 150,
+  "startedAt": "2026-09-30T13:45:14.940Z",
+  "durationSec": 47,
   "steps": [
     {
       "step": "map",
@@ -10,27 +10,15 @@
     },
     {
       "step": "map",
-      "detail": "katana: 772 url -> 237 shapes, kept 80"
-    },
-    {
-      "step": "auth",
-      "detail": "userA authenticated (13 cookies) — JS, browser and crawl phases now run logged in"
-    },
-    {
-      "step": "  form",
-      "detail": "GET / [q]"
+      "detail": "katana: 667 url -> 173 shapes, kept 80"
     },
     {
       "step": "js",
-      "detail": "1 form(s) parsed for parameters"
+      "detail": "2 script(s), 2014KB, 2 minified, 0 from source maps"
     },
     {
       "step": "js",
-      "detail": "2 script(s), 2103KB, 2 minified, 0 from source maps"
-    },
-    {
-      "step": "js",
-      "detail": "36 endpoint(s) from JS (21 never crawled before)"
+      "detail": "33 endpoint(s) from JS (0 never crawled before)"
     },
     {
       "step": "  js",
@@ -82,11 +70,7 @@
     },
     {
       "step": "browser",
-      "detail": "crawling with an authenticated session"
-    },
-    {
-      "step": "browser",
-      "detail": "2 page(s) visited by clicking, 2 form(s) examined"
+      "detail": "2 page(s) visited by clicking, 0 form(s) examined"
     },
     {
       "step": "browser",
@@ -105,12 +89,16 @@
       "detail": "proven 0, refuted 2, hypothesis 0"
     },
     {
-      "step": "authz",
-      "detail": "userA: reused existing session, replayed 15 route(s) -> /home/batist/tools/pentharness/state/matlab.mathworks.com/captures/userA.jsonl (15 row(s))"
+      "step": "graphql",
+      "detail": "https://matlab.mathworks.com/graphql: no __schema in response"
     },
     {
-      "step": "authz",
-      "detail": "userB: authenticated, replayed 15 route(s) -> /home/batist/tools/pentharness/state/matlab.mathworks.com/captures/userB.jsonl (15 row(s))"
+      "step": "graphql",
+      "detail": "https://matlab.mathworks.com/api/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "https://matlab.mathworks.com/gql: no __schema in response"
     },
     {
       "step": "chain",
@@ -119,21 +107,22 @@
   ],
   "coverage": {
     "pages": 1,
-    "endpoints": 104,
+    "endpoints": 81,
     "params": 3,
-    "lenses": 3,
-    "identities": 2,
+    "lenses": 2,
+    "identities": 0,
     "complete": false,
     "gaps": [
-      "pages: 1/5"
+      "pages: 1/5",
+      "identities compared: 0/2 — single-identity runs cannot prove authorization flaws"
     ],
-    "statement": "Coverage: 1 page(s), 104 endpoint(s), 3 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5. Treat results as partial, not as an absence of findings."
+    "statement": "Coverage: 1 page(s), 81 endpoint(s), 3 param(s), 2 lens(es), 0 identit(y/ies). INCOMPLETE — missing: pages: 1/5; identities compared: 0/2 — single-identity runs cannot prove authorization flaws. Treat results as partial, not as an absence of findings."
   },
   "chains": [],
   "findings": [],
   "suppressed": [],
   "proof": {
-    "nonce": "e2471615ee3b",
+    "nonce": "1029a33be1ba",
     "proven": 0,
     "refuted": 2,
     "hypothesis": 0
