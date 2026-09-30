@@ -165,15 +165,34 @@ async function login(browser, loginUrl, creds, opts = {}) {
     await page.waitForURL((u) => !/login|signin|sign-in/i.test(u.toString()), { timeout: 20000 })
       .catch(() => page.waitForTimeout(4000));
 
+    // Authentication must be evidenced by a real session artifact, not merely
+    // by having left the login URL. `!stillLogin` alone is not proof: a provider
+    // can bounce a failed attempt to a marketing page, an error page, or a
+    // generic interstitial that merely lacks "login" in its URL. Requiring a
+    // genuine session cookie prevents a false "authenticated" verdict from
+    // becoming IDOR evidence.
     const cookies = await context.cookies();
     result.cookies = cookies.map((c) => c.name);
-    // Authenticated == we hold a session-ish cookie, or we left the login page.
-    const sessionCookie = cookies.some((c) => /session|sid|auth|token|jwt|remember/i.test(c.name) && c.value);
+    const named = cookies.filter((c) => c.value);
+    const sessionCookie = named.some((c) => /session|sid|auth|token|jwt|remember/i.test(c.name));
     const stillLogin = /login|signin|sign-in/i.test(page.url());
-    result.authenticated = sessionCookie || !stillLogin;
+    // A body-level tell, for providers whose session cookie name is unusual.
+    const bodyLooksAuthed = await page.evaluate(() => {
+      try {
+        const t = (document.body && document.body.innerText || '').slice(0, 4000);
+        return /sign ?out|log ?out|my ?account|your ?profile|preferences/i.test(t);
+      } catch { return false; }
+    }).catch(() => false);
+
+    result.authenticated = sessionCookie && (!stillLogin || bodyLooksAuthed);
+    result.sessionCookie = sessionCookie;
     result.reason = result.authenticated
-      ? `authenticated (cookies: ${result.cookies.slice(0, 6).join(', ')})`
-      : (stillLogin ? 'login appears to have failed — still on the login page' : 'no session cookie observed');
+      ? `authenticated (session cookie present, left ${hostOf(page.url())}; cookies: ${result.cookies.slice(0, 6).join(', ')})`
+      : (stillLogin
+        ? 'login appears to have failed — still on the login page'
+        : (sessionCookie
+          ? 'left the login page but no authenticated view was observed'
+          : 'no session cookie observed — treated as unauthenticated'));
     result.storage = result.authenticated ? await context.storageState() : null;
     result.ok = result.authenticated;
   } catch (e) {
@@ -191,6 +210,8 @@ function selectorFor(f) {
 }
 
 function cssEscape(s) { return String(s).replace(/([^\w-])/g, '\\$1'); }
+
+function hostOf(u) { try { return new URL(u).hostname; } catch { return String(u || '?'); } }
 
 /**
  * Walk routes under a storage state, then FOLLOW the links found on those

@@ -161,6 +161,38 @@ t('an inactive policy does not add a header', async () => {
   } finally { await b.close().catch(() => {}); srv.close(); }
 });
 
+
+console.log('\n== identity: authentication must be evidenced, not inferred ==');
+t('a redirect away from /login with no session cookie is NOT authenticated', async () => {
+  // Regression: the check used to be `sessionCookie || !stillLogin`, so a
+  // provider that bounces a *failed* attempt to a login-free URL was reported
+  // as authenticated. That false positive would have become IDOR evidence.
+  const srv = http.createServer((req, res) => {
+    if (req.url === '/login') {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      return res.end(`<!doctype html><html><body>
+        <input type="email" id="email" name="email">
+        <input type="password" id="password" name="password">
+        <button type="submit" id="submit_password">Sign In</button>
+        <script>document.getElementById('submit_password').addEventListener('click',function(e){
+          e.preventDefault(); window.location.href='/welcome'; });</script>
+      </body></html>`);
+    }
+    // No session cookie is ever set.
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end('<html><body><h1>Welcome</h1>Create an account</body></html>');
+  });
+  await new Promise((r) => srv.listen(8082, '127.0.0.1', r));
+  const pw = require('../src/hunt').loadPlaywright();
+  const b = await pw.chromium.launch({ headless: true });
+  try {
+    const r = await ID.login(b, 'http://127.0.0.1:8082/login', { username: 'a@tld', password: 'x' }, {});
+    assert.strictEqual(r.ok, false, 'must not claim authentication without a session artifact');
+    assert.ok(/no session cookie/i.test(r.reason), r.reason);
+    assert.strictEqual(r.storage, null);
+  } finally { await b.close().catch(() => {}); srv.close(); }
+});
+
 drain().then(() => {
   console.log(`\n${pass} passed, ${fail} failed\n`);
   process.exit(fail ? 1 : 0);
