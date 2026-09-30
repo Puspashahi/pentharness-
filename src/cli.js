@@ -39,6 +39,9 @@ const { CoverageLedger } = require('./coverage');
 const { SuppressionLedger } = require('./suppress');
 const V = require('./validators');
 const { HeaderPolicy } = require('./headerpolicy');
+const cvematch = require('./cvematch');
+const duptriage = require('./duptriage');
+const signal = require('./signal');
 const { hunt } = require('./hunt');
 
 const STATE = path.join(__dirname, '..', 'state');
@@ -71,6 +74,10 @@ function parseArgs(argv) {
       case '--research-header': o.researchHeader.push(next()); break;
       case '--ninja': o.ninja = next(); break;
       case '--throttle-per-min': o.throttle = parseInt(next(), 10) || 0; break;
+      // CVE applicability, duplicate triage, and signal confirmation.
+      case '--cves': o.cvesFile = next(); break;
+      case '--prior-art': o.priorArt = []; break;
+      case '--fingerprints': o.fingerprints = next(); break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -157,6 +164,10 @@ Examples
 
   # any program header can also come from the environment or the recipe file
   export PENTHARNESS_HEADERS=$'X-Request-Purpose: BugcrowdResearch'
+
+  # decision support after the gate: which CVEs could apply, what is a duplicate
+  pentharness https://target.tld --cves ./cves.json
+  pentharness https://target.tld --prior-art ./known-findings.json
 
 Authorized targets only. Honour the program's scope, required headers and
 rate limits. See the skill's /POLICY.md.
@@ -750,6 +761,70 @@ async function runHunt(o) {
   return res;
 }
 
+/**
+ * Decision support run after the proof gate.
+ *
+ * Three questions a human would otherwise answer by hand, in the order they
+ * actually matter: which CVEs could possibly apply, which findings duplicate
+ * something already known, and which observations carry a real side effect.
+ */
+function runDecisionSupport(o) {
+  const stateDir = path.join(STATE, slug(o.target || ''));
+  const kbPath = path.join(stateDir, 'knowledge.json');
+  let kb = {};
+  try { kb = JSON.parse(fs.readFileSync(kbPath, 'utf8')); } catch { /* first run */ }
+
+  // --- CVE applicability with exclusion reasoning ---
+  if (o.cvesFile) {
+    let cves = [];
+    try { cves = JSON.parse(fs.readFileSync(o.cvesFile, 'utf8')); } catch (e) {
+      console.log(`  cve: cannot read ${o.cvesFile}: ${e.message}`);
+    }
+    const context = {
+      tech: (kb.tech || []).join(', '),
+      hasAuth: !!o.accounts,
+      hasShell: !!o.hasShell,
+      hasNetworkAccess: true,
+      programExcludes: o.programExcludes || [],
+    };
+    const r = cvematch.match(Array.isArray(cves) ? cves : (cves.cves || []), context);
+    const s = cvematch.savings(r, (cves.cves || cves || []).length);
+    console.log(`  cve      ${s.considered} of ${s.total} plausible (${s.reductionPct}% excluded as inapplicable)`);
+    for (const c of r.applicable.slice(0, 10)) {
+      console.log(`            ${c.id} ${c.cvss ? `cvss=${c.cvss}` : ''} ${c.summary || c.cls}`);
+      console.log(`              because: ${c.matchedBecause.join('; ')}`);
+    }
+    if (r.uncertain.length) console.log(`  cve      ${r.uncertain.length} uncertain (version unverified) — confirm the advisory before relying on them`);
+    fs.mkdirSync(stateDir, { recursive: true });
+    fs.writeFileSync(path.join(stateDir, 'cve-triage.json'), JSON.stringify({ context: { tech: context.tech }, ...r, savings: s }, null, 2));
+  }
+
+  // --- duplicate / prior-art triage ---
+  if (o.priorArt.length) {
+    let corpus = [];
+    for (const f of o.priorArt) {
+      try {
+        const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+        corpus = corpus.concat(Array.isArray(j) ? j : (j.findings || []));
+      } catch { /* skip unreadable */ }
+    }
+    let findings = [];
+    try { findings = JSON.parse(fs.readFileSync(path.join(stateDir, 'findings.json'), 'utf8')) || []; } catch { /* none yet */ }
+    if (!Array.isArray(findings)) findings = findings.findings || [];
+    console.log(`  dup      ${findings.length} finding(s) against ${corpus.length} prior report(s)`);
+    const out = [];
+    for (const f of findings) {
+      const t = duptriage.triage(f, corpus);
+      console.log(`            ${f.title || f.id || '(untitled)'} -> ${t.verdict} (${t.action})`);
+      out.push({ finding: f, triage: t });
+    }
+    const batch = duptriage.dedupeBatch(findings);
+    if (batch.dropped.length) console.log(`            ${batch.dropped.length} intra-batch duplicate(s) collapsed`);
+    fs.mkdirSync(stateDir, { recursive: true });
+    fs.writeFileSync(path.join(stateDir, 'dup-triage.json'), JSON.stringify({ corpusSize: corpus.length, results: out, dedupe: batch }, null, 2));
+  }
+}
+
 async function main() {
   const o = parseArgs(process.argv.slice(2));
   // Credentials may be given in any flag order; assemble the account pairs
@@ -795,6 +870,9 @@ async function main() {
     if (o.throttle) console.log(`  throttle: max ${o.throttle} requests/minute`);
   }
   if (o.help || !o.target) return usage();
+
+  // Post-gate decision support: the steps that decide what a human submits.
+  if (o.cvesFile || o.priorArt.length) runDecisionSupport(o);
 
   // `--hunt` (or bare `hunt`) is the one-command entry point.
   if (o.hunt || process.argv.includes('hunt')) return runHunt(o);
