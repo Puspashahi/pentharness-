@@ -305,7 +305,10 @@ async function provision(browser, loginUrl, accounts, outDir, opts = {}) {
     }
     const rows = await replay(browser, r.storage, opts.baseUrl || new URL(loginUrl).origin, opts.routes || ROUTES);
     const f = writeCaptureSafe(path.join(outDir, `${id}.jsonl`), rows, id);
-    notes.push(`${id}: authenticated, replayed ${rows.length} route(s) -> ${f}`);
+    // writeCaptureSafe returns an object; interpolating it produced
+    // "-> [object Object]" in the run log, which looked like a broken path.
+    const cap = f && typeof f === 'object' ? `${f.file} (${f.count} row(s))` : f;
+    notes.push(`${id}: authenticated, replayed ${rows.length} route(s) -> ${cap}`);
   }
 
   const usable = Object.entries(identities).filter(([, r]) => r.ok).map(([id]) => id);

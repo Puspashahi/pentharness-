@@ -1,8 +1,8 @@
 {
   "tool": "pentharness",
   "target": "https://matlab.mathworks.com",
-  "startedAt": "2026-09-30T11:12:57.870Z",
-  "durationSec": 55,
+  "startedAt": "2026-09-30T11:40:37.042Z",
+  "durationSec": 150,
   "steps": [
     {
       "step": "map",
@@ -18,7 +18,7 @@
     },
     {
       "step": "js",
-      "detail": "33 endpoint(s) from JS (17 never crawled before)"
+      "detail": "33 endpoint(s) from JS (18 never crawled before)"
     },
     {
       "step": "  js",
@@ -69,6 +69,14 @@
       "detail": "http://www.w3.org/2000/svg"
     },
     {
+      "step": "browser",
+      "detail": "2 page(s) visited by clicking, 0 form(s) examined"
+    },
+    {
+      "step": "browser",
+      "detail": "no form injection produced an observable effect"
+    },
+    {
       "step": "predict",
       "detail": "2 parameter(s) ranked; top: cid(), s_tid()"
     },
@@ -81,29 +89,35 @@
       "detail": "proven 0, refuted 0, hypothesis 0"
     },
     {
+      "step": "authz",
+      "detail": "userA: authenticated, replayed 15 route(s) -> [object Object]"
+    },
+    {
+      "step": "authz",
+      "detail": "userB: authenticated, replayed 15 route(s) -> [object Object]"
+    },
+    {
       "step": "chain",
       "detail": "0 composable attack path(s)"
     }
   ],
   "coverage": {
     "pages": 1,
-    "endpoints": 97,
+    "endpoints": 99,
     "params": 2,
-    "lenses": 1,
-    "identities": 0,
+    "lenses": 3,
+    "identities": 2,
     "complete": false,
     "gaps": [
-      "pages: 1/5",
-      "authz lenses: 1/2",
-      "identities compared: 0/2 — single-identity runs cannot prove authorization flaws"
+      "pages: 1/5"
     ],
-    "statement": "Coverage: 1 page(s), 97 endpoint(s), 2 param(s), 1 lens(es), 0 identit(y/ies). INCOMPLETE — missing: pages: 1/5; authz lenses: 1/2; identities compared: 0/2 — single-identity runs cannot prove authorization flaws. Treat results as partial, not as an absence of findings."
+    "statement": "Coverage: 1 page(s), 99 endpoint(s), 2 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5. Treat results as partial, not as an absence of findings."
   },
   "chains": [],
   "findings": [],
   "suppressed": [],
   "proof": {
-    "nonce": "543affe44b65",
+    "nonce": "d7690e1a787a",
     "proven": 0,
     "refuted": 0,
     "hypothesis": 0
