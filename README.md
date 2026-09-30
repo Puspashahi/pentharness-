@@ -1,8 +1,8 @@
 # pentharness
 
 A deterministic harness for authorized penetration testing. It maps a target,
-executes real probes, **proves or refutes every claim**, chains composable
-weaknesses, and refuses to ship anything it cannot demonstrate.
+reads the JavaScript it actually serves, drives a real browser, proves or
+refutes every claim, and refuses to ship anything it cannot demonstrate.
 
 The design principle is that **a lead is not a finding**. Most automated
 pentesting produces volume; this produces a short list of things that survive
@@ -14,155 +14,166 @@ adversarial refutation, plus an honest statement of what was never tested.
 
 ---
 
-## Why this exists
+## Quick start
 
-Running a frontier model against their own codebase, HackerOne found that
-*"a run that examined only part of a codebase can produce findings that look
-just as complete as those from a run that covered all of it"* — so they built a
-mechanism to fail runs that didn't review enough surface before reporting.
+```bash
+npm install playwright
+npx playwright install chromium
+ln -s "$PWD/src/cli.js" /usr/local/bin/pentharness
 
-That failure mode is the whole problem. A partial scan that reads as complete is
-worse than no scan, because it manufactures false confidence. This harness makes
-coverage explicit and will not sign off a report it did not measure.
+pentharness https://target.tld --hunt
+```
 
-Three consequences show up in every design decision:
-
-- **Provenance over probability.** A finding ships with the observation that
-  produced it, and survives an adversarial re-test.
-- **Refutation is mandatory.** Every candidate is attacked before it is trusted.
-- **Silence is not safety.** `0 findings` and `did not test enough` are reported
-  as different things, always.
+That single command runs the full pipeline. It reads JavaScript, clicks through
+the app, injects payloads, enumerates subdomains, checks for takeover, probes,
+and gates every result.
 
 ---
 
-## Install
+## What one command actually does
 
-```bash
-git clone <your-fork-url> pentharness
-cd pentharness
-
-# Playwright provides the browser used for login, XSS confirmation and replay.
-npm install playwright
-npx playwright install chromium
+```
+subs        subdomain enumeration, scope-gated before any request
+takeover    dangling CNAME check on third-party targets
+auth        authenticate FIRST, so every later phase is logged in
+map         httpx / katana / arjun -> knowledge base
+js          capture the app's real bundles, extract endpoints and secrets
+browser     click through the app, submit forms, inject, judge by side effect
+predict     rank parameters by predicted vulnerability class
+execute     real payloads with evidence capture
+prove       layered oracles + adversarial refutation
+authz       two identities diffed, sequential-ID enumeration
+protocols   GraphQL / JWT / cache / MCP / postMessage
+correlate   composable attack chains
+gate        proof gate + coverage gate -> findings.json
+change      what is new since last run, and what was never probed
 ```
 
-Optional but recommended — `interactsh-client` enables real out-of-band
-callbacks for blind SSRF and blind command injection. Without it the harness
-falls back to a timing oracle that needs no external service.
-
-```bash
-# install from https://github.com/projectdiscovery/interactsh/releases
-```
-
-Link it onto your `PATH`:
-
-```bash
-ln -s "$PWD/src/cli.js" /usr/local/bin/pentharness
-chmod +x src/cli.js
-```
-
-If Playwright lives outside this tree, point at it:
-
-```bash
-export PLAYWRIGHT_MODULE=/path/to/node_modules/playwright
-```
+Ordering matters here. Authentication runs **before** discovery, because an
+anonymous crawl only ever sees the login page — no application JavaScript, no
+authenticated endpoints, no forms beyond sign-in. On a real target that
+difference is the difference between finding nothing and finding something.
 
 ---
 
 ## Use
 
-The whole thing is one command. Target URL goes first.
-
 ```bash
+# unauthenticated
 pentharness https://target.tld --hunt
-```
 
-**Full run with two accounts** — this is what finds access-control bugs, the
-highest-yield class by a wide margin:
-
-```bash
+# two real accounts — the highest-yield class
 pentharness https://target.tld --hunt \
   --login https://target.tld/login/ \
-  --user-a 'alice@corp.test' --pass-a 'pw' \
-  --user-b 'bob@corp.test'   --pass-b 'pw' \
-  --oob-poll-ms 15000
-```
+  --user-a alice@corp.test --pass-a pw \
+  --user-b bob@corp.test   --pass-b pw
 
-**The same run without credentials in your shell history** — recommended:
-
-```bash
-cp recipe.example.json target.recipe.json
-$EDITOR target.recipe.json          # fill in both accounts
-chmod 600 target.recipe.json
+# via Okta/Azure/Google, credentials out of shell history
 pentharness https://target.tld --hunt --recipe ./target.recipe.json
+
+# a bug bounty program that mandates an identification header
+pentharness https://target.tld --hunt \
+  --research-header 'X-Request-Purpose: BugcrowdResearch' \
+  --ninja your_username \
+  --scope target.tld --throttle-per-min 25
 ```
 
-`*.recipe.json` is gitignored. The example is not.
+### recipe.json
 
-**Access control only**, when you already have captures:
-
-```bash
-pentharness https://target.tld --phase authz,correlate,queue \
-  --identity userA=./cap-userA.jsonl --identity userB=./cap-userB.jsonl
+```json
+{
+  "startUrl": "https://target.tld/login/",
+  "appOrigin": "https://target.tld",
+  "headers": { "X-Request-Purpose": "BugcrowdResearch" },
+  "accounts": {
+    "userA": { "username": "alice@corp.test", "password": "..." },
+    "userB": { "username": "bob@corp.test",   "password": "..." }
+  },
+  "selectors": {
+    "ssoButton": ["Continue with Okta"],
+    "userField": ["#username"]
+  },
+  "routes": ["/account", "/orders", "/settings"]
+}
 ```
+
+`*.recipe.json` is gitignored. Commit `recipe.example.json` instead.
 
 ---
 
-## Commands
+## Flags
 
 | Flag | Meaning |
 |---|---|
-| `--hunt` | One-command run: map → predict → execute → prove → chain → gate |
+| `--hunt` | One-command run: the whole pipeline |
 | `--login URL` | Where to authenticate |
-| `--user-a/--pass-a` | First identity |
-| `--user-b/--pass-b` | Second identity |
-| `--recipe FILE` | Accounts + selectors + routes from JSON; use instead of password flags |
+| `--user-a/--pass-a` `--user-b/--pass-b` | Two identities for the authorization matrix |
+| `--recipe FILE` | Accounts, selectors, routes and headers from JSON |
 | `--oauth` | Drive an IdP flow rather than a plain form |
 | `--identity id=file` | Pre-captured traffic, skips login |
-| `--phase list` | Run phases individually (below) |
-| `--from tool.json` | Ingest another tool's output |
-| `--js PATH` | Local JS bundles for client-side auth-logic review |
+| `--scope HOST` | Declare program scope (repeatable) |
+| `--domain D` | Enumerate subdomains of D rather than the given host |
+| `--skip-subs` `--skip-takeover` `--skip-browser` `--skip-js` `--skip-change` | Turn off a phase |
+| `--max-subs N` `--max-takeover N` `--max-browser-pages N` | Bound a phase |
+| `--research-header 'N: V'` | Program-mandated header (repeatable) |
+| `--ninja USER` | Bugcrowd's optional identifying header |
+| `--throttle-per-min N` | Rate limit, for programs that require it |
 | `--oob-poll-ms N` | How long to wait for out-of-band callbacks |
 | `--oob-off` | Timing oracle only; no callback infrastructure |
-| `--oob-server URL` | Use a specific interactsh server |
-| `--concurrency N` | Parallel probes |
-| `--skip-protocols` | Skip GraphQL/JWT/cache |
-| `--max-pages N` | Cap crawl breadth |
-| `--answer FILE` | LLM adjudication input for the queue |
+| `--build-prior-art` | Index disclosed exploits from Exploit-DB + the CVE API |
+| `--ask-prior-art tomcat:rce` | What has been exploited in the wild for this product/class |
+| `--cves FILE` | CVE applicability with exclusion reasoning |
+| `--prior-art FILE` | Duplicate vs novel-chain triage |
+| `--sanitize FILE` | Redact evidence before submitting |
+| `--diff-only` | What changed since the last run; sends no requests |
+| `--phase list` | Run individual phases |
 
 ### Phases
 
-`recon` map with httpx/nuclei/katana/arjun → knowledge base ·
-`scan` webfuzz + nuclei → leads ·
-`prioritise` rank params by predicted class →
-`authz` dual-identity diffing → the authorization matrix ·
-`prove` validators + adversarial refutation ·
-`correlate` candidate chains · `queue` bounded attention queue ·
-`gate` proof gate + coverage gate → `findings.json` ·
-`report` all of the above in order
+`recon` `scan` `jslogic` `prioritise` `authz` `prove` `ingest` `correlate`
+`queue` `gate` `report`
 
 ---
 
-## What it actually does
+## Capabilities
 
 | Capability | Status |
 |---|---|
-| Injection differentials (SQLi, XSS) | real, proven against fixtures |
-| Broken access control / IDOR | real, proven; needs 2 identities |
+| Injection differentials (SQLi, XSS) | real, proven |
+| Broken access control / IDOR | real; needs two identities |
 | Sequential-ID enumeration | real, with blast-radius scaling |
+| JavaScript analysis incl. minified | real; source maps fetched when published |
+| Browser auto-click, form submit, injection | real; judged by side effect, not reflection |
+| Subdomain enumeration | real, scope-gated before any request |
+| Subdomain takeover, 26 fingerprints | real, read-only DNS + GET |
+| Change detection across runs | real; reports what is new and what was untested |
 | GraphQL introspection + resolver authz | real |
-| JWT mutation (alg confusion, `kid`, weak secret) | real |
+| JWT mutation | real |
 | Cache poisoning | real |
 | OAuth / OIDC / SSO login | real, recipe-driven |
-| Blind SSRF / command injection | real, via interactsh callbacks |
 | postMessage origin trust | real |
-| MCP / AI-agent tool surface | real (static config audit + live `tools/list`) |
+| MCP / AI-agent tool surface | real |
+| Blind SSRF / command injection | real, via interactsh callbacks |
+| Prior-art index (47k exploits) | real, public data |
+| Evidence redaction + pre-submission audit | real |
 | Remote shell / RCE / exploitation | **not present, by design** |
 | CAPTCHA / MFA / passkey bypass | **not attempted**; detected and reported |
 
-It detects challenges and reports them by name rather than working around them.
-A stalled login says which page stopped the flow, so the fix is a selector change
-instead of a guess.
+Challenges are detected and reported by name, never worked around. A stalled
+login names the page it stopped on, so the fix is a selector change rather than
+a guess.
+
+---
+
+## What it will not do
+
+- **No exploitation or shell.** Probes only.
+- **No CAPTCHA, MFA, or passkey bypass.** Detected, then reported.
+- **No state-changing form submission.** Forms matching delete/pay/publish/
+  transfer are recorded and never auto-submitted.
+- **No out-of-scope requests.** Scope is enforced before any request is made.
+- **No resource claiming.** Takeover checks are read-only. Claiming a resource is
+  your deliberate decision.
 
 ---
 
@@ -173,86 +184,107 @@ Written to `state/<target>/`:
 | File | Contents |
 |---|---|
 | `findings.json` | what survived the proof gate |
+| `hunt.json` | phase-by-phase run log, including what changed |
 | `coverage.json` | what was and was not tested |
 | `leads.json` | everything found, proven or not |
-| `hunt.json` | phase-by-phase run log |
+| `snapshots/` | surface history for change detection |
 | `captures/<id>.jsonl` | per-identity route replay |
+| `evidence/*.sanitized.json` | redacted evidence, safe to submit |
 
 `findings.json` is the contract consumed by the reporting chain. Coverage is
-always stated. If the run was partial, the report says so rather than
-implying the target is clean.
+always stated. If the run was partial, the report says so rather than implying
+the target is clean.
 
 ---
 
 ## Honesty rules
 
-These are enforced in code, not just documented:
+Enforced in code, not just documented:
 
 1. **No claim without provenance.** Every finding cites the observation behind it.
 2. **Refute before shipping.** Candidates are attacked; survivors are marked.
-3. **Coverage is explicit.** `minPages`, `minEndpoints`, `minIdentities` must be
-   met or the run reports `INCOMPLETE`.
-4. **One identity cannot prove authorization.** It reports that instead of
-   degrading into a guess.
-5. **Discovery is not exercise.** Crawler-discovered paths count as *endpoints*,
-   not *pages*. Conflating them would let the coverage gate pass on discovery
-   alone.
+3. **Coverage is explicit.** Unmet thresholds report `INCOMPLETE`.
+4. **One identity cannot prove authorization.** It says so instead of degrading
+   into a guess.
+5. **Discovery is not exercise.** Crawled paths count as *endpoints*, not
+   *pages*. Conflating them would let the coverage gate pass on discovery alone.
 6. **External dependency failure is not proof.** If a third-party OOB service
-   rate-limits, the harness reports the miss instead of claiming success.
+   rate-limits, that is reported as a miss, never as success.
+7. **Untested surface is not a clean result.** Endpoints never probed are
+   reported separately from endpoints that were tested and found fine.
+8. **A live host is not a takeover.** Pointing at a CDN is normal configuration;
+   only a de-provisioned resource is a finding.
 
 ---
 
 ## Tests
 
 ```bash
-npm test          # 251 tests
-node test/oauth-oob.js
+npm test
 ```
 
-Each test corresponds to a real defect found and fixed during development —
-parse-shape bugs, regex gaps, closed-context errors, false blockers, and a timing
-oracle that returned `p=1.000` on a genuine 96% gap. The suite includes a live
-out-of-band callback test that skips cleanly when the public interactsh instance
-rate-limits, so it stays deterministic.
+428 tests across 22 suites. Each corresponds to a real defect found and fixed
+during development — parse-shape bugs, a closed browser context handed to a later
+phase, a false blocker detector that rejected a reachable login, a timing oracle
+that returned `p=1.000` on a genuine 96% gap, a takeover fingerprint that called
+a live host vulnerable, and parameter discovery that reported zero on a target
+full of injectable endpoints.
+
+The suite includes a live out-of-band callback test that skips cleanly when the
+public interactsh instance rate-limits, so it stays deterministic.
 
 ---
 
 ## Layout
 
 ```
-src/cli.js          phases, flags, orchestration
-src/hunt.js         the one-command pipeline
-src/leads.js        lead store
-src/normalize.js    tool output adapters
-src/knowledge.js    compounding target knowledge base
-src/predict.js      param -> vulnerability class
-src/prober.js       payload execution + evidence capture
-src/validators.js   layered oracles + adversarial refutation
-src/gate.js         proof gate, severity, findings.json
-src/coverage.js     coverage ledger
-src/suppress.js     suppressed vs filtered ledger
-src/authmatrix.js   ownership-aware authorization matrix
-src/identity.js     form login, storage state, replay
-src/oauth.js        IdP redirect chain, consent, honest blocking
-src/enumerate.js    sequential-ID enumeration
-src/graphql.js      introspection + resolver authz
-src/jwt.js          token mutation
-src/cache.js        canary cache poisoning
-src/mcp.js          MCP tool poisoning / config audit
-src/postmessage.js  origin trust analysis
-src/jslogic.js      client-side auth logic
-src/atoj.js         account-takeover chain assembly
-src/oob.js          interactsh client + timing oracle
-test/               8 suites, 251 tests
+src/cli.js           phases, flags, orchestration
+src/hunt.js          the one-command pipeline
+src/subdomains.js    enumeration + scope enforcement
+src/takeover.js      26 service fingerprints, read-only
+src/change.js        snapshot, diff, prioritise
+src/headerpolicy.js  program-mandated headers, throttle, prohibited paths
+src/identity.js      form login, two-step flows, storage state
+src/oauth.js         IdP redirect chain, consent, honest blocking
+src/jscapture.js     live JS capture, minified handling, source maps
+src/browser.js       auto-click, auto-fill, auto-inject
+src/prober.js        payload execution + evidence capture
+src/validators.js    layered oracles + adversarial refutation
+src/gate.js          proof gate -> findings.json
+src/coverage.js      coverage ledger
+src/suppress.js      suppressed vs filtered ledger
+src/authmatrix.js    ownership-aware authorization matrix
+src/authz-stage.js   dual-identity diffing
+src/enumerate.js     sequential-ID enumeration
+src/graphql.js       introspection + resolver authz
+src/jwt.js           token mutation
+src/cache.js         canary cache poisoning
+src/mcp.js           MCP tool poisoning / config audit
+src/postmessage.js   origin trust analysis
+src/protocol-stage.js  graphql / jwt / cache / ato orchestration
+src/jslogic.js       client-side auth logic
+src/atoj.js          account-takeover chain assembly
+src/oob.js           interactsh client + timing oracle
+src/predict.js       param -> vulnerability class
+src/knowledge.js     compounding target knowledge base
+src/leads.js         lead store
+src/normalize.js     tool output adapters
+src/priorart.js      disclosed-exploit index
+src/cvematch.js      CVE applicability with exclusion reasoning
+src/duptriage.js     duplicate vs novel-chain
+src/signal.js        side-channel confirmation discipline
+src/evidence.js      redaction + pre-submission audit
+src/capture-io.js    capture read/write
+src/correlate.js     chain composition
+src/oracle.js        browser XSS execution helpers
+
+test/                22 suites, 428 tests
 ```
 
 ---
 
 ## Scope
 
-Authorized testing only. Non-destructive. It will detect CAPTCHA, MFA and
-WebAuthn and will stop rather than bypass them. It contains no exploitation,
-shell, persistence or evasion capability, and none should be added without
-reassessing the threat model.
-
-`POLICY.md` in the `pentest-harness` skill directory holds the full rules.
+Authorized testing only. Non-destructive. No exploitation, shell, persistence or
+evasion capability, and none should be added without reassessing the threat
+model. `POLICY.md` in the `pentest-harness` skill directory holds the full rules.
