@@ -42,6 +42,7 @@ const jscapture = require('./jscapture');
 const browser = require('./browser');
 const identity = require('./identity');
 const subdomains = require('./subdomains');
+const takeover = require('./takeover');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -127,6 +128,38 @@ async function hunt(o) {
         log('  sub', `${String(h.score).padStart(3)}  https://${h.host}${h.title ? '  ' + h.title.slice(0, 40) : ''}${h.reasons.length ? '  (' + h.reasons[0] + ')' : ''}`);
       }
       if (subRes.outOfScope.length) log('subs', `${subRes.outOfScope.length} host(s) excluded by scope and never contacted`);
+
+      // Takeover: only the hosts whose CNAME points at a third-party service
+      // are candidates. Pointing at a CDN is normal configuration; only a
+      // de-provisioned one is a finding, and that is verified per host.
+      if (!o.skipTakeover && subRes.thirdParty.length) {
+        coverage.phase('takeover');
+        const candidates = subRes.thirdParty
+          .filter((h) => takeover.fingerprintFor(h.cname))
+          .map((h) => h.host);
+        if (candidates.length) {
+          log('takeover', `checking ${candidates.length} host(s) with a third-party CNAME (read-only DNS + GET)`);
+          const toResults = await takeover.checkAll(candidates, {
+            limit: o.maxTakeover || 40,
+            delayMs: o.takeoverDelayMs || 250,
+            timeout: 10000,
+          });
+          const toFindings = takeover.toFindings(toResults);
+          const inconclusive = toResults.filter((r) => r.verdict === 'inconclusive').length;
+          for (const f of toFindings) {
+            log('  TAKEOVER', `${f.host} — ${f.provider} (${f.severity})`);
+            store.add(makeLead({
+              cls: 'subdomain-takeover', title: f.title, url: `https://${f.host}`,
+              source: 'takeover', severity_hint: f.severity,
+              evidence: f.evidence.join(' | ').slice(0, 400),
+              tags: ['takeover', f.provider.toLowerCase().replace(/\W+/g, '-')],
+            }));
+            coverage.endpoint(`https://${f.host}`);
+          }
+          if (inconclusive) log('takeover', `${inconclusive} inconclusive — DNS/HTTP neither confirmed nor cleared`);
+          log('takeover', `${toFindings.length} confirmed, ${inconclusive} inconclusive, ${toResults.length - toFindings.length - inconclusive} not vulnerable`);
+        }
+      }
     }
   }
 

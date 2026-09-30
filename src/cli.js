@@ -50,7 +50,7 @@ const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -91,6 +91,8 @@ function parseArgs(argv) {
       case '--scope': (o.scope = o.scope || []).push(next()); break;
       case '--domain': o.domain = next(); break;
       case '--max-subs': o.maxSubs = parseInt(next(), 10) || 0; break;
+      case '--skip-takeover': o.skipTakeover = true; break;
+      case '--max-takeover': o.maxTakeover = parseInt(next(), 10) || 0; break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -756,7 +758,7 @@ async function runHunt(o) {
     target: o.target, stateDir: dir,
     concurrency: o.concurrency, maxEndpoints: o.maxPages,
     oobServer: o.oobServer, oobOff: o.oobOff, oobBin: o.oobBin, oobPollMs: o.oobPollMs, identities: o.identity,
-    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy, skipJs: o.skipJs, skipBrowser: o.skipBrowser, skipSubs: o.skipSubs, scope: o.scope, domain: o.domain, maxSubs: o.maxSubs, maxBrowserPages: o.maxBrowserPages, storageState: o.storageState, maxScripts: o.maxScripts,
+    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy, skipJs: o.skipJs, skipBrowser: o.skipBrowser, skipSubs: o.skipSubs, skipTakeover: o.skipTakeover, maxTakeover: o.maxTakeover, scope: o.scope, domain: o.domain, maxSubs: o.maxSubs, maxBrowserPages: o.maxBrowserPages, storageState: o.storageState, maxScripts: o.maxScripts,
     skipScan: o.noScan, skipProbe: o.skipProbe, headful: o.headful,
   });
   const b = C.b, dim = C.dim, cyn = C.cyn, grn = C.grn, yel = C.yel, r = C.r;
