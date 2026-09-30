@@ -51,6 +51,7 @@ async function proveXss(browser, urls, opts = {}) {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 },
     ignoreHTTPSErrors: true,
+    extraHTTPHeaders: (opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined,
   });
   for (const u of urls) {
     for (const p of xssPayloads()) {
@@ -109,7 +110,7 @@ const DEFAULT_ROUTES = ['/', '/account', '/profile', '/settings', '/orders', '/i
  * attempt to create accounts or solve challenges.
  */
 async function captureIdentity(browser, loginUrl, creds, opts = {}) {
-  const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true, extraHTTPHeaders: (opts && opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined });
   const page = await context.newPage();
   const requests = [];
   page.on('response', (r) => {
@@ -159,7 +160,7 @@ async function captureIdentity(browser, loginUrl, creds, opts = {}) {
  * the JSONL format `authmatrix.readCapture` consumes.
  */
 async function replay(browser, storageState, baseUrl, routes = DEFAULT_ROUTES) {
-  const context = await browser.newContext({ storageState, viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true });
+  const context = await browser.newContext({ storageState, viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true, extraHTTPHeaders: (opts && opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined });
   const page = await context.newPage();
   const rows = [];
   for (const r of routes) {

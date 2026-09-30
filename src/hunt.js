@@ -37,6 +37,7 @@ const oob = require('./oob');
 const V = require('./validators');
 const N = require('./normalize');
 const { runAuthzStage } = require('./authz-stage');
+const { HeaderPolicy } = require('./headerpolicy');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -82,7 +83,9 @@ async function hunt(o) {
   // ---- 1. MAP (never hunt before mapping) ----
   coverage.phase('recon');
   if (!o.skipScan) {
-    const hx = await run(which('httpx-pd') || 'httpx', ['-u', o.target, '-json', '-silent', '-no-color', '-td', '-tech-detect'], o.timeoutMs);
+    const hp = o.headerPolicy || new HeaderPolicy();
+  hpRef = hp;
+    const hx = await run(which('httpx-pd') || 'httpx', ['-u', o.target, '-json', '-silent', '-no-color', '-td', '-tech-detect', ...hp.flagsFor('httpx-pd')], o.timeoutMs);
     // Record a page only when a live HTTP response was actually observed.
     // Crawler-discovered paths are "endpoints" (shapes we know about), not
     // "pages" (things we exercised) — conflating the two would let the
@@ -95,7 +98,7 @@ async function hunt(o) {
     }
     if (hx.stdout.trim()) log('map', `httpx: ${N.ingest('httpx', hx.stdout).length} host`);
 
-    const kat = await run('katana', ['-u', o.target, '-jsonl', '-silent', '-d', '2', '-jc'], o.timeoutMs);
+    const kat = await run('katana', ['-u', o.target, '-jsonl', '-silent', '-d', '2', '-jc', ...hp.flagsFor('katana')], o.timeoutMs);
     const raw = N.ingest('spider', kat.stdout);
     const shapes = N.dedupeCrawl(raw, { maxPaths: 80 });
     for (const l of shapes.leads) { store.add(l); kb.learnEndpoint(l.url); coverage.endpoint(l.url); }
@@ -129,7 +132,7 @@ async function hunt(o) {
       try {
         // `pw` is the module; the browser type is `pw.chromium`.
         browser = await pw.chromium.launch({ headless: !o.headful });
-        sharedCtx = await browser.newContext({ ignoreHTTPSErrors: true });
+        sharedCtx = await browser.newContext({ ignoreHTTPSErrors: true, extraHTTPHeaders: hp.playwright() });
         sharedCtx.__fromBrowser = true;
       } catch (e) {
         log('execute', `browser unavailable (${String(e.message || e).slice(0, 60)}); using HTTP-only probing`);
@@ -172,7 +175,7 @@ async function hunt(o) {
     const stage = await runAuthzStage(loadPlaywright(), {
       target: o.target, loginUrl: o.loginUrl, accounts: o.accounts, stateDir: dir,
       headful: o.headful, maxEnumTargets: o.maxEnum, enumSamples: o.enumSamples,
-      mode: o.authMode, oauth: o.authMode === 'oauth', selectors: o.selectors, routes: o.routes,
+      mode: o.authMode, oauth: o.authMode === 'oauth', selectors: o.selectors, routes: o.routes, headerPolicy: o.headerPolicy,
     });
     for (const l of stage.leads) store.add(l);
     for (const n of stage.notes) log('authz', n);
@@ -190,7 +193,7 @@ async function hunt(o) {
     if (!psCtx) {
       const pw2 = loadPlaywright();
       if (pw2) {
-        try { const b2 = await pw2.chromium.launch({ headless: true }); psCtx = await b2.newContext({ ignoreHTTPSErrors: true }); psCtx.__close = () => b2.close(); }
+        try { const b2 = await pw2.chromium.launch({ headless: true }); psCtx = await b2.newContext({ ignoreHTTPSErrors: true, extraHTTPHeaders: hp.playwright() }); psCtx.__close = () => b2.close(); }
         catch { psCtx = makeHttpContext(); }
       } else { psCtx = makeHttpContext(); }
     }
@@ -248,12 +251,16 @@ async function hunt(o) {
  * expects (`request.get` -> {status, text}). Keeps the pipeline runnable even
  * when Playwright cannot launch.
  */
+let hpRef = null;   // active header policy, set by runHunt
 function makeHttpContext() {
   const req = async (url, opts = {}) => {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), opts.timeout || 12000);
     try {
-      const init = { method: opts.method || 'GET', signal: ctrl.signal, redirect: 'follow', headers: opts.headers || {} };
+      const pol = opts.headerPolicy || hpRef;
+      if (pol && !pol.isAllowed(url)) return { status: () => 0, text: async () => '', url: () => url, headers: () => ({}) };
+      if (pol) await pol.take();
+      const init = { method: opts.method || 'GET', signal: ctrl.signal, redirect: 'follow', headers: pol ? pol.merge(opts.headers) : (opts.headers || {}) };
       if (opts.data != null) { init.body = typeof opts.data === 'string' ? opts.data : JSON.stringify(opts.data); }
       const res = await fetch(url, init);
       const body = await res.text();

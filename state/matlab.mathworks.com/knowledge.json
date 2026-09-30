@@ -1,0 +1,630 @@
+{
+  "target": "https://matlab.mathworks.com",
+  "created": "2026-09-30T09:44:19.410Z",
+  "updated": "2026-09-30T09:44:19.410Z",
+  "tech": [
+    "amazon cloudfront",
+    "amazon web services",
+    "hsts",
+    "http/3"
+  ],
+  "endpoints": [
+    [
+      "https://matlab.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:44:20.919Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlab.mathworks.com/config.json",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlab.mathworks.com/home/0.53.0/bundle.app.js",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlab.mathworks.com/unsupported_browser_error.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlab.mathworks.com/home/0.53.0/EventTrigger",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/support/contact_us.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://confluence.mathworks.com/x/uxlNBg",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/downloads",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/help/",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/content/dam/mathworks/apps/matlab-online/",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/help/matlab/import_export/read-and-analyze-image-files.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/help/matlab/creating_guis/create-and-run-a-simple-programmatic-app.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/products/new_products/latest_features.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/videos/matlab-overview-61923.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/videoByMarketingIdPage.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/js/video/css/videoPlayer.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://players.brightcove.net/62009828001/rJ9XCz2Sx_default/index.min.js",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/js/video/js/videoPlayer.js",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/matlabcentral/mlc-downloads/downloads/f4193296-7be0-45f3-b752-bef1c903cc75/91ed2701-7adc-4399-9748-d29dee4e64fe/files/FirstStepsInMATLAB.mlx",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/videos/first-steps-in-matlab-1735796972206.html",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/details/machine-learning-onramp/machinelearning",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/?s_tid=user_nav_logo",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/help/?s_tid=user_nav_help",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/matlabcentral/?s_tid=user_nav_community",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/?s_tid=user_nav_learning",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://login.mathworks.com/embedded-login/landing.html?cid=getmatlab&s_tid=user_nav_getml",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://ch.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://ww2.mathworks.cn",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://la.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://nl.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://se.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://de.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://es.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://fr.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://uk.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://it.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://au.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://in.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://jp.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://kr.mathworks.com",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/details/deep-learning-onramp/deeplearning",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/company/trust-center.html?s_tid=gf_tc",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/company/trust-center/trademarks.html?s_tid=gf_trd",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/company/trust-center/privacy-policy.html?s_tid=gf_priv",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/company/trust-center/piracy.html?s_tid=gf_pir",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://status.mathworks.com/?s_tid=gf_application",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/company/aboutus/contact_us.html?s_tid=gf_contact",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/bootstrap5.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/static/css/2.46e1e319.chunk.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://matlabacademy.mathworks.com/static/css/main.b88af1e7.chunk.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/typeahead.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/splide.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/slidingnav.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/alert.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/button.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ],
+    [
+      "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/downsize.min.20260513204911014.css",
+      {
+        "first_seen": "2026-09-30T09:45:13.913Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T09:45:13.913Z"
+      }
+    ]
+  ],
+  "params": [],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": []
+}

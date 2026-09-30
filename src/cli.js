@@ -38,13 +38,14 @@ const jslogic = require('./jslogic');
 const { CoverageLedger } = require('./coverage');
 const { SuppressionLedger } = require('./suppress');
 const V = require('./validators');
+const { HeaderPolicy } = require('./headerpolicy');
 const { hunt } = require('./hunt');
 
 const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -65,6 +66,11 @@ function parseArgs(argv) {
       case '--oob-poll-ms': o.oobPollMs = parseInt(next(), 10) || 0; break;
       case '--oauth': o.authMode = 'oauth'; break;
       case '--recipe': o.recipe = next(); break;
+      // Program-mandated identification headers, e.g. a bug bounty's required
+      // X-Request-Purpose. Repeatable: --research-header 'Name: value'.
+      case '--research-header': o.researchHeader.push(next()); break;
+      case '--ninja': o.ninja = next(); break;
+      case '--throttle-per-min': o.throttle = parseInt(next(), 10) || 0; break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -143,7 +149,17 @@ Examples
       "selectors": { "ssoButton": ["Continue with Okta"], "userField": ["#username"] },
       "routes": ["/account","/invoices"] }
 
-Authorized targets only. See the skill's /POLICY.md.
+  # bug bounty program that mandates an identification header
+  pentharness https://target.tld --hunt \
+      --research-header 'X-Request-Purpose: BugcrowdResearch' \
+      --ninja your_bugcrowd_username \
+      --throttle-per-min 25
+
+  # any program header can also come from the environment or the recipe file
+  export PENTHARNESS_HEADERS=$'X-Request-Purpose: BugcrowdResearch'
+
+Authorized targets only. Honour the program's scope, required headers and
+rate limits. See the skill's /POLICY.md.
 `);
 }
 
@@ -249,7 +265,7 @@ async function phaseRecon(o, kb, store) {
   // httpx: liveness, tech, title, status.
   // No -follow-redirects: with it, httpx keeps the connection pool open and
   // never exits before the harness timeout, yielding no output at all.
-  const hx = await runTool('httpx', ['-u', t, '-json', '-silent', '-no-color', '-td', '-tech-detect'], o.timeout);
+  const hx = await runTool('httpx', ['-u', t, '-json', '-silent', '-no-color', '-td', '-tech-detect', ...(o.headerPolicy ? o.headerPolicy.flagsFor('httpx') : [])], o.timeout);
   const hxLeads = N.ingest('httpx', hx.stdout);
   for (const l of hxLeads) store.add(l);
   if (hxLeads[0]) {
@@ -259,7 +275,7 @@ async function phaseRecon(o, kb, store) {
   notes.push(`httpx: ${hxLeads.length} host lead(s)${hxLeads.length ? '' : toolNote(hx)}`);
 
   // katana: endpoint discovery, collapsed to unique route shapes
-  const kat = await runTool('katana', ['-u', t, '-jsonl', '-silent', '-d', '2', '-jc'], o.timeout);
+  const kat = await runTool('katana', ['-u', t, '-jsonl', '-silent', '-d', '2', '-jc', ...(o.headerPolicy ? o.headerPolicy.flagsFor('katana') : [])], o.timeout);
   const rawKat = N.ingest('spider', kat.stdout);
   const katC = N.dedupeCrawl(rawKat, { maxPaths: 60 });
   for (const l of katC.leads) { store.add(l); kb.learnEndpoint(l.url); }
@@ -277,7 +293,7 @@ async function phaseRecon(o, kb, store) {
   const arjTargets = pickArjunTargets(t, o, 2);
   const arjLeads = [];
   for (const at of arjTargets) {
-    const arj = await runTool('arjun', ['-u', at, '-oJ', '-', '-m', 'GET,POST', '--stable'], Math.min(o.timeout, 90000));
+    const arj = await runTool('arjun', ['-u', at, '-oJ', '-', '-m', 'GET,POST', '--stable', ...(o.headerPolicy ? o.headerPolicy.flagsFor('arjun') : [])], Math.min(o.timeout, 90000));
     arjLeads.push(...N.ingest('arjun', arj.stdout));
   }
   for (const l of arjLeads) { store.add(l); kb.learnEndpoint(l.url, { param: l.param }); }
@@ -317,7 +333,7 @@ async function phaseScan(o, store, kb) {
   }
 
   // nuclei: broad detector sweep
-  const nu = await runTool('nuclei', ['-u', o.target, '-jsonl', '-silent', '-no-color', '-severity', 'low,medium,high,critical', '-rate-limit', '20'], o.timeout);
+  const nu = await runTool('nuclei', ['-u', o.target, '-jsonl', '-silent', '-no-color', '-severity', 'low,medium,high,critical', '-rate-limit', '20', ...(o.headerPolicy ? o.headerPolicy.flagsFor('nuclei') : [])], o.timeout);
   const nuLeads = N.ingest('nuclei', nu.stdout);
   for (const l of nuLeads) { store.add(l); kb.learnEndpoint(l.url, { param: l.param }); }
   notes.push(`nuclei: ${nuLeads.length} template match(es)${nuLeads.length ? '' : toolNote(nu)}`);
@@ -710,7 +726,7 @@ async function runHunt(o) {
     target: o.target, stateDir: dir,
     concurrency: o.concurrency, maxEndpoints: o.maxPages,
     oobServer: o.oobServer, oobOff: o.oobOff, oobBin: o.oobBin, oobPollMs: o.oobPollMs, identities: o.identity,
-    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe,
+    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy,
     skipScan: o.noScan, skipProbe: o.skipProbe, headful: o.headful,
   });
   const b = C.b, dim = C.dim, cyn = C.cyn, grn = C.grn, yel = C.yel, r = C.r;
@@ -758,6 +774,25 @@ async function main() {
       console.log(`  recipe error: ${e.message}`);
       return usage();
     }
+  }
+  // Build the program header policy. Sources, in increasing precedence:
+  // environment, flags, then the recipe file.
+  {
+    const envH = process.env.PENTHARNESS_HEADERS || '';
+    const fromEnv = envH.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    const parsed = {};
+    for (const line of [...fromEnv, ...(o.researchHeader || [])]) {
+      const i = line.indexOf(':');
+      if (i > 0) parsed[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+    }
+    if (o.ninja) {
+      // Bugcrowd's optional identifying header.
+      parsed['X-Bugcrowd-Ninja'] = o.ninja;
+    }
+    if (o.recipeData && o.recipeData.headers) Object.assign(parsed, o.recipeData.headers);
+    o.headerPolicy = new HeaderPolicy({ headers: parsed, throttle: o.throttle });
+    if (o.headerPolicy.active) console.log(`  headers: ${o.headerPolicy.describe()}`);
+    if (o.throttle) console.log(`  throttle: max ${o.throttle} requests/minute`);
   }
   if (o.help || !o.target) return usage();
 

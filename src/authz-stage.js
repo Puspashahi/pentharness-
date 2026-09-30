@@ -42,7 +42,7 @@ async function runAuthzStage(pw, opts) {
   const browser = await pw.chromium.launch({ headless: opts.headful ? false : true });
   try {
     // 1. Provision both identities.
-    const prov = await ID.provision(browser, loginUrl, accounts, path.join(stateDir, 'captures'), { baseUrl: target, headful: opts.headful, mode: opts.mode, oauth: opts.oauth, selectors: opts.selectors, routes: opts.routes });
+    const prov = await ID.provision(browser, loginUrl, accounts, path.join(stateDir, 'captures'), { baseUrl: target, headful: opts.headful, mode: opts.mode, oauth: opts.oauth, selectors: opts.selectors, routes: opts.routes, headerPolicy: opts.headerPolicy });
     out.identities = prov.identities;
     out.notes.push(...prov.notes);
     if (prov.usable.length < 2) { await browser.close().catch(() => {}); return out; }
@@ -103,7 +103,7 @@ async function runAuthzStage(pw, opts) {
         .slice(0, Math.ceil((opts.maxEnumTargets || 8) / prov.usable.length));
       if (!seeds.length) continue;
       const storage = prov.identities[s].storage;
-      const ctx = await browser.newContext({ storageState: storage, ignoreHTTPSErrors: true });
+      const ctx = await browser.newContext({ storageState: storage, ignoreHTTPSErrors: true, extraHTTPHeaders: (opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined });
       for (const seed of seeds) {
         const res = await EN.enumerate(ctx, seed, { maxSamples: opts.enumSamples || 12, identityLabel: labelFor(s) });
         out.enumeration.push({ identity: s, seed, ok: res.ok, why: res.why, reachable: res.reachable, probes: res.probes, blastRadius: res.blastRadius });

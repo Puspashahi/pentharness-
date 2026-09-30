@@ -48,6 +48,9 @@ async function login(browser, loginUrl, creds, opts = {}) {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 },
     ignoreHTTPSErrors: true,
+    // Program-mandated headers must ride on the session, or login succeeds
+    // without them while every authenticated request is treated as unauthenticated.
+    extraHTTPHeaders: (opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined,
   });
   const page = await context.newPage();
   const result = { ok: false, authenticated: false, reason: null, cookies: [], storage: null, mfa: false, captcha: false };
@@ -129,7 +132,7 @@ function cssEscape(s) { return String(s).replace(/([^\w-])/g, '\\$1'); }
  * Without this the matrix has nothing with an identifier in it to diff.
  */
 async function replay(browser, storageState, baseUrl, routes = ROUTES, opts = {}) {
-  const context = await browser.newContext({ storageState, viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true });
+  const context = await browser.newContext({ storageState, viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true, extraHTTPHeaders: (opts && opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined });
   const page = await context.newPage();
   const rows = [];
   const seen = new Set();
@@ -197,7 +200,7 @@ async function provision(browser, loginUrl, accounts, outDir, opts = {}) {
       const o = await OA.oauthLogin(browser, {
         startUrl: loginUrl, username: creds.username, password: creds.password,
         appOrigin: opts.baseUrl || new URL(loginUrl).origin,
-        selectors: opts.selectors, timeout: opts.timeout,
+        selectors: opts.selectors, timeout: opts.timeout, headerPolicy: opts.headerPolicy,
       });
       r = { ok: o.authenticated, reason: o.reason, storage: o.storage, steps: o.steps, blocked: o.blocked, mode: 'oauth' };
     } else {

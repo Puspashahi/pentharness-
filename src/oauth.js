@@ -162,6 +162,7 @@ async function oauthLogin(browser, recipe) {
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 },
     ignoreHTTPSErrors: true,
+    extraHTTPHeaders: (recipe.headerPolicy && recipe.headerPolicy.active) ? recipe.headerPolicy.playwright() : undefined,
   });
   const page = await context.newPage();
 
