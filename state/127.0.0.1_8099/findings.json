@@ -1,0 +1,14 @@
+[
+  {
+    "type": "finding",
+    "id": "ce3db884d29471b5",
+    "title": "PROVEN INJECTION in 'q'",
+    "severity": "high",
+    "target": "http://127.0.0.1:8099/search",
+    "category": "injection",
+    "description": "database error signature: \"SQLITE_ERROR\" — survived 3/3 refutation attempt(s)",
+    "evidence": "database error signature: \"SQLITE_ERROR\" — survived 3/3 refutation attempt(s)",
+    "tool_used": "prober",
+    "confidence": "confirmed"
+  }
+]

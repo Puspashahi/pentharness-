@@ -19,8 +19,8 @@
     "priority": 40,
     "crawl_total": 86,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/slidingnav.min.20260513204911014.css",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "0ca5b6f30bb8d996",
@@ -42,8 +42,8 @@
     "priority": 40,
     "crawl_total": 43,
     "shape": "la.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "0d0e756d7fd8684e",
@@ -69,6 +69,29 @@
     "seen_count": 2
   },
   {
+    "id": "1038c01b71b49973",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/spotlight.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:41:06.890053813+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/spotlight.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/mac",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:11:22.482Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 112,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/spotlight.min.20260513204911014.js",
+    "observations": 3,
+    "seen_count": 3
+  },
+  {
     "id": "13427947941e5395",
     "cls": "recon",
     "title": "discovered endpoint",
@@ -88,8 +111,8 @@
     "priority": 40,
     "crawl_total": 69,
     "shape": "jp.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "1389ccf8d8100e6f",
@@ -112,6 +135,52 @@
     "priority": 40,
     "crawl_total": 33,
     "shape": "login.mathworks.com/embedded-login/landing.html?cid,s_tid",
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "13be5503e97a3814",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/webvitals.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639026798+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/webvitals.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/sim",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 98,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/webvitals.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "14250500b543fd55",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlab.mathworks.com/home/0.53.0/Configuration",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:40:45.476049348+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlab.mathworks.com/home/0.53.0/Configuration\",\"tag\":\"html\",\"attribute\":\"regex\",\"source\":\"https://matlab.mathworks.com/home/0.53.0/bundle.app.js\",\"raw\":\"GET /home/0.53.0/Configuration HTTP/1.1\\r\\nHost: ",
+    "asset": "matlab.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:11:22.465Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 6,
+    "shape": "matlab.mathworks.com/home/0.53.0/Configuration",
     "observations": 2,
     "seen_count": 2
   },
@@ -135,8 +204,8 @@
     "priority": 40,
     "crawl_total": 41,
     "shape": "ww2.mathworks.cn/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "1865ecbed854e23d",
@@ -158,8 +227,8 @@
     "priority": 40,
     "crawl_total": 80,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5.min.20260513204911014.css",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "1d45f53c36527ce9",
@@ -181,8 +250,8 @@
     "priority": 40,
     "crawl_total": 49,
     "shape": "es.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "1d75e7850d357ad7",
@@ -204,8 +273,8 @@
     "priority": 40,
     "crawl_total": 29,
     "shape": "matlabacademy.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "1eb57f7568933bd5",
@@ -228,8 +297,8 @@
     "priority": 40,
     "crawl_total": 73,
     "shape": "www.mathworks.com/company/trust-center.html?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "2ef0875e87decfce",
@@ -251,8 +320,8 @@
     "priority": 40,
     "crawl_total": 65,
     "shape": "in.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "2f59eef762d52c7c",
@@ -297,8 +366,8 @@
     "priority": 40,
     "crawl_total": 21,
     "shape": "matlabacademy.mathworks.com/js/video/js/videoPlayer.js",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "30e95c37f5256827",
@@ -320,8 +389,8 @@
     "priority": 40,
     "crawl_total": 38,
     "shape": "ch.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "3549c95e0d6ae811",
@@ -344,8 +413,8 @@
     "priority": 40,
     "crawl_total": 78,
     "shape": "www.mathworks.com/company/aboutus/contact_us.html?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "3bc5aeb54b46bdf8",
@@ -367,8 +436,8 @@
     "priority": 40,
     "crawl_total": 46,
     "shape": "nl.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "3c4bfc5527f5d4a6",
@@ -390,8 +459,8 @@
     "priority": 40,
     "crawl_total": 53,
     "shape": "it.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "3cb48f8c13bd9966",
@@ -413,8 +482,31 @@
     "priority": 40,
     "crawl_total": 14,
     "shape": "www.mathworks.com/help/matlab/import_export/read-and-analyze-image-files.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "3edf7f0111e7a16f",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/slidingnav.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639124322+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/slidingnav.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/si",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 102,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/slidingnav.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "413c8e696cd40288",
@@ -437,8 +529,8 @@
     "priority": 40,
     "crawl_total": 30,
     "shape": "www.mathworks.com/help/?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "45f8d92d2ed09cfc",
@@ -464,6 +556,29 @@
     "seen_count": 1
   },
   {
+    "id": "4c0f9e2c9929bc94",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/splide.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639100762+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/splide.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/simuli",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 101,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/splide.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
     "id": "4d5df8fba8772210",
     "cls": "recon",
     "title": "discovered endpoint",
@@ -483,8 +598,8 @@
     "priority": 40,
     "crawl_total": 3,
     "shape": "matlab.mathworks.com/home/0.53.0/bundle.app.js",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "50e0a2c850b92bcc",
@@ -507,8 +622,54 @@
     "priority": 40,
     "crawl_total": 31,
     "shape": "www.mathworks.com/matlabcentral/?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "522dff16d9761c07",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/sectionheadsearchbox/bs5.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639076115+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/sectionheadsearchbox/bs5.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 100,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/sectionheadsearchbox/bs5.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "53ce1237113833cf",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/matrixmenu.min.20260513204911014.css",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.63898157+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/matrixmenu.min.20260513204911014.css\",\"tag\":\"link\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/sim",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 97,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/matrixmenu.min.20260513204911014.css",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "549a07052f2844a6",
@@ -530,8 +691,100 @@
     "priority": 40,
     "crawl_total": 10,
     "shape": "matlab.mathworks.com/home/0.53.0/RemoteTrigger",
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "54f314bdacd3f8bf",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/jquery.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639265504+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/jquery.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/simuli",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 108,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/jquery.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "56d4b0f19d45b5cd",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:41:06.890064252+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/mac",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:11:22.482Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 113,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5.min.20260513204911014.js",
+    "observations": 3,
+    "seen_count": 3
+  },
+  {
+    "id": "56daa1ada184cdc3",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlab.mathworks.com/home/0.53.0/MessageTrigger",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:35:43.800814567+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlab.mathworks.com/home/0.53.0/MessageTrigger\",\"tag\":\"html\",\"attribute\":\"regex\",\"source\":\"https://matlab.mathworks.com/home/0.53.0/bundle.app.js\",\"raw\":\"GET /home/0.53.0/MessageTrigger HTTP/1.1\\r\\nHost",
+    "asset": "matlab.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.119Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 7,
+    "shape": "matlab.mathworks.com/home/0.53.0/MessageTrigger",
     "observations": 1,
     "seen_count": 1
+  },
+  {
+    "id": "58f4c919130773e1",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/domainselector.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639148961+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/domainselector.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/detail",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 103,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/domainselector.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "5d6d6fe747b10c12",
@@ -554,8 +807,8 @@
     "priority": 40,
     "crawl_total": 76,
     "shape": "www.mathworks.com/company/trust-center/piracy.html?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "5de28e86ff3541d2",
@@ -577,8 +830,8 @@
     "priority": 40,
     "crawl_total": 72,
     "shape": "matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "614507ddc6a54b18",
@@ -600,8 +853,54 @@
     "priority": 40,
     "crawl_total": 11,
     "shape": "www.mathworks.com/downloads",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "6407cdfab35a57eb",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639241215+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/simulink",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 107,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "651461467bbe4052",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/bootstrap5.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.63928881+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/bootstrap5.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/sim",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 109,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/bootstrap5.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "6d56c0f8a87c1351",
@@ -623,8 +922,8 @@
     "priority": 40,
     "crawl_total": 52,
     "shape": "uk.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "6fb54c2f558688de",
@@ -646,6 +945,29 @@
     "priority": 40,
     "crawl_total": 85,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/splide.min.20260513204911014.css",
+    "observations": 5,
+    "seen_count": 5
+  },
+  {
+    "id": "707616c421beb814",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlabacademy.mathworks.com/details/simscape-onramp/simscape",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638362363+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlabacademy.mathworks.com/details/simscape-onramp/simscape\",\"tag\":\"a\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/simulink-onramp/simulink\"},\"error\":\"max depth reached\"}",
+    "asset": "matlabacademy.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 73,
+    "shape": "matlabacademy.mathworks.com/details/simscape-onramp/simscape",
     "observations": 1,
     "seen_count": 1
   },
@@ -669,8 +991,8 @@
     "priority": 40,
     "crawl_total": 71,
     "shape": "matlabacademy.mathworks.com/details/deep-learning-onramp/deeplearning",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "779553efe9cac028",
@@ -692,6 +1014,29 @@
     "priority": 40,
     "crawl_total": 84,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/typeahead.min.20260513204911014.css",
+    "observations": 5,
+    "seen_count": 5
+  },
+  {
+    "id": "77eacdd253d0b219",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlab.mathworks.com/home/0.53.0/TimeoutTrigger",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:41:49.686340145+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlab.mathworks.com/home/0.53.0/TimeoutTrigger\",\"tag\":\"html\",\"attribute\":\"regex\",\"source\":\"https://matlab.mathworks.com/home/0.53.0/bundle.app.js\",\"raw\":\"GET /home/0.53.0/TimeoutTrigger HTTP/1.1\\r\\nHost",
+    "asset": "matlab.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:12:27.208Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 6,
+    "shape": "matlab.mathworks.com/home/0.53.0/TimeoutTrigger",
     "observations": 1,
     "seen_count": 1
   },
@@ -715,8 +1060,8 @@
     "priority": 40,
     "crawl_total": 8,
     "shape": "www.mathworks.com/support/contact_us.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "7e755de2df11bed2",
@@ -738,8 +1083,8 @@
     "priority": 40,
     "crawl_total": 51,
     "shape": "fr.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "806141d774a47d66",
@@ -761,8 +1106,8 @@
     "priority": 40,
     "crawl_total": 19,
     "shape": "matlabacademy.mathworks.com/js/video/css/videoPlayer.css",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "83ac6805b952d445",
@@ -784,8 +1129,31 @@
     "priority": 40,
     "crawl_total": 12,
     "shape": "www.mathworks.com/help/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "85e21233a010e53f",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlabacademy.mathworks.com/details/simulink-onramp/simulink",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.616092303+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlabacademy.mathworks.com/details/simulink-onramp/simulink\",\"tag\":\"js\",\"attribute\":\"regex\",\"source\":\"https://matlab.mathworks.com/home/0.53.0/bundle.app.js\",\"raw\":\"GET /details/simulink-onramp/simulink",
+    "asset": "matlabacademy.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.133Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 29,
+    "shape": "matlabacademy.mathworks.com/details/simulink-onramp/simulink",
+    "observations": 1,
+    "seen_count": 1
   },
   {
     "id": "8aa230803c9047fd",
@@ -807,8 +1175,8 @@
     "priority": 40,
     "crawl_total": 27,
     "shape": "matlabacademy.mathworks.com/details/machine-learning-onramp/machinelearning",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "8e49f6aae527ef49",
@@ -830,8 +1198,31 @@
     "priority": 40,
     "crawl_total": 25,
     "shape": "www.mathworks.com/matlabcentral/mlc-downloads/downloads/:id/:id/files/FirstStepsInMATLAB.mlx",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "90b90374462d1b0c",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.css",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638935544+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.css\",\"tag\":\"link\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/simulink",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 95,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/tags.min.20260513204911014.css",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "913139aed2dc2af5",
@@ -853,8 +1244,8 @@
     "priority": 40,
     "crawl_total": 20,
     "shape": "players.brightcove.net/:id/rJ9XCz2Sx_default/index.min.js",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "92972bd8e7a349b8",
@@ -876,8 +1267,8 @@
     "priority": 40,
     "crawl_total": 4,
     "shape": "matlab.mathworks.com/unsupported_browser_error.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "9441c847e64423eb",
@@ -899,8 +1290,8 @@
     "priority": 40,
     "crawl_total": 13,
     "shape": "www.mathworks.com/content/dam/mathworks/apps/matlab-online/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "9618c83fb5119b8b",
@@ -923,8 +1314,8 @@
     "priority": 40,
     "crawl_total": 74,
     "shape": "www.mathworks.com/company/trust-center/trademarks.html?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "975ce73763c29f55",
@@ -946,8 +1337,31 @@
     "priority": 40,
     "crawl_total": 64,
     "shape": "au.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "a1ad936f9d6b7f79",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/footernavigation.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.6391727+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/footernavigation.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/detail",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 104,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/footernavigation.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "a348be127a2539d7",
@@ -969,8 +1383,8 @@
     "priority": 40,
     "crawl_total": 17,
     "shape": "www.mathworks.com/videos/matlab-overview-61923.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "a4775d676c904cf9",
@@ -992,8 +1406,8 @@
     "priority": 40,
     "crawl_total": 47,
     "shape": "se.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "a4a53391f1a4b239",
@@ -1015,8 +1429,8 @@
     "priority": 40,
     "crawl_total": 10,
     "shape": "confluence.mathworks.com/x/uxlNBg",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "a57507aea5553ea0",
@@ -1038,8 +1452,8 @@
     "priority": 40,
     "crawl_total": 5,
     "shape": "matlab.mathworks.com/matlab/9.14.0.2299052/release/:id/error-css.css",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   },
   {
     "id": "aa038be7dd75f89f",
@@ -1062,8 +1476,8 @@
     "priority": 40,
     "crawl_total": 32,
     "shape": "matlabacademy.mathworks.com/?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "add593c536d2b449",
@@ -1085,8 +1499,8 @@
     "priority": 40,
     "crawl_total": 48,
     "shape": "de.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "b4481315ab65e6ef",
@@ -1109,8 +1523,8 @@
     "priority": 40,
     "crawl_total": 77,
     "shape": "status.mathworks.com/?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "b55b78b3d9c06e0c",
@@ -1133,8 +1547,8 @@
     "priority": 40,
     "crawl_total": 75,
     "shape": "www.mathworks.com/company/trust-center/privacy-policy.html?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "b5b967e577476c0e",
@@ -1157,8 +1571,31 @@
     "priority": 40,
     "crawl_total": 28,
     "shape": "www.mathworks.com/?s_tid",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "b81b782d980a7a42",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/upsize.min.20260513204911014.css",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638912659+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/upsize.min.20260513204911014.css\",\"tag\":\"link\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/simuli",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 94,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/upsize.min.20260513204911014.css",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "b91280c8df369113",
@@ -1180,8 +1617,31 @@
     "priority": 40,
     "crawl_total": 6,
     "shape": "www.mathworks.com/products/matlab/web/system_req.html",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "bf65905e8ddb5357",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://assets.adobedtm.com/d0cc0600946eb3957f703b9fe43c3590597a8c2c/satelliteLib-e8d23c2e444abadc572df06537e2def59c01db09.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639050559+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://assets.adobedtm.com/d0cc0600946eb3957f703b9fe43c3590597a8c2c/satelliteLib-e8d23c2e444abadc572df06537e2def59c01db09.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/detai",
+    "asset": "assets.adobedtm.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 99,
+    "shape": "assets.adobedtm.com/:id/satelliteLib-e8d23c2e444abadc572df06537e2def59c01db09.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "c0bb22e27be40391",
@@ -1203,8 +1663,8 @@
     "priority": 40,
     "crawl_total": 79,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/bootstrap5.min.20260513204911014.css",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "c6f2d418c969e003",
@@ -1229,8 +1689,8 @@
     ],
     "chain_hints": [],
     "priority": 40,
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "c743d78f4f1b5f33",
@@ -1252,8 +1712,8 @@
     "priority": 40,
     "crawl_total": 1,
     "shape": "matlab.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "c7f7bc9a00768cd4",
@@ -1275,8 +1735,8 @@
     "priority": 40,
     "crawl_total": 8,
     "shape": "matlab.mathworks.com/home/0.53.0/Transition",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 2,
+    "seen_count": 2
   },
   {
     "id": "cbbaf817c785fe26",
@@ -1298,8 +1758,8 @@
     "priority": 40,
     "crawl_total": 87,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/alert.min.20260513204911014.css",
-    "observations": 1,
-    "seen_count": 1
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "cdd8500a2073369b",
@@ -1321,8 +1781,8 @@
     "priority": 40,
     "crawl_total": 16,
     "shape": "www.mathworks.com/products/new_products/latest_features.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "ce55788d7fe3ba6f",
@@ -1344,6 +1804,29 @@
     "priority": 40,
     "crawl_total": 88,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/button.min.20260513204911014.css",
+    "observations": 5,
+    "seen_count": 5
+  },
+  {
+    "id": "d6a83c5c4e259f0d",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlabacademy.mathworks.com/details/stateflow-onramp/stateflow",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638386159+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlabacademy.mathworks.com/details/stateflow-onramp/stateflow\",\"tag\":\"a\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/simulink-onramp/simulink\"},\"error\":\"max depth reached\"}",
+    "asset": "matlabacademy.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 74,
+    "shape": "matlabacademy.mathworks.com/details/stateflow-onramp/stateflow",
     "observations": 1,
     "seen_count": 1
   },
@@ -1367,8 +1850,8 @@
     "priority": 40,
     "crawl_total": 81,
     "shape": "matlabacademy.mathworks.com/static/css/2.46e1e319.chunk.css",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "d91427075f3db51d",
@@ -1390,8 +1873,8 @@
     "priority": 40,
     "crawl_total": 15,
     "shape": "www.mathworks.com/help/matlab/creating_guis/create-and-run-a-simple-programmatic-app.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "ddd6659c3f845232",
@@ -1413,6 +1896,52 @@
     "priority": 40,
     "crawl_total": 89,
     "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/downsize.min.20260513204911014.css",
+    "observations": 5,
+    "seen_count": 5
+  },
+  {
+    "id": "e18f1e45c387c8e6",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/substitutepricing.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639218432+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/substitutepricing.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/det",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 106,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/substitutepricing.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "e625a33733a83ad3",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://matlabacademy.mathworks.com/details/control-design-onramp-with-simulink/controls",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638408947+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://matlabacademy.mathworks.com/details/control-design-onramp-with-simulink/controls\",\"tag\":\"a\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/details/simulink-onramp/simulink\"},\"error\":\"ma",
+    "asset": "matlabacademy.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 75,
+    "shape": "matlabacademy.mathworks.com/details/control-design-onramp-with-simulink/controls",
     "observations": 1,
     "seen_count": 1
   },
@@ -1436,8 +1965,54 @@
     "priority": 40,
     "crawl_total": 18,
     "shape": "matlabacademy.mathworks.com/videoByMarketingIdPage.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "ec022408a6bcc480",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/signinanalytics.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:41:06.890043388+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/signinanalytics.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/detai",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:11:22.482Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 111,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/signinanalytics.min.20260513204911014.js",
+    "observations": 3,
+    "seen_count": 3
+  },
+  {
+    "id": "eeb16dac1821fbb7",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/corporatenav.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:43:24.980033297+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/corporatenav.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:13:40.527Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 109,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/components/corporatenav.min.20260513204911014.js",
+    "observations": 1,
+    "seen_count": 1
   },
   {
     "id": "f27e936415ced784",
@@ -1459,8 +2034,8 @@
     "priority": 40,
     "crawl_total": 70,
     "shape": "kr.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "f408666f826785b7",
@@ -1482,8 +2057,31 @@
     "priority": 40,
     "crawl_total": 26,
     "shape": "www.mathworks.com/videos/first-steps-in-matlab-1735796972206.html",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "f9180a27a4d86a3e",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5-footer.min.20260513204911014.css",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.638958689+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5-footer.min.20260513204911014.css\",\"tag\":\"link\",\"attribute\":\"href\",\"source\":\"https://matlabacademy.mathworks.com/deta",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 96,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/common/bs5-footer.min.20260513204911014.css",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "f974ff43cd9582bd",
@@ -1505,8 +2103,8 @@
     "priority": 40,
     "crawl_total": 2,
     "shape": "matlab.mathworks.com/config.json",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   },
   {
     "id": "fa0427425dc17e80",
@@ -1528,8 +2126,31 @@
     "priority": 40,
     "crawl_total": 6,
     "shape": "www.mathworks.com/",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
+  },
+  {
+    "id": "fac805c3008be3c1",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/akamai.min.20260513204911014.js",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T16:36:08.639195376+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/akamai.min.20260513204911014.js\",\"tag\":\"script\",\"attribute\":\"src\",\"source\":\"https://matlabacademy.mathworks.com/details/simulin",
+    "asset": "www.mathworks.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T11:06:25.134Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 105,
+    "shape": "www.mathworks.com/etc.clientlibs/mathworks/clientlibs/customer-ui/templates/akamai.min.20260513204911014.js",
+    "observations": 4,
+    "seen_count": 4
   },
   {
     "id": "ff139d22a554fff2",
@@ -1551,7 +2172,7 @@
     "priority": 40,
     "crawl_total": 82,
     "shape": "matlabacademy.mathworks.com/static/css/main.b88af1e7.chunk.css",
-    "observations": 2,
-    "seen_count": 2
+    "observations": 6,
+    "seen_count": 6
   }
 ]

@@ -26,7 +26,7 @@ const { promisify } = require('util');
 const exec = promisify(execFile);
 
 const { TargetKB } = require('./knowledge');
-const { LeadStore } = require('./leads');
+const { LeadStore, makeLead } = require('./leads');
 const { correlate } = require('./correlate');
 const { evaluate, toFinding } = require('./gate');
 const { CoverageLedger } = require('./coverage');
@@ -38,6 +38,8 @@ const V = require('./validators');
 const N = require('./normalize');
 const { runAuthzStage } = require('./authz-stage');
 const { HeaderPolicy } = require('./headerpolicy');
+const jscapture = require('./jscapture');
+const browser = require('./browser');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
 
@@ -80,11 +82,15 @@ async function hunt(o) {
   const steps = [];
   const log = (s, detail) => { steps.push({ step: s, detail }); };
 
+  // The header policy is function-scoped: the map, scan, js, and protocol
+  // phases all need it. It was previously declared inside `if (!o.skipScan)`,
+  // which made the later phases throw "hp is not defined" whenever they ran.
+  const hp = o.headerPolicy || new HeaderPolicy();
+  hpRef = hp;
+
   // ---- 1. MAP (never hunt before mapping) ----
   coverage.phase('recon');
   if (!o.skipScan) {
-    const hp = o.headerPolicy || new HeaderPolicy();
-  hpRef = hp;
     const hx = await run(which('httpx-pd') || 'httpx', ['-u', o.target, '-json', '-silent', '-no-color', '-td', '-tech-detect', ...hp.flagsFor('httpx-pd')], o.timeoutMs);
     // Record a page only when a live HTTP response was actually observed.
     // Crawler-discovered paths are "endpoints" (shapes we know about), not
@@ -105,6 +111,63 @@ async function hunt(o) {
     if (raw.length) log('map', `katana: ${raw.length} url -> ${shapes.uniqueShapes} shapes, kept ${shapes.leads.length}`);
   }
 
+  // ---- 1b. JAVASCRIPT SURFACE ----
+  // Read the JavaScript the application actually serves. Published hunter
+  // methodology calls this the highest-yield single source: endpoints the
+  // crawler never reaches, client-side-only authorization, and embedded
+  // credentials all live here. The hunt previously probed HTTP but never read
+  // a single bundle.
+  if (!o.skipJs && !o.skipScan) {
+    coverage.phase('js');
+    const jsRes = await jsPhase(o, kb, store, coverage, log);
+    if (jsRes.forms && jsRes.forms.length) log('js', `${jsRes.forms.length} form(s) parsed for parameters`);
+    if (jsRes.scripts) {
+      log('js', `${jsRes.scripts} script(s), ${(jsRes.bytes / 1024).toFixed(0)}KB, ${jsRes.minified} minified, ${jsRes.fromSourceMaps} from source maps`);
+      log('js', `${jsRes.endpoints.length} endpoint(s) from JS (${jsRes.newEndpoints} never crawled before)`);
+      for (const e of jsRes.endpoints.slice(0, 12)) log('  js', e);
+    } else {
+      log('js', 'no application scripts captured');
+    }
+    if (jsRes.secrets.length) {
+      log('js', `${jsRes.secrets.length} embedded credential(s): ${[...new Set(jsRes.secrets.map((s) => s.kind))].join(', ')}`);
+      for (const s of jsRes.secrets.slice(0, 5)) store.add(makeLead({
+        cls: 'secrets', title: `Embedded ${s.kind} in ${String(s.url).replace(/^https?:\/\/[^/]+/, '')}`,
+        url: s.url, source: 'js-analysis', severity_hint: 'high',
+        evidence: `${s.kind} in client-side JavaScript (value truncated, never stored)`, tags: ['js', 'secret'],
+      }));
+    }
+    coverage.lens('js-analysis');
+  }
+
+  // ---- 1c. BROWSER INTERACTION (click, fill, submit, inject) ----
+  // This is what makes the single command a real assessment. An HTTP prober
+  // cannot reach a surface that only exists after JavaScript runs or after
+  // login, and the browser scanner that could was never called from --hunt at
+  // all. Reuses the harvested session, so it sees the logged-in application.
+  if (!o.skipBrowser && !o.skipScan) {
+    coverage.phase('browser');
+    const bRes = await browserPhase(o, kb, store, coverage, log);
+    if (bRes.visited.length) {
+      log('browser', `${bRes.visited.length} page(s) visited by clicking, ${bRes.forms.length} form(s) examined`);
+      if (bRes.injected.length) {
+        for (const inj of bRes.injected) {
+          log('  found', `${inj.cls.toUpperCase()} candidate via form on ${String(inj.url).replace(/^https?:\/\/[^/]+/, '')} [field: ${inj.field}] status=${inj.status}${inj.errorSignature ? ` err=${inj.errorSignature}` : ''}`);
+          store.add(makeLead({
+            cls: inj.cls, title: `Browser-injected ${inj.cls} candidate in '${inj.field}'`,
+            url: inj.url, source: 'browser-inject', severity_hint: inj.cls === 'sqli' || inj.cls === 'ssti' ? 'high' : 'medium',
+            evidence: `form-submitted injection; status=${inj.status}; ${inj.errorSignature ? 'error signature: ' + inj.errorSignature : 'response differs from baseline'}`,
+            tags: ['browser', inj.cls],
+          }));
+        }
+      } else {
+        log('browser', 'no form injection produced an observable effect');
+      }
+    } else {
+      log('browser', 'no pages reachable in the browser');
+    }
+    coverage.lens('browser-interaction');
+  }
+
   // ---- 2. PREDICT (slice the surface into ranked hypotheses) ----
   // Link parameters discovered on leads to the endpoints that carry them, so
   // the prober knows *where* to send each payload. Without this the prober has
@@ -112,10 +175,27 @@ async function hunt(o) {
   for (const l of store.all()) {
     if (l.param && l.url) kb.learnEndpoint(l.url, { param: l.param });
   }
+
+  // Harvest parameter names from every known URL, not only from leads that a
+  // tool already parsed. This was the single biggest reason the hunt reported
+  // "0 parameter(s) ranked": a crawled URL like /search?q=laptop carries a
+  // usable parameter in its query string, but nothing extracted it, so the
+  // predict -> execute chain never started. Without a ranked parameter there is
+  // nothing to probe, and the run silently "found nothing" on a target that was
+  // full of injectable endpoints.
   const params = [...new Set(store.all().map((l) => l.param).filter(Boolean))];
-  for (const e of kb.endpoints.values()) for (const p of e.params || []) params.push(p);
+  const fromUrls = new Set();
+  for (const e of kb.endpoints.values()) {
+    for (const p of e.params || []) params.push(p);
+    const names = paramsInUrl(e.url || '');
+    for (const n of names) {
+      fromUrls.add(n);
+      if (!params.includes(n)) params.push(n);
+    }
+  }
   const ranked = predict.rank([...new Set(params)]);
   log('predict', `${ranked.length} parameter(s) ranked; top: ${ranked.slice(0, 4).map((r) => `${r.param}(${r.classes.join('/')})`).join(', ') || 'none'}`);
+  if (fromUrls.size) log('predict', `${fromUrls.size} parameter name(s) harvested from crawled URLs`);
   for (const r of ranked) coverage.param(r.param);
 
   // ---- 3-4. EXECUTE + OBSERVE ----
@@ -252,6 +332,163 @@ async function hunt(o) {
  * when Playwright cannot launch.
  */
 let hpRef = null;   // active header policy, set by runHunt
+/**
+ * Capture the target's JavaScript through a real browser and analyse it.
+ *
+ * A browser is required rather than a fetch loop: which bundles load depends on
+ * the session and the route, so only driving the app reveals the JS behind the
+ * features that matter.
+ */
+async function jsPhase(o, kb, store, coverage, log) {
+  const empty = { scripts: 0, bytes: 0, minified: 0, fromSourceMaps: 0, endpoints: [], secrets: [], findings: [], newEndpoints: 0, forms: [] };
+  const pw = loadPlaywright();
+  if (!pw) { log('js', 'playwright unavailable — cannot capture scripts'); return empty; }
+
+  const hp = o.headerPolicy || hpRef || new HeaderPolicy();
+  let browser = null;
+  try {
+    browser = await pw.chromium.launch({ headless: !o.headful });
+    const ctxOpts = { ignoreHTTPSErrors: true };
+    if (hp.active) ctxOpts.extraHTTPHeaders = hp.playwright();
+    const context = await browser.newContext(ctxOpts);
+    // Authenticated runs must see authenticated bundles, so reuse a session
+    // when one was captured.
+    if (o.identities && o.identities.length) {
+      try {
+        const st = path.join(o.stateDir || '', 'captures');
+        const first = fs.existsSync(st) ? fs.readdirSync(st).find((f) => f.endsWith('.jsonl')) : null;
+        if (first) {
+          const raw = JSON.parse(fs.readFileSync(path.join(st, first), 'utf8').split('\n')[0] || '{}');
+          if (raw && raw.cookies) { context.addCookies(raw.cookies); log('js', `reusing session from ${first}`); }
+        }
+      } catch { /* no session reuse; unauthenticated capture still useful */ }
+    }
+    const page = await context.newPage();
+    // capture() performs the navigation itself: the response listener has to be
+    // attached before the page loads or the bundles are already gone.
+    const captured = await jscapture.capture(page, {
+      url: o.target, maxScripts: o.maxScripts || 60, gotoTimeout: o.timeoutMs || 30000,
+    });
+
+    // Forms are where parameters live. A crawler sees <form action="/search"
+    // method="get"> and records /search, but never submits it, so `?q=` is never
+    // discovered — and on a target whose only injectable endpoint is behind a
+    // search form, that single omission means the run reports nothing at all.
+    // Reading the form's inputs directly recovers every field name and the
+    // exact request the form would make.
+    const forms = await page.evaluate(() => {
+      const abs = (h) => { try { return new URL(h, location.href).toString(); } catch { return h; } };
+      return [...document.querySelectorAll('form')].map((f) => ({
+        action: abs(f.getAttribute('action') || location.href),
+        method: (f.getAttribute('method') || 'GET').toUpperCase(),
+        fields: [...f.querySelectorAll('input,select,textarea')]
+          .filter((i) => ['hidden', 'text', 'email', 'password', 'search', 'number', 'submit', 'checkbox', 'radio'].includes((i.type || 'text').toLowerCase()))
+          .map((i) => ({ name: i.name, type: i.type || 'text', placeholder: i.placeholder || '' }))
+          .filter((i) => i.name),
+      })).filter((f) => f.fields.length);
+    }).catch(() => []);
+
+
+    // Register the forms discovered above, including a concrete probe URL so
+    // the prober has something to request. A GET form is expanded with a
+    // benign value; a POST form is recorded as a shape for later.
+    for (const f of forms) {
+      if (!f || !f.action) continue;
+      let probeUrl = f.action;
+      if (f.method === 'GET' && f.fields.length) {
+        try {
+          const u = new URL(f.action);
+          for (const fld of f.fields.slice(0, 6)) u.searchParams.set(fld.name, fld.type === 'password' ? 'x' : '1');
+          probeUrl = u.toString();
+        } catch { /* keep the bare action */ }
+      }
+      kb.learnEndpoint(probeUrl, { forms: 1 });
+      for (const fld of f.fields) kb.learnEndpoint(f.action, { param: fld.name });
+      coverage.endpoint(probeUrl);
+      log('  form', `${f.method} ${f.action.replace(/^https?:\/\/[^/]+/, '')} [${f.fields.map((x) => x.name).slice(0, 6).join(', ')}]`);
+    }
+    const analysed = jscapture.analyseCapture(captured, o.target);
+
+    // Only endpoints the crawler never saw are genuinely new surface.
+    const known = new Set(kb.endpoints ? [...kb.endpoints.keys()].map((k) => { try { return JSON.parse(k)[0]; } catch { return k; } }) : []);
+    const newOnes = analysed.endpoints.filter((u) => !known.has(u));
+    analysed.newEndpoints = newOnes.length;
+
+    for (const u of newOnes.slice(0, 200)) kb.learnEndpoint(u);
+    for (const u of newOnes.slice(0, 40)) coverage.endpoint(u);
+    for (const f of analysed.findings.slice(0, 20)) {
+      store.add(makeLead({
+        cls: 'jslogic', title: `Client-side auth logic: ${f.kind || f.title || 'signal'}`,
+        url: f.script || o.target, source: 'js-analysis', severity_hint: 'medium',
+        evidence: (f.detail || f.note || f.via || '').slice(0, 300), tags: ['js', 'client-side'],
+      }));
+    }
+    return { ...analysed, endpoints: analysed.endpoints, forms: forms || [] };
+  } catch (e) {
+    log('js', `capture failed: ${String(e.message || e).slice(0, 120)}`);
+    return empty;
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+  }
+}
+
+/** Parameter names carried by a URL's query string or path segments. */
+function paramsInUrl(u = '') {
+  const out = [];
+  try {
+    const url = new URL(u);
+    for (const k of url.searchParams.keys()) if (k && k.length < 60) out.push(k);
+    // REST-style ids: /api/invoices/1 -> invoices is the resource, 1 is the id.
+    for (const seg of url.pathname.split('/')) {
+      if (/^\{?[a-z_][a-z0-9_]{1,40}\}?$/i.test(seg)) out.push(seg.replace(/[{}]/g, ''));
+    }
+  } catch { return []; }
+  return [...new Set(out)];
+}
+
+/**
+ * Drive a real browser: click through the app, submit forms, inject payloads,
+ * and judge each result against a baseline request.
+ *
+ * Reuses a captured session when one exists, because an unauthenticated crawl
+ * only ever sees the login page and the entire value of this phase is the
+ * surface behind authentication.
+ */
+async function browserPhase(o, kb, store, coverage, log) {
+  const empty = { visited: [], forms: [], endpoints: [], injected: [] };
+  const pw = loadPlaywright();
+  if (!pw) { log('browser', 'playwright unavailable — skipping browser interaction'); return empty; }
+  const hp = o.headerPolicy || hpRef || new HeaderPolicy();
+
+  let browserProc = null;
+  try {
+    browserProc = await pw.chromium.launch({ headless: !o.headful });
+    const ctxOpts = { ignoreHTTPSErrors: true };
+    if (hp.active) ctxOpts.extraHTTPHeaders = hp.playwright();
+    if (o.storageState) ctxOpts.storageState = o.storageState;
+    const context = await browserProc.newContext(ctxOpts);
+
+    const page = await context.newPage();
+    const res = await browser.crawl(page, o.target, {
+      maxPages: o.maxBrowserPages || 12,
+      maxDepth: o.maxBrowserDepth || 2,
+      timeout: o.timeoutMs || 20000,
+    });
+
+    for (const u of res.endpoints) kb.learnEndpoint(u);
+    for (const f of res.forms) {
+      for (const fld of f.fields || []) kb.learnEndpoint(f.action, { param: fld, forms: 1 });
+    }
+    for (const u of res.endpoints.slice(0, 100)) coverage.endpoint(u);
+    return res;
+  } catch (e) {
+    log('browser', `failed: ${String(e.message || e).slice(0, 120)}`);
+    return empty;
+  } finally {
+    if (browserProc) await browserProc.close().catch(() => {});
+  }
+}
+
 function makeHttpContext() {
   const req = async (url, opts = {}) => {
     const ctrl = new AbortController();

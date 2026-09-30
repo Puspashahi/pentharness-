@@ -1,0 +1,62 @@
+{
+  "target": "https://x.tld",
+  "created": "2026-09-30T11:05:11.888Z",
+  "updated": "2026-09-30T11:05:34.460Z",
+  "tech": [],
+  "endpoints": [
+    [
+      "https://x.tld",
+      {
+        "first_seen": "2026-09-30T11:05:25.358Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T11:05:25.358Z"
+      }
+    ]
+  ],
+  "params": [],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": [
+    {
+      "phases": [
+        "recon",
+        "scan",
+        "jslogic",
+        "prioritise",
+        "authz",
+        "prove",
+        "ingest",
+        "correlate",
+        "queue",
+        "gate"
+      ],
+      "leads": 1,
+      "chains": 0,
+      "reported": 0,
+      "coverage": {
+        "pages": 5,
+        "endpoints": 1,
+        "params": 0,
+        "lenses": 0,
+        "identities": 0
+      },
+      "complete": false,
+      "tsv": "2026-09-30T11:05:34.460Z"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "target": "http://127.0.0.1:8099",
+  "created": "2026-09-30T11:37:21.687Z",
+  "updated": "2026-09-30T11:37:38.041Z",
+  "tech": [],
+  "endpoints": [
+    [
+      "http://127.0.0.1:8099",
+      {
+        "first_seen": "2026-09-30T11:37:33.625Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T11:37:37.629Z"
+      }
+    ],
+    [
+      "http://127.0.0.1:8099/search?q=1",
+      {
+        "first_seen": "2026-09-30T11:37:36.152Z",
+        "params": [],
+        "forms": 1,
+        "has_auth": false,
+        "last_seen": "2026-09-30T11:37:36.152Z"
+      }
+    ],
+    [
+      "http://127.0.0.1:8099/search",
+      {
+        "first_seen": "2026-09-30T11:37:36.152Z",
+        "params": [
+          "q"
+        ],
+        "forms": 1,
+        "has_auth": false,
+        "last_seen": "2026-09-30T11:37:37.630Z"
+      }
+    ]
+  ],
+  "params": [
+    "q"
+  ],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": [
+    {
+      "hunt": true,
+      "findings": 1,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T11:37:38.041Z"
+    }
+  ]
+}

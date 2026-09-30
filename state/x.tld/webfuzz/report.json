@@ -1,0 +1,22 @@
+{
+  "tool": "webfuzz",
+  "version": "1.0.0",
+  "runId": "wfx10j65ymuo018ba",
+  "target": "https://x.tld",
+  "canary": "wfx10j65ymuo018ba",
+  "startedAt": "2026-09-30T11:05:25.847Z",
+  "outDir": "/home/batist/tools/pentharness/state/x.tld/webfuzz",
+  "stats": {
+    "pages": 0,
+    "requests": 0,
+    "screenshots": 0,
+    "formsFilled": 0,
+    "formsSkipped": 0,
+    "clicks": 0,
+    "durationSec": 0,
+    "blockedThirdParty": 0
+  },
+  "pages": [],
+  "findings": [],
+  "skippedForms": []
+}

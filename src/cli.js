@@ -50,7 +50,7 @@ const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -78,13 +78,15 @@ function parseArgs(argv) {
       case '--throttle-per-min': o.throttle = parseInt(next(), 10) || 0; break;
       // CVE applicability, duplicate triage, and signal confirmation.
       case '--cves': o.cvesFile = next(); break;
-      case '--prior-art': o.priorArt = []; break;
+      case '--prior-art': (o.priorArt = o.priorArt || []).push(next()); break;
       case '--fingerprints': o.fingerprints = next(); break;
       case '--sanitize': o.sanitize = next(); break;
       case '--skip-evidence-audit': o.skipEvidenceAudit = true; break;
       case '--build-prior-art': o.buildPriorArt = true; break;
       case '--prior-art-index': o.priorArtIndex = next(); break;
       case '--ask-prior-art': (o.askPriorArt = o.askPriorArt || []).push(next()); break;
+      case '--skip-js': o.skipJs = true; break;
+      case '--skip-browser': o.skipBrowser = true; break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -750,7 +752,7 @@ async function runHunt(o) {
     target: o.target, stateDir: dir,
     concurrency: o.concurrency, maxEndpoints: o.maxPages,
     oobServer: o.oobServer, oobOff: o.oobOff, oobBin: o.oobBin, oobPollMs: o.oobPollMs, identities: o.identity,
-    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy,
+    answers: o.answer, timeoutMs: o.timeout, accounts: o.accounts, loginUrl: o.loginUrl, maxEnum: o.maxEnum, enumSamples: o.enumSamples, skipProtocols: o.skipProtocols, skipCache: o.skipCache, authMode: o.authMode, recipe: o.recipe, headerPolicy: o.headerPolicy, skipJs: o.skipJs, skipBrowser: o.skipBrowser, maxBrowserPages: o.maxBrowserPages, storageState: o.storageState, maxScripts: o.maxScripts,
     skipScan: o.noScan, skipProbe: o.skipProbe, headful: o.headful,
   });
   const b = C.b, dim = C.dim, cyn = C.cyn, grn = C.grn, yel = C.yel, r = C.r;
@@ -985,7 +987,7 @@ async function main() {
   if (o.help || !o.target) return usage();
 
   // Post-gate decision support: the steps that decide what a human submits.
-  if (o.cvesFile || o.priorArt.length) runDecisionSupport(o);
+  if (o.cvesFile || (o.priorArt && o.priorArt.length)) runDecisionSupport(o);
 
   // Evidence hygiene: audit whatever the run produced before a human can submit
   // it. Cheap, and it is the difference between a rejected report and a

@@ -1,0 +1,111 @@
+{
+  "tool": "pentharness",
+  "target": "https://matlab.mathworks.com",
+  "startedAt": "2026-09-30T11:12:57.870Z",
+  "durationSec": 55,
+  "steps": [
+    {
+      "step": "map",
+      "detail": "httpx: 1 host"
+    },
+    {
+      "step": "map",
+      "detail": "katana: 772 url -> 237 shapes, kept 80"
+    },
+    {
+      "step": "js",
+      "detail": "1 script(s), 2014KB, 1 minified, 0 from source maps"
+    },
+    {
+      "step": "js",
+      "detail": "33 endpoint(s) from JS (17 never crawled before)"
+    },
+    {
+      "step": "  js",
+      "detail": "http://inside.mathworks.com/wiki/Web_Widgets_Deprecation_API"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlabacademy.mathworks.com/R2024a/portal.html"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlabacademy.mathworks.com/simulinkR2024b/portal.html"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlabacademy.mathworks.com/details/simulink-onramp/simulink"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlabacademy.mathworks.com/details/machine-learning-onramp/machinelearning"
+    },
+    {
+      "step": "  js",
+      "detail": "https://matlab.mathworks.com//www.mathworks.com/products/matlab-online/system-requirements.html"
+    },
+    {
+      "step": "  js",
+      "detail": "https://www.mathworks.com/support/contact_us.html"
+    },
+    {
+      "step": "  js",
+      "detail": "https://www.mathworks.com/videos/first-steps-in-matlab-1735796972206.html"
+    },
+    {
+      "step": "  js",
+      "detail": "https://apps.apple.com/app/matlab-mobile/id370976661"
+    },
+    {
+      "step": "  js",
+      "detail": "https://play.google.com/store/apps/details"
+    },
+    {
+      "step": "  js",
+      "detail": "http://www.w3.org/2000/svg"
+    },
+    {
+      "step": "predict",
+      "detail": "2 parameter(s) ranked; top: cid(), s_tid()"
+    },
+    {
+      "step": "execute",
+      "detail": "probed 0 hypothesis/hypotheses; 0 proven"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 0, refuted 0, hypothesis 0"
+    },
+    {
+      "step": "chain",
+      "detail": "0 composable attack path(s)"
+    }
+  ],
+  "coverage": {
+    "pages": 1,
+    "endpoints": 97,
+    "params": 2,
+    "lenses": 1,
+    "identities": 0,
+    "complete": false,
+    "gaps": [
+      "pages: 1/5",
+      "authz lenses: 1/2",
+      "identities compared: 0/2 — single-identity runs cannot prove authorization flaws"
+    ],
+    "statement": "Coverage: 1 page(s), 97 endpoint(s), 2 param(s), 1 lens(es), 0 identit(y/ies). INCOMPLETE — missing: pages: 1/5; authz lenses: 1/2; identities compared: 0/2 — single-identity runs cannot prove authorization flaws. Treat results as partial, not as an absence of findings."
+  },
+  "chains": [],
+  "findings": [],
+  "suppressed": [],
+  "proof": {
+    "nonce": "543affe44b65",
+    "proven": 0,
+    "refuted": 0,
+    "hypothesis": 0
+  }
+}
