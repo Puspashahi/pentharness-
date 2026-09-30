@@ -42,6 +42,7 @@ const { HeaderPolicy } = require('./headerpolicy');
 const cvematch = require('./cvematch');
 const duptriage = require('./duptriage');
 const signal = require('./signal');
+const evidence = require('./evidence');
 const { hunt } = require('./hunt');
 
 const STATE = path.join(__dirname, '..', 'state');
@@ -78,6 +79,8 @@ function parseArgs(argv) {
       case '--cves': o.cvesFile = next(); break;
       case '--prior-art': o.priorArt = []; break;
       case '--fingerprints': o.fingerprints = next(); break;
+      case '--sanitize': o.sanitize = next(); break;
+      case '--skip-evidence-audit': o.skipEvidenceAudit = true; break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -825,6 +828,37 @@ function runDecisionSupport(o) {
   }
 }
 
+/**
+ * Audit the run's own artifacts for material that must not be submitted.
+ * Non-fatal by default: it warns rather than deleting a hunter's evidence,
+ * because the fix is a redaction decision, not an automated overwrite.
+ */
+function auditEvidence(o) {
+  const stateDir = path.join(STATE, slug(o.target || ''));
+  const targets = ['findings.json', 'hunt.json', 'knowledge.json', 'leads.json'];
+  let worst = { safe: true, blockers: [], review: [] };
+  const seen = [];
+  for (const f of targets) {
+    const p = path.join(stateDir, f);
+    if (!fs.existsSync(p)) continue;
+    let parsed;
+    try { parsed = fs.readFileSync(p, 'utf8'); } catch { continue; }
+    const a = evidence.audit(JSON.parse(parsed));
+    seen.push({ file: f, ...a });
+    if (!a.safe) worst = { safe: false, blockers: [...worst.blockers, ...a.blockers], review: worst.review };
+    else worst.review = [...worst.review, ...a.review];
+  }
+  if (!seen.length) return;
+  if (worst.safe) {
+    console.log(`  evidence ${seen.length} artifact(s) clean to submit`);
+    for (const r of worst.review.slice(0, 3)) console.log(`            review: ${r.kind} — ${r.detail}`);
+  } else {
+    console.log(`  evidence BLOCKED — ${worst.blockers.length} item(s) must be redacted before submitting:`);
+    for (const b of worst.blockers.slice(0, 6)) console.log(`            ${b.kind}: ${b.detail}`);
+    console.log('            run pentharness --sanitize <file> to clean an artifact');
+  }
+}
+
 async function main() {
   const o = parseArgs(process.argv.slice(2));
   // Credentials may be given in any flag order; assemble the account pairs
@@ -869,10 +903,32 @@ async function main() {
     if (o.headerPolicy.active) console.log(`  headers: ${o.headerPolicy.describe()}`);
     if (o.throttle) console.log(`  throttle: max ${o.throttle} requests/minute`);
   }
+  if (o.sanitize) {
+    try {
+      const raw = fs.readFileSync(o.sanitize, 'utf8');
+      const out = evidence.sanitizeEvidence(JSON.parse(raw));
+      const dst = o.sanitize.replace(/\.json$/, '.sanitized.json');
+      fs.writeFileSync(dst, JSON.stringify(out.sanitized(), null, 2));
+      console.log(`  wrote ${dst}`);
+      if (out.piiReview.length) {
+        console.log(`  review before submitting (${out.piiReview.length}):`);
+        for (const r of out.piiReview) console.log(`    ${r.kind}: ${r.count} — ${r.why}`);
+      }
+      return 0;
+    } catch (e) {
+      console.log(`  sanitize failed: ${e.message}`);
+      return 1;
+    }
+  }
   if (o.help || !o.target) return usage();
 
   // Post-gate decision support: the steps that decide what a human submits.
   if (o.cvesFile || o.priorArt.length) runDecisionSupport(o);
+
+  // Evidence hygiene: audit whatever the run produced before a human can submit
+  // it. Cheap, and it is the difference between a rejected report and a
+  // compromised account.
+  if (!o.skipEvidenceAudit) auditEvidence(o);
 
   // `--hunt` (or bare `hunt`) is the one-command entry point.
   if (o.hunt || process.argv.includes('hunt')) return runHunt(o);
