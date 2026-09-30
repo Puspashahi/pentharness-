@@ -1,0 +1,918 @@
+{
+  "target": "https://kinbechshop.com",
+  "created": "2026-09-30T08:39:28.917Z",
+  "updated": "2026-09-30T08:40:09.197Z",
+  "tech": [
+    "apache apisix",
+    "bootstrap:5.3.0",
+    "django",
+    "google adsense",
+    "google analytics",
+    "google sign-in",
+    "litespeed",
+    "litespeed cache",
+    "python",
+    "jsdelivr"
+  ],
+  "endpoints": [
+    [
+      "https://kinbechshop.com",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/form.action",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/site-footer.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/pwa.js",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/help-assistant/requirement/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:49:06.391Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/help-assistant/search/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/home.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:49:06.391Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/study-materials/post/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/admin.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/shops/register/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://nepal.kinbechshop.com/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:43:35.429Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/premium.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/sw.js",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/offline/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/assets/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/login/?next=/study-materials/post/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "next"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/?q=",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "q"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/manifest.json",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/facebook-login/?next=/study-materials/post/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "next"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/forgot-password/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/login/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://accounts.google.com/gsi/client",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/auth/otp/email/send/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/auth/otp/email/verify/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/auth/otp/whatsapp/send/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/auth/otp/whatsapp/verify/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/google-login/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/auth/otp/phone/verify/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/login/classifieds/views.py",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?q=",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "q"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/topup/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/quick-post/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/register/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Electronics",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "category"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/jobs/jobs/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/services/all/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/room-rent-in-kathmandu/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Home & Living",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "category"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Health & Beauty",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "category"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Books & Hobbies",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "category"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Pets & Animals",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "category"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2032/iphone-13-fresh-condition-premium-phone/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2016/brand-new-sarathi-champion-electric-scooter-stylish-city-ev/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/1993/bakery/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/1969/indoor-spinning-exercise-bike-for-home-workout/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2041/water-purifier-ro-sales-installation-water-treatment-service-gulariya-bardiya/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2039/saajan-bollywood-movie-original-audio-cassette-tape-sealed/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2038/kids-study-table-writing-table-nepali-made-offer-rs-1100/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2037/high-ankle-boots-new-rs-200-off/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2036/chelsea-boot-new-rs-200-off/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2035/penny-loafers-new-rs-200-off/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2034/harley-davidson-inspired-leather-boot-new-rs-200-off/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2033/timberland-style-boots-new-rs-200-off/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2031/royal-enfield-classic-350-black-great-condition/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2030/seiko-5-automatic-watch-day-date-vintage-second-hand/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2029/citizen-quartz-day-date-watch-green-dial-vintage/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2028/romanson-rectangular-dress-watch-vintage-second-hand/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2027/hmt-vintage-watch-black-dial-made-in-india/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2026/hmt-kohinoor-vintage-watch-17-jewels-made-in-india/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2025/lorus-sports-day-date-watch-vintage-second-hand/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2024/swatch-irony-chronograph-swiss-watch-white-dial-vintage/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2023/swatch-irony-swiss-watch-blue-dial-vintage-second-hand/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2022/well-maintained-used-hyundai-hatchback-car-with-clean-interior/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2021/anker-charger-with-cable/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2020/gold-foil-m-charizard-ex-pokemon-card-collectible/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2019/clean-shinex-power-plus-10x-advanced-toilet-cleaner-original-fresh/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2018/hero-honda-cbz-xtreme-motorcycle-good-running-condition/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2017/why-skilled-nepali-workers-are-exploring-careers-in-oil-gas-petrochemical-and-energy-services/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2015/tvs-ntorq-125-scooter-in-great-condition/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2014/honda-cb-hornet-160r-well-maintained-clean-condition/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2013/large-heavy-duty-metal-dog-cage-outdoor-kennel/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2012/hero-xpulse-200-motorcycle-in-excellent-condition/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ad/2011/comfortable-solid-wooden-rocking-chair/",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.958Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?q=&page=1",
+      {
+        "first_seen": "2026-09-30T08:39:48.958Z",
+        "params": [
+          "q"
+        ],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:39:48.970Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/templates/base.html",
+      {
+        "first_seen": "2026-09-30T08:43:35.429Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:43:35.429Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/sell/assistant/",
+      {
+        "first_seen": "2026-09-30T08:43:35.429Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:43:35.429Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/static/classifieds/tools.js",
+      {
+        "first_seen": "2026-09-30T08:49:06.391Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:49:06.391Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/shops/dashboard/",
+      {
+        "first_seen": "2026-09-30T08:49:06.391Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:49:06.391Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/help-assistant/ask/",
+      {
+        "first_seen": "2026-09-30T08:51:34.246Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T08:51:34.246Z"
+      }
+    ]
+  ],
+  "params": [
+    "q",
+    "next",
+    "category"
+  ],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": [
+    {
+      "hunt": true,
+      "findings": 0,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T08:40:09.197Z"
+    }
+  ]
+}

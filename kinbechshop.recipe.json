@@ -1,0 +1,38 @@
+{
+  "startUrl": "https://kinbechshop.com/login/",
+  "appOrigin": "https://kinbechshop.com",
+  "accounts": {
+    "userA": {
+      "username": "REPLACE_WITH_ACCOUNT_A",
+      "password": "REPLACE_WITH_PASSWORD_A"
+    },
+    "userB": {
+      "username": "REPLACE_WITH_ACCOUNT_B",
+      "password": "REPLACE_WITH_PASSWORD_B"
+    }
+  },
+  "selectors": {
+    "ssoButton": ["Continue with", "Sign in with", "Log in with"],
+    "userField": ["#id_username", "#username", "input[name=username]", "input[name=email]", "input[type=email]"],
+    "passField": ["#id_password", "#password", "input[name=password]", "input[type=password]"],
+    "submit": ["Sign in", "Log in", "Next", "Continue"],
+    "consent": ["Accept", "Approve", "Allow", "Continue"]
+  },
+  "routes": [
+    "/",
+    "/dashboard/",
+    "/profile/",
+    "/account/",
+    "/orders/",
+    "/invoices/",
+    "/messages/",
+    "/notifications/",
+    "/settings/",
+    "/study-materials/",
+    "/study-materials/post/",
+    "/my-products/",
+    "/favorites/",
+    "/payments/",
+    "/addresses/"
+  ]
+}

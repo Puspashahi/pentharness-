@@ -1,0 +1,59 @@
+{
+  "tool": "pentharness",
+  "target": "https://t",
+  "startedAt": "2026-09-30T07:17:10.731Z",
+  "durationSec": 18,
+  "steps": [
+    {
+      "step": "predict",
+      "detail": "0 parameter(s) ranked; top: none"
+    },
+    {
+      "step": "execute",
+      "detail": "skipped — no parameters known yet"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 0, refuted 0, hypothesis 0"
+    },
+    {
+      "step": "authz",
+      "detail": "userA: page.goto: net::ERR_NAME_NOT_RESOLVED at https://t/login\nCall log:\n\u001b[2m  - navigating to \"https://t/login\", waiting until \"domcontentloaded\"\u001b[22m\n"
+    },
+    {
+      "step": "authz",
+      "detail": "userB: page.goto: net::ERR_NAME_NOT_RESOLVED at https://t/login\nCall log:\n\u001b[2m  - navigating to \"https://t/login\", waiting until \"domcontentloaded\"\u001b[22m\n"
+    },
+    {
+      "step": "authz",
+      "detail": "only 0 identity/identities usable — the authorization matrix needs 2; IDOR cannot be proven without it"
+    },
+    {
+      "step": "chain",
+      "detail": "0 composable attack path(s)"
+    }
+  ],
+  "coverage": {
+    "pages": 0,
+    "endpoints": 0,
+    "params": 0,
+    "lenses": 1,
+    "identities": 2,
+    "complete": false,
+    "gaps": [
+      "pages: 0/5",
+      "endpoints: 0/3",
+      "authz lenses: 1/2"
+    ],
+    "statement": "Coverage: 0 page(s), 0 endpoint(s), 0 param(s), 1 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 0/5; endpoints: 0/3; authz lenses: 1/2. Treat results as partial, not as an absence of findings."
+  },
+  "chains": [],
+  "findings": [],
+  "suppressed": [],
+  "proof": {
+    "nonce": "5256dca08e58",
+    "proven": 0,
+    "refuted": 0,
+    "hypothesis": 0
+  }
+}

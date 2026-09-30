@@ -1,0 +1,32 @@
+{
+  "target": "https://t",
+  "created": "2026-09-30T07:17:10.731Z",
+  "updated": "2026-09-30T07:17:28.811Z",
+  "tech": [],
+  "endpoints": [],
+  "params": [],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": [
+    {
+      "hunt": true,
+      "findings": 0,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T07:17:28.811Z"
+    }
+  ]
+}

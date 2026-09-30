@@ -1,0 +1,17 @@
+# NOTE: this repo is PRIVATE and the owner has chosen to keep everything,
+# including credential recipes and live scan data. Nothing is excluded.
+#
+# If this is ever made public, delete this file before doing anything else:
+# *.recipe.json, state/, *.jsonl and the findings/coverage/knowledge/*.json files
+# contain real credentials and real responses from real targets.
+#
+# One local-only exclusion, so a stray Playwright download or editor swap file
+# never lands in history.
+
+node_modules/
+npm-debug.log*
+
+.DS_Store
+*.swp
+.idea/
+.vscode/

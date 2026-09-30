@@ -1,0 +1,38 @@
+{
+  "startUrl": "https://target.example/login/",
+  "appOrigin": "https://target.example",
+  "accounts": {
+    "userA": {
+      "username": "alice@example.com",
+      "password": "CHANGEME"
+    },
+    "userB": {
+      "username": "bob@example.com",
+      "password": "CHANGEME"
+    }
+  },
+  "selectors": {
+    "ssoButton": ["Continue with", "Sign in with", "Log in with"],
+    "userField": ["#id_username", "#username", "input[name=username]", "input[name=email]", "input[type=email]"],
+    "passField": ["#id_password", "#password", "input[name=password]", "input[type=password]"],
+    "submit": ["Sign in", "Log in", "Next", "Continue"],
+    "consent": ["Accept", "Approve", "Allow", "Continue"]
+  },
+  "routes": [
+    "/",
+    "/dashboard/",
+    "/profile/",
+    "/account/",
+    "/orders/",
+    "/invoices/",
+    "/messages/",
+    "/notifications/",
+    "/settings/",
+    "/study-materials/",
+    "/study-materials/post/",
+    "/my-products/",
+    "/favorites/",
+    "/payments/",
+    "/addresses/"
+  ]
+}
