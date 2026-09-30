@@ -1,0 +1,55 @@
+{
+  "startUrl": "https://login.mathworks.com/embedded-login/signin.html?cid=login&wid=default&referrer=unknown",
+  "appOrigin": "https://matlab.mathworks.com",
+  "headers": {
+    "X-Request-Purpose": "BugcrowdResearch",
+    "X-Bugcrowd-Ninja": "puspa_shahi"
+  },
+  "accounts": {
+    "userA": {
+      "username": "puspa_shahi@bugcrowdninja.com",
+      "password": "Hacker--50"
+    },
+    "userB": {
+      "username": "shahirajesh290@gmail.com",
+      "password": "Hacker--50"
+    }
+  },
+  "selectors": {
+    "ssoButton": [
+      "Sign in",
+      "Next"
+    ],
+    "userField": [
+      "#email",
+      "input[name=email]",
+      "input[type=email]"
+    ],
+    "passField": [
+      "#password",
+      "input[name=password]"
+    ],
+    "submit": [
+      "Sign In",
+      "Next"
+    ],
+    "consent": [
+      "Accept",
+      "Continue",
+      "Allow"
+    ]
+  },
+  "routes": [
+    "/",
+    "/help",
+    "/matlabcentral",
+    "/matlabcentral/fileexchange",
+    "/matlabcentral/products",
+    "/support",
+    "/learn",
+    "/community",
+    "/mymathworks",
+    "/settings",
+    "/license"
+  ]
+}

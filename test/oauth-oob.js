@@ -129,8 +129,19 @@ t('a vulnerable fetch() endpoint calls back with a real interaction', async () =
       console.log('       SKIP: interactsh issued no callback this run (public instance rate-limited or slow)');
       return;
     }
-    assert.ok(hits.some((h) => h.protocol === 'dns' || h.protocol === 'http'), JSON.stringify(hits));
-    assert.strictEqual(OOB.grade(hits).verdict, 'proven');
+    // Grading is intentionally conservative: only an HTTP callback is `proven`,
+    // DNS resolution alone is `potential`. Assert the grading rule holds for
+    // whichever protocol mix came back, rather than demanding a specific one —
+    // public instances vary between runs.
+    const graded = OOB.grade(hits);
+    const hasHttp = hits.some((h) => h.protocol === 'http');
+    const hasDns = hits.some((h) => h.protocol === 'dns');
+    assert.ok(['proven', 'potential'].includes(graded.verdict), JSON.stringify(hits));
+    if (hasHttp) {
+      assert.strictEqual(graded.verdict, 'proven', 'an HTTP callback is a proven outbound request');
+    } else if (hasDns) {
+      assert.strictEqual(graded.verdict, 'potential', 'DNS-only is not proof of an HTTP fetch');
+    }
   } finally {
     c.stop();
     victim.close();

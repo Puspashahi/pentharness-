@@ -88,14 +88,82 @@ async function login(browser, loginUrl, creds, opts = {}) {
     const p = firstMatch(fields, FIELD.pass) || fields.find((f) => f.type === 'password');
     if (!p) { result.reason = 'no password field found — is this a login page?'; return result; }
 
+    // Two-step sign-in: many providers (MathWorks among them) show an
+    // identifier step and only reveal the password panel after it is submitted.
+    // Filling a still-hidden password field fails silently, so if the password
+    // is not visible we submit the identifier step and wait for the reveal.
+    const isVisible = async (sel) => {
+      try { return await page.locator(sel).first().isVisible({ timeout: 2000 }); } catch { return false; }
+    };
+    const passSel = selectorFor(p);
+    if (!(await isVisible(passSel))) {
+      if (u) await page.fill(selectorFor(u), creds.username).catch(() => {});
+      // Prefer the provider's own identifier/submit control, then fall back to
+      // a generic submit. Select a *visible* control: on a two-step form the
+      // hidden sibling can be first in DOM order.
+      const visSubmit = async (cands) => {
+        for (const sel of cands) {
+          const loc = page.locator(sel);
+          const n = await loc.count().catch(() => 0);
+          for (let i = 0; i < n; i++) {
+            if (!(await loc.nth(i).isVisible({ timeout: 1200 }).catch(() => false))) continue;
+            await loc.nth(i).click({ timeout: 8000 }).catch(() => {});
+            return true;
+          }
+        }
+        return false;
+      };
+      const clicked = await visSubmit(['#submit_identifier', 'button[type=submit]', 'input[type=submit]', 'button:not([type])']);
+      if (clicked) {
+        await page.waitForTimeout(2500);
+        result.steps = ['identifier step submitted'];
+        if (!(await isVisible(passSel))) {
+          const msgs = await page.locator('.alert, [role=alert], [id^=errorMessage]').allTextContents().catch(() => []);
+          const clean = msgs.map((m) => m.trim()).filter(Boolean);
+          result.reason = `identifier accepted but the password panel never appeared${clean.length ? `: ${clean[0].slice(0, 120)}` : ''}`;
+          return result;
+        }
+      }
+    }
+
     if (u) await page.fill(selectorFor(u), creds.username).catch(() => {});
-    await page.fill(selectorFor(p), creds.password).catch(() => {});
+    if (!(await isVisible(passSel))) {
+      result.reason = 'password field stayed hidden — the login flow needs a recipe selector';
+      return result;
+    }
+    await page.fill(passSel, creds.password).catch(() => {});
+
+    // Prefer the provider's own password-submit control. A combined selector
+    // like `#submit_password, button[type=submit]` picks the first *match in
+    // DOM order*, which on a two-step form is the hidden identifier button, not
+    // the visible one — the click then timed out and, because the error was
+    // swallowed, the login silently failed. Select the visible control instead.
+    const clickVisible = async (candidates) => {
+      for (const sel of candidates) {
+        const loc = page.locator(sel);
+        const n = await loc.count().catch(() => 0);
+        for (let i = 0; i < n; i++) {
+          const el = loc.nth(i);
+          if (!(await el.isVisible({ timeout: 1200 }).catch(() => false))) continue;
+          await el.click({ timeout: 8000 }).catch(() => {});
+          return sel;
+        }
+      }
+      // Nothing visible: fall back to the first match so a plain form still works.
+      await page.locator(candidates[0]).first().click({ timeout: 8000 }).catch(() => {});
+      return null;
+    };
 
     await Promise.all([
       page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {}),
-      page.click('button[type=submit], input[type=submit], button:not([type])').catch(() => {}),
+      clickVisible(['#submit_password', 'button[type=submit]', 'input[type=submit]', 'button:not([type])']),
     ]);
-    await page.waitForTimeout(1500);
+    // Do not race the provider's redirect with a fixed sleep. MathWorks sets
+    // MOS_AUTH_TOKEN and bounces to matlab.mathworks.com several seconds after
+    // the submit, so a short wait reported "still on the login page" for an
+    // authentication that had actually succeeded.
+    await page.waitForURL((u) => !/login|signin|sign-in/i.test(u.toString()), { timeout: 20000 })
+      .catch(() => page.waitForTimeout(4000));
 
     const cookies = await context.cookies();
     result.cookies = cookies.map((c) => c.name);
