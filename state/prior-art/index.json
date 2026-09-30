@@ -1,0 +1,1399 @@
+{
+  "builtAt": "2026-09-30T10:53:47.524Z",
+  "totals": {
+    "records": 47160,
+    "indexed": 47160,
+    "flagged": 0,
+    "classes": 19,
+    "products": 24856,
+    "cves": 25082
+  },
+  "classes": {
+    "dos": {
+      "count": 6918,
+      "verified": 5398,
+      "withCve": 3992,
+      "platforms": [
+        {
+          "value": "windows",
+          "count": 3818
+        },
+        {
+          "value": "multiple",
+          "count": 1113
+        },
+        {
+          "value": "linux",
+          "count": 829
+        },
+        {
+          "value": "hardware",
+          "count": 347
+        },
+        {
+          "value": "osx",
+          "count": 138
+        },
+        {
+          "value": "php",
+          "count": 119
+        },
+        {
+          "value": "windows_x86",
+          "count": 83
+        },
+        {
+          "value": "android",
+          "count": 76
+        },
+        {
+          "value": "windows_x86-64",
+          "count": 69
+        },
+        {
+          "value": "ios",
+          "count": 61
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-16929",
+          "title": "AIX Calendar Manager Service Daemon (rpc.cmsd) Opcode 21 - Buffer Overflow (Metasploit)",
+          "cves": [
+            "CVE-2009-3699"
+          ]
+        },
+        {
+          "id": "EDB-19046",
+          "title": "AppleShare IP Mail Server 5.0.3 - Buffer Overflow",
+          "cves": [
+            "CVE-1999-1015"
+          ]
+        },
+        {
+          "id": "EDB-19049",
+          "title": "BSDI 4.0 tcpmux / inetd - Crash",
+          "cves": []
+        },
+        {
+          "id": "EDB-33943",
+          "title": "Flussonic Media Server 4.1.25 < 4.3.3 - Arbitrary File Disclosure",
+          "cves": []
+        },
+        {
+          "id": "EDB-19418",
+          "title": "IBM AIX 4.3.1 - 'adb' Denial of Service",
+          "cves": []
+        }
+      ]
+    },
+    "privesc": {
+      "count": 4941,
+      "verified": 3264,
+      "withCve": 2765,
+      "platforms": [
+        {
+          "value": "windows",
+          "count": 2625
+        },
+        {
+          "value": "linux",
+          "count": 1051
+        },
+        {
+          "value": "multiple",
+          "count": 196
+        },
+        {
+          "value": "solaris",
+          "count": 130
+        },
+        {
+          "value": "unix",
+          "count": 111
+        },
+        {
+          "value": "php",
+          "count": 100
+        },
+        {
+          "value": "osx",
+          "count": 99
+        },
+        {
+          "value": "windows_x86",
+          "count": 92
+        },
+        {
+          "value": "hardware",
+          "count": 70
+        },
+        {
+          "value": "aix",
+          "count": 60
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-20290",
+          "title": "AIX 3.x - bugfiler Arbitrary File Creation",
+          "cves": [
+            "CVE-1999-0115"
+          ]
+        },
+        {
+          "id": "EDB-333",
+          "title": "AIX 4.2 - '/usr/dt/bin/dtterm' Local Buffer Overflow",
+          "cves": [
+            "CVE-1999-0112"
+          ]
+        },
+        {
+          "id": "EDB-21094",
+          "title": "AIX 4.2/4.3 - '/usr/lib/lpd/pio/etc/piomkapqd' Local Buffer Overflow",
+          "cves": []
+        },
+        {
+          "id": "EDB-20213",
+          "title": "AIX 4.2/4.3 - netstat -Z Statistic Clearing",
+          "cves": [
+            "CVE-2000-0873"
+          ]
+        },
+        {
+          "id": "EDB-23883",
+          "title": "AIX 4.3.3/5.1 - Invscoutd Symbolic Link",
+          "cves": [
+            "CVE-2004-2697"
+          ]
+        }
+      ]
+    },
+    "upload": {
+      "count": 920,
+      "verified": 564,
+      "withCve": 304,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 765
+        },
+        {
+          "value": "windows",
+          "count": 35
+        },
+        {
+          "value": "asp",
+          "count": 31
+        },
+        {
+          "value": "multiple",
+          "count": 29
+        },
+        {
+          "value": "linux",
+          "count": 15
+        },
+        {
+          "value": "java",
+          "count": 11
+        },
+        {
+          "value": "hardware",
+          "count": 9
+        },
+        {
+          "value": "jsp",
+          "count": 5
+        },
+        {
+          "value": "ios",
+          "count": 4
+        },
+        {
+          "value": "aspx",
+          "count": 3
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-33725",
+          "title": "IBM AIX 6.1.8 - 'libodm' Arbitrary File Write",
+          "cves": [
+            "CVE-2014-3977",
+            "CVE-2012-2179"
+          ]
+        },
+        {
+          "id": "EDB-14058",
+          "title": "PHP-Nuke 8.2 - Arbitrary File Upload",
+          "cves": []
+        },
+        {
+          "id": "EDB-37504",
+          "title": "AirDroid - Arbitrary File Upload",
+          "cves": []
+        },
+        {
+          "id": "EDB-51355",
+          "title": "Roxy Fileman 1.4.5 -  Arbitrary File Upload",
+          "cves": []
+        },
+        {
+          "id": "EDB-8132",
+          "title": "Access2asp - 'imageLibrar' Arbitrary File Upload",
+          "cves": []
+        }
+      ]
+    },
+    "rce": {
+      "count": 7583,
+      "verified": 5750,
+      "withCve": 5113,
+      "platforms": [
+        {
+          "value": "windows",
+          "count": 3243
+        },
+        {
+          "value": "php",
+          "count": 1006
+        },
+        {
+          "value": "linux",
+          "count": 942
+        },
+        {
+          "value": "multiple",
+          "count": 929
+        },
+        {
+          "value": "hardware",
+          "count": 613
+        },
+        {
+          "value": "cgi",
+          "count": 188
+        },
+        {
+          "value": "unix",
+          "count": 153
+        },
+        {
+          "value": "java",
+          "count": 85
+        },
+        {
+          "value": "osx",
+          "count": 58
+        },
+        {
+          "value": "solaris",
+          "count": 48
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-21093",
+          "title": "AIX 4.1/4.2 - 'pdnsd' Remote Buffer Overflow",
+          "cves": [
+            "CVE-1999-0745"
+          ]
+        },
+        {
+          "id": "EDB-14409",
+          "title": "AIX5l with FTP-Server - Hash Disclosure",
+          "cves": [
+            "CVE-2010-3187"
+          ]
+        },
+        {
+          "id": "EDB-19237",
+          "title": "Gordano NTMail 3.0/5.0 - SPAM Relay",
+          "cves": []
+        },
+        {
+          "id": "EDB-19532",
+          "title": "IBM AIX 4.3.2 - 'ftpd' Remote Buffer Overflow",
+          "cves": [
+            "CVE-1999-0789"
+          ]
+        },
+        {
+          "id": "EDB-14456",
+          "title": "IBM AIX 5l - 'FTPd' Remote DES Hash",
+          "cves": [
+            "CVE-2010-3187"
+          ]
+        }
+      ]
+    },
+    "other": {
+      "count": 8232,
+      "verified": 6019,
+      "withCve": 4850,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 6585
+        },
+        {
+          "value": "hardware",
+          "count": 434
+        },
+        {
+          "value": "asp",
+          "count": 286
+        },
+        {
+          "value": "cgi",
+          "count": 256
+        },
+        {
+          "value": "multiple",
+          "count": 251
+        },
+        {
+          "value": "windows",
+          "count": 85
+        },
+        {
+          "value": "ios",
+          "count": 82
+        },
+        {
+          "value": "jsp",
+          "count": 79
+        },
+        {
+          "value": "linux",
+          "count": 60
+        },
+        {
+          "value": "java",
+          "count": 47
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-41546",
+          "title": "Bull/IBM AIX Clusterwatch/Watchware - Multiple Vulnerabilities",
+          "cves": []
+        },
+        {
+          "id": "EDB-11580",
+          "title": "FileExecutive 1 - Multiple Vulnerabilities",
+          "cves": []
+        },
+        {
+          "id": "EDB-39497",
+          "title": "Infor CRM 8.2.0.1136 - Multiple HTML Script Injection Vulnerabilities",
+          "cves": []
+        },
+        {
+          "id": "EDB-10573",
+          "title": "8Pixel.net 2009. - Database Disclosure",
+          "cves": [
+            "CVE-2009-4825"
+          ]
+        },
+        {
+          "id": "EDB-4198",
+          "title": "A-shop 0.70 - Remote File Deletion",
+          "cves": [
+            "CVE-2007-3937",
+            "CVE-2007-3936"
+          ]
+        }
+      ]
+    },
+    "sqli": {
+      "count": 8773,
+      "verified": 6370,
+      "withCve": 4715,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 7594
+        },
+        {
+          "value": "asp",
+          "count": 777
+        },
+        {
+          "value": "multiple",
+          "count": 159
+        },
+        {
+          "value": "windows",
+          "count": 94
+        },
+        {
+          "value": "cgi",
+          "count": 35
+        },
+        {
+          "value": "linux",
+          "count": 26
+        },
+        {
+          "value": "hardware",
+          "count": 21
+        },
+        {
+          "value": "jsp",
+          "count": 21
+        },
+        {
+          "value": "cfm",
+          "count": 16
+        },
+        {
+          "value": "java",
+          "count": 8
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-10372",
+          "title": "OPMANAGER - Blind SQL Injection / XPath Injection",
+          "cves": []
+        },
+        {
+          "id": "EDB-35382",
+          "title": "Android WAPPushManager - SQL Injection",
+          "cves": [
+            "CVE-2014-8507"
+          ]
+        },
+        {
+          "id": "EDB-29077",
+          "title": "20/20 Applications Data Shed 1.0 - 'f-email.asp?itemID' SQL Injection",
+          "cves": [
+            "CVE-2006-6067"
+          ]
+        },
+        {
+          "id": "EDB-29078",
+          "title": "20/20 Applications Data Shed 1.0 - 'listings.asp' Multiple SQL Injections",
+          "cves": [
+            "CVE-2006-6067"
+          ]
+        },
+        {
+          "id": "EDB-29075",
+          "title": "20/20 Auto Gallery 3.2 - Multiple SQL Injections",
+          "cves": [
+            "CVE-2006-6092"
+          ]
+        }
+      ]
+    },
+    "xss": {
+      "count": 5983,
+      "verified": 4480,
+      "withCve": 3690,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 4317
+        },
+        {
+          "value": "multiple",
+          "count": 427
+        },
+        {
+          "value": "asp",
+          "count": 312
+        },
+        {
+          "value": "hardware",
+          "count": 228
+        },
+        {
+          "value": "cgi",
+          "count": 198
+        },
+        {
+          "value": "windows",
+          "count": 150
+        },
+        {
+          "value": "jsp",
+          "count": 109
+        },
+        {
+          "value": "java",
+          "count": 92
+        },
+        {
+          "value": "linux",
+          "count": 39
+        },
+        {
+          "value": "cfm",
+          "count": 28
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-33736",
+          "title": "Plesk 10.4.4/11.0.9 - SSO XML External Entity / Cross-Site Scripting Injection",
+          "cves": []
+        },
+        {
+          "id": "EDB-21319",
+          "title": "Trend Micro Interscan Messaging Security Suite - Persistent Cross-Site Scripting / Cross-Site Request Forgery",
+          "cves": [
+            "CVE-2012-2996",
+            "CVE-2012-2995"
+          ]
+        },
+        {
+          "id": "EDB-47633",
+          "title": "Prima Access Control 2.3.35 - 'HwName' Persistent Cross-Site Scripting",
+          "cves": [
+            "CVE-2019-7671"
+          ]
+        },
+        {
+          "id": "EDB-37792",
+          "title": "Google Chrome for Android - com.android.browser.application_id Intent Extra Data Cross-Site Scripting",
+          "cves": [
+            "CVE-2012-4905"
+          ]
+        },
+        {
+          "id": "EDB-46766",
+          "title": "Veeam ONE Reporter 9.5.0.3201 - Persistent Cross-Site Scripting",
+          "cves": []
+        }
+      ]
+    },
+    "lfi": {
+      "count": 1092,
+      "verified": 761,
+      "withCve": 678,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 347
+        },
+        {
+          "value": "windows",
+          "count": 317
+        },
+        {
+          "value": "multiple",
+          "count": 111
+        },
+        {
+          "value": "hardware",
+          "count": 81
+        },
+        {
+          "value": "linux",
+          "count": 60
+        },
+        {
+          "value": "cgi",
+          "count": 57
+        },
+        {
+          "value": "ios",
+          "count": 21
+        },
+        {
+          "value": "jsp",
+          "count": 20
+        },
+        {
+          "value": "asp",
+          "count": 18
+        },
+        {
+          "value": "java",
+          "count": 17
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-43189",
+          "title": "Android Gmail < 7.11.5.176568039 - Directory Traversal in Attachment Download",
+          "cves": []
+        },
+        {
+          "id": "EDB-41352",
+          "title": "LG G4 - lghashstorageserver Directory Traversal",
+          "cves": []
+        },
+        {
+          "id": "EDB-45192",
+          "title": "Android - Directory Traversal over USB via Injection in blkid Output",
+          "cves": [
+            "CVE-2018-9445"
+          ]
+        },
+        {
+          "id": "EDB-45192",
+          "title": "Android - Directory Traversal over USB via Injection in blkid Output",
+          "cves": [
+            "CVE-2018-9445"
+          ]
+        },
+        {
+          "id": "EDB-50897",
+          "title": "Bookeen Notea - Directory Traversal",
+          "cves": [
+            "CVE-2021-45783"
+          ]
+        }
+      ]
+    },
+    "info": {
+      "count": 482,
+      "verified": 371,
+      "withCve": 282,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 144
+        },
+        {
+          "value": "multiple",
+          "count": 87
+        },
+        {
+          "value": "windows",
+          "count": 62
+        },
+        {
+          "value": "hardware",
+          "count": 56
+        },
+        {
+          "value": "linux",
+          "count": 44
+        },
+        {
+          "value": "cgi",
+          "count": 15
+        },
+        {
+          "value": "asp",
+          "count": 14
+        },
+        {
+          "value": "android",
+          "count": 11
+        },
+        {
+          "value": "java",
+          "count": 10
+        },
+        {
+          "value": "jsp",
+          "count": 8
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-39685",
+          "title": "Google Android - IOMX 'getConfig'/'getParameter' Information Disclosure",
+          "cves": [
+            "CVE-2016-2417"
+          ]
+        },
+        {
+          "id": "EDB-41218",
+          "title": "Google Android - RKP Information Disclosure via s2-remapping Physical Ranges",
+          "cves": []
+        },
+        {
+          "id": "EDB-47321",
+          "title": "Canon PRINT 2.5.5 - Information Disclosure",
+          "cves": [
+            "CVE-2019-14339"
+          ]
+        },
+        {
+          "id": "EDB-39061",
+          "title": "GoToMeeting for Android - Multiple Local Information Disclosure Vulnerabilities",
+          "cves": [
+            "CVE-2014-1664"
+          ]
+        },
+        {
+          "id": "EDB-44690",
+          "title": "MakeMyTrip 7.2.4 - Information Disclosure",
+          "cves": [
+            "CVE-2018-11242"
+          ]
+        }
+      ]
+    },
+    "auth": {
+      "count": 976,
+      "verified": 615,
+      "withCve": 494,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 562
+        },
+        {
+          "value": "hardware",
+          "count": 138
+        },
+        {
+          "value": "asp",
+          "count": 80
+        },
+        {
+          "value": "multiple",
+          "count": 62
+        },
+        {
+          "value": "windows",
+          "count": 58
+        },
+        {
+          "value": "cgi",
+          "count": 21
+        },
+        {
+          "value": "linux",
+          "count": 20
+        },
+        {
+          "value": "jsp",
+          "count": 7
+        },
+        {
+          "value": "java",
+          "count": 5
+        },
+        {
+          "value": "osx",
+          "count": 4
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-49266",
+          "title": "Magic Home Pro 1.5.1 - Authentication Bypass",
+          "cves": []
+        },
+        {
+          "id": "EDB-12527",
+          "title": "Administrador de Contenidos - Admin Authentication Bypass",
+          "cves": []
+        },
+        {
+          "id": "EDB-925",
+          "title": "ACNews 1.0 - Authentication Bypass",
+          "cves": [
+            "CVE-2005-1149"
+          ]
+        },
+        {
+          "id": "EDB-7273",
+          "title": "Active Force Matrix 2 - Authentication Bypass",
+          "cves": [
+            "CVE-2008-5634",
+            "CVE-2008-5632"
+          ]
+        },
+        {
+          "id": "EDB-7278",
+          "title": "Active Membership 2 - Authentication Bypass",
+          "cves": [
+            "CVE-2008-5635"
+          ]
+        }
+      ]
+    },
+    "csrf": {
+      "count": 941,
+      "verified": 282,
+      "withCve": 338,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 608
+        },
+        {
+          "value": "hardware",
+          "count": 178
+        },
+        {
+          "value": "multiple",
+          "count": 55
+        },
+        {
+          "value": "windows",
+          "count": 27
+        },
+        {
+          "value": "linux",
+          "count": 19
+        },
+        {
+          "value": "asp",
+          "count": 12
+        },
+        {
+          "value": "jsp",
+          "count": 9
+        },
+        {
+          "value": "cgi",
+          "count": 7
+        },
+        {
+          "value": "java",
+          "count": 7
+        },
+        {
+          "value": "json",
+          "count": 4
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-46765",
+          "title": "Veeam ONE Reporter 9.5.0.3201 - Multiple Cross-Site Request Forgery",
+          "cves": [
+            "CVE-2019-11569"
+          ]
+        },
+        {
+          "id": "EDB-15160",
+          "title": "ASPMass Shopping Cart - Arbitrary File Upload / Cross-Site Request Forgery",
+          "cves": []
+        },
+        {
+          "id": "EDB-13891",
+          "title": "AspTR EXtended - Cross-Site Request Forgery",
+          "cves": []
+        },
+        {
+          "id": "EDB-37447",
+          "title": "C2Box 4.0.0(r19171) - Cross-Site Request Forgery",
+          "cves": [
+            "CVE-2015-4460"
+          ]
+        },
+        {
+          "id": "EDB-42738",
+          "title": "DigiAffiliate 1.4 - Cross-Site Request Forgery (Update Admin)",
+          "cves": []
+        }
+      ]
+    },
+    "xxe": {
+      "count": 112,
+      "verified": 31,
+      "withCve": 63,
+      "platforms": [
+        {
+          "value": "xml",
+          "count": 37
+        },
+        {
+          "value": "windows",
+          "count": 27
+        },
+        {
+          "value": "multiple",
+          "count": 20
+        },
+        {
+          "value": "php",
+          "count": 10
+        },
+        {
+          "value": "java",
+          "count": 9
+        },
+        {
+          "value": "linux",
+          "count": 4
+        },
+        {
+          "value": "hardware",
+          "count": 2
+        },
+        {
+          "value": "asp",
+          "count": 1
+        },
+        {
+          "value": "aspx",
+          "count": 1
+        },
+        {
+          "value": "jsp",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-39850",
+          "title": "AfterLogic WebMail Pro ASP.NET 6.2.6 - Administrator Account Disclosure via XML External Entity Injection",
+          "cves": []
+        },
+        {
+          "id": "EDB-47014",
+          "title": "BlogEngine.NET 3.3.6/3.3.7 - XML External Entity Injection",
+          "cves": []
+        },
+        {
+          "id": "EDB-38233",
+          "title": "F5 Networks BIG-IP - XML External Entity Injection",
+          "cves": [
+            "CVE-2012-2997"
+          ]
+        },
+        {
+          "id": "EDB-45286",
+          "title": "Episerver 7 patch 4 - XML External Entity Injection",
+          "cves": []
+        },
+        {
+          "id": "EDB-37110",
+          "title": "Apache JackRabbit - WebDAV XML External Entity",
+          "cves": [
+            "CVE-2015-1833"
+          ]
+        }
+      ]
+    },
+    "open-redirect": {
+      "count": 38,
+      "verified": 27,
+      "withCve": 22,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 18
+        },
+        {
+          "value": "multiple",
+          "count": 7
+        },
+        {
+          "value": "asp",
+          "count": 4
+        },
+        {
+          "value": "hardware",
+          "count": 3
+        },
+        {
+          "value": "jsp",
+          "count": 2
+        },
+        {
+          "value": "windows",
+          "count": 2
+        },
+        {
+          "value": "java",
+          "count": 1
+        },
+        {
+          "value": "python",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-32580",
+          "title": "ASP-Nuke 2.0.7 - 'gotourl.asp' Open Redirect",
+          "cves": []
+        },
+        {
+          "id": "EDB-36134",
+          "title": "Microsoft SharePoint 2007/2010 - 'Source' Multiple Open Redirections",
+          "cves": []
+        },
+        {
+          "id": "EDB-36001",
+          "title": "Sitecore CMS 6.4.1 - 'url' Open Redirection",
+          "cves": []
+        },
+        {
+          "id": "EDB-37488",
+          "title": "WebsitePanel - 'ReturnUrl' Open Redirection",
+          "cves": [
+            "CVE-2012-4032"
+          ]
+        },
+        {
+          "id": "EDB-38536",
+          "title": "Barracuda SSL VPN 680 - 'returnTo' Open Redirection",
+          "cves": []
+        }
+      ]
+    },
+    "ssrf": {
+      "count": 72,
+      "verified": 10,
+      "withCve": 41,
+      "platforms": [
+        {
+          "value": "multiple",
+          "count": 27
+        },
+        {
+          "value": "php",
+          "count": 15
+        },
+        {
+          "value": "hardware",
+          "count": 6
+        },
+        {
+          "value": "linux",
+          "count": 5
+        },
+        {
+          "value": "java",
+          "count": 4
+        },
+        {
+          "value": "jsp",
+          "count": 4
+        },
+        {
+          "value": "windows",
+          "count": 4
+        },
+        {
+          "value": "go",
+          "count": 2
+        },
+        {
+          "value": "python",
+          "count": 2
+        },
+        {
+          "value": "asp",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-51039",
+          "title": "wkhtmltopdf 0.12.6 -  Server Side Request Forgery",
+          "cves": [
+            "CVE-2022-35583"
+          ]
+        },
+        {
+          "id": "EDB-50462",
+          "title": "Umbraco v8.14.1 - 'baseUrl' SSRF",
+          "cves": []
+        },
+        {
+          "id": "EDB-43045",
+          "title": "Mura CMS < 6.2 - Server-Side Request Forgery / XML External Entity Injection",
+          "cves": [
+            "CVE-2017-15639"
+          ]
+        },
+        {
+          "id": "EDB-51869",
+          "title": "Ladder v0.0.21 - Server-side request forgery (SSRF)",
+          "cves": [
+            "CVE-2024-27620"
+          ]
+        },
+        {
+          "id": "EDB-51498",
+          "title": "Pydio Cells 4.1.2 - Server-Side Request Forgery",
+          "cves": [
+            "CVE-2023-32750"
+          ]
+        }
+      ]
+    },
+    "idor": {
+      "count": 30,
+      "verified": 2,
+      "withCve": 18,
+      "platforms": [
+        {
+          "value": "php",
+          "count": 11
+        },
+        {
+          "value": "multiple",
+          "count": 10
+        },
+        {
+          "value": "hardware",
+          "count": 5
+        },
+        {
+          "value": "aspx",
+          "count": 1
+        },
+        {
+          "value": "cgi",
+          "count": 1
+        },
+        {
+          "value": "linux",
+          "count": 1
+        },
+        {
+          "value": "windows",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-49508",
+          "title": "H8 SSRMS - 'id' IDOR",
+          "cves": []
+        },
+        {
+          "id": "EDB-51149",
+          "title": "LISTSERV 17 - Insecure Direct Object Reference (IDOR)",
+          "cves": [
+            "CVE-2022-40319"
+          ]
+        },
+        {
+          "id": "EDB-51685",
+          "title": "EuroTel ETL3100 - Transmitter Authorization Bypass (IDOR)",
+          "cves": []
+        },
+        {
+          "id": "EDB-51872",
+          "title": "Hitachi NAS (HNAS) System Management Unit (SMU) Backup & Restore < 14.8.7825.01 - IDOR",
+          "cves": []
+        },
+        {
+          "id": "EDB-50860",
+          "title": "SAM SUNNY TRIPOWER 5.0 - Insecure Direct Object Reference (IDOR)",
+          "cves": [
+            "CVE-2021-46416"
+          ]
+        }
+      ]
+    },
+    "deser": {
+      "count": 36,
+      "verified": 27,
+      "withCve": 34,
+      "platforms": [
+        {
+          "value": "multiple",
+          "count": 14
+        },
+        {
+          "value": "java",
+          "count": 6
+        },
+        {
+          "value": "windows",
+          "count": 6
+        },
+        {
+          "value": "linux",
+          "count": 5
+        },
+        {
+          "value": "python",
+          "count": 2
+        },
+        {
+          "value": "macos",
+          "count": 1
+        },
+        {
+          "value": "osx",
+          "count": 1
+        },
+        {
+          "value": "php",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-41965",
+          "title": "CloudBees Jenkins 2.32.1 - Java Deserialization",
+          "cves": [
+            "CVE-2017-1000353"
+          ]
+        },
+        {
+          "id": "EDB-42756",
+          "title": "HPE < 7.2 - Java Deserialization",
+          "cves": [
+            "CVE-2016-4372"
+          ]
+        },
+        {
+          "id": "EDB-42394",
+          "title": "Jenkins < 1.650 - Java Deserialization",
+          "cves": [
+            "CVE-2016-0792"
+          ]
+        },
+        {
+          "id": "EDB-38983",
+          "title": "Jenkins CLI - RMI Java Deserialization (Metasploit)",
+          "cves": [
+            "CVE-2015-8103"
+          ]
+        },
+        {
+          "id": "EDB-46327",
+          "title": "OpenMRS Platform < 2.24.0 - Insecure Object Deserialization",
+          "cves": [
+            "CVE-2018-19276"
+          ]
+        }
+      ]
+    },
+    "ssti": {
+      "count": 27,
+      "verified": 6,
+      "withCve": 18,
+      "platforms": [
+        {
+          "value": "multiple",
+          "count": 11
+        },
+        {
+          "value": "php",
+          "count": 11
+        },
+        {
+          "value": "python",
+          "count": 2
+        },
+        {
+          "value": "java",
+          "count": 1
+        },
+        {
+          "value": "linux",
+          "count": 1
+        },
+        {
+          "value": "ruby",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-38551",
+          "title": "JIRA and HipChat for JIRA Plugin - Velocity Template Injection",
+          "cves": [
+            "CVE-2015-5603"
+          ]
+        },
+        {
+          "id": "EDB-45108",
+          "title": "Craft CMS SEOmatic plugin 3.1.4 - Server-Side Template Injection",
+          "cves": [
+            "CVE-2018-14716"
+          ]
+        },
+        {
+          "id": "EDB-46731",
+          "title": "Atlassian Confluence Widget Connector Macro - Velocity Template Injection (Metasploit)",
+          "cves": [
+            "CVE-2019-3396"
+          ]
+        },
+        {
+          "id": "EDB-46731",
+          "title": "Atlassian Confluence Widget Connector Macro - Velocity Template Injection (Metasploit)",
+          "cves": [
+            "CVE-2019-3396"
+          ]
+        },
+        {
+          "id": "EDB-38905",
+          "title": "Atlassian HipChat for Jira Plugin - Velocity Template Injection (Metasploit)",
+          "cves": [
+            "CVE-2015-5603"
+          ]
+        }
+      ]
+    },
+    "prototype-pollution": {
+      "count": 1,
+      "verified": 0,
+      "withCve": 1,
+      "platforms": [
+        {
+          "value": "multiple",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-52528",
+          "title": "deephas 1.0.7 - Prototype Pollution",
+          "cves": [
+            "CVE-2026-25047"
+          ]
+        }
+      ]
+    },
+    "rfi": {
+      "count": 3,
+      "verified": 1,
+      "withCve": 1,
+      "platforms": [
+        {
+          "value": "multiple",
+          "count": 1
+        },
+        {
+          "value": "php",
+          "count": 1
+        },
+        {
+          "value": "windows",
+          "count": 1
+        }
+      ],
+      "sample": [
+        {
+          "id": "EDB-48240",
+          "title": "FIBARO System Home Center 5.021 - Remote File Include",
+          "cves": []
+        },
+        {
+          "id": "EDB-51826",
+          "title": "Wordpress Plugin Canto < 3.0.5 - Remote File Inclusion (RFI) and Remote Code Execution (RCE)",
+          "cves": []
+        },
+        {
+          "id": "EDB-6124",
+          "title": "Microsoft Access - 'Snapview.ocx 10.0.5529.0' ActiveX Remote File Download",
+          "cves": [
+            "CVE-2008-2463"
+          ]
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "name": "exploitdb",
+      "count": 47160,
+      "origin": "fetched"
+    }
+  ],
+  "errors": []
+}

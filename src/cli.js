@@ -43,6 +43,7 @@ const cvematch = require('./cvematch');
 const duptriage = require('./duptriage');
 const signal = require('./signal');
 const evidence = require('./evidence');
+const priorart = require('./priorart');
 const { hunt } = require('./hunt');
 
 const STATE = path.join(__dirname, '..', 'state');
@@ -81,6 +82,9 @@ function parseArgs(argv) {
       case '--fingerprints': o.fingerprints = next(); break;
       case '--sanitize': o.sanitize = next(); break;
       case '--skip-evidence-audit': o.skipEvidenceAudit = true; break;
+      case '--build-prior-art': o.buildPriorArt = true; break;
+      case '--prior-art-index': o.priorArtIndex = next(); break;
+      case '--ask-prior-art': (o.askPriorArt = o.askPriorArt || []).push(next()); break;
       case '--skip-probe': o.skipProbe = true; break;
       case '--login': o.loginUrl = next(); break;
       case '--user-a': (o._uA = next()); break;
@@ -171,6 +175,12 @@ Examples
   # decision support after the gate: which CVEs could apply, what is a duplicate
   pentharness https://target.tld --cves ./cves.json
   pentharness https://target.tld --prior-art ./known-findings.json
+
+  # build the disclosed-exploit index from real public data (~47k exploits)
+  pentharness --build-prior-art
+
+  # what has been exploited in the wild for a product / class?
+  pentharness --ask-prior-art lodash:sqli --ask-prior-art tomcat:rce
 
 Authorized targets only. Honour the program's scope, required headers and
 rate limits. See the skill's /POLICY.md.
@@ -859,6 +869,52 @@ function auditEvidence(o) {
   }
 }
 
+async function buildPriorArtCommand(o) {
+  console.log('  prior-art: fetching Exploit-DB (single request, identified UA)');
+  const r = await priorart.build({
+    exploitDbUrl: o.exploitDbUrl
+      || 'https://gitlab.com/exploit-database/exploitdb/-/raw/main/files_exploits.csv',
+    cves: o.cves || [],
+    outDir: o.outDir,
+  });
+  console.log(`  prior-art: ${r.totals.records} records, ${r.totals.cves} CVEs, ${r.totals.products} products, ${r.totals.flagged} flagged (none dropped)`);
+  console.log(`             indexed in ${r.outDir}`);
+  const top = Object.entries(r.classes).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
+  for (const [k, v] of top) console.log(`               ${k.padEnd(14)} ${String(v.count).padStart(6)}  verified ${String(v.verified).padStart(5)}`);
+  if (r.errors && r.errors.length) for (const e of r.errors.slice(0, 3)) console.log(`             warn: ${e.source}: ${e.error}`);
+  return 0;
+}
+
+/**
+ * What has been exploited in the wild for this target's fingerprint?
+ *
+ * This informs search order. It never asserts that the target is vulnerable —
+ * only reproduction can do that, and that stays with the validators.
+ */
+function askPriorArtCommand(o) {
+  let idx;
+  try {
+    idx = priorart.load(o.priorArtIndex || o.outDir);
+  } catch (e) {
+    console.log(`  prior-art: ${e.message}`);
+    return 1;
+  }
+  console.log(`  prior-art: ${idx.totals.records} records indexed (built ${idx.builtAt})`);
+  for (const q of o.askPriorArt) {
+    const product = q.includes(':') ? q.split(':')[0] : q;
+    const cls = q.includes(':') ? q.split(':')[1] : undefined;
+    const hits = priorart.search(idx, { product, cls }, 8);
+    console.log(`\n  ${q} -> ${hits.length} prior exploit(s) in the wild`);
+    for (const h of hits) {
+      console.log(`    ${h.id.padEnd(12)} ${h.cls.padEnd(10)} ${h.title.slice(0, 78)}`);
+      if (h.cves && h.cves.length) console.log(`    ${''.padEnd(12)} CVE: ${h.cves.join(', ')}`);
+      console.log(`    ${''.padEnd(12)} why: ${h.why.join('; ')}`);
+    }
+    if (!hits.length) console.log('    (none — this class/product combination has no public exploit history)');
+  }
+  return 0;
+}
+
 async function main() {
   const o = parseArgs(process.argv.slice(2));
   // Credentials may be given in any flag order; assemble the account pairs
@@ -920,6 +976,12 @@ async function main() {
       return 1;
     }
   }
+  // Build the disclosed-exploit index over real public data.
+  if (o.buildPriorArt) return buildPriorArtCommand(o);
+
+  // Query the index against a live target fingerprint.
+  if (o.askPriorArt && o.askPriorArt.length) return askPriorArtCommand(o);
+
   if (o.help || !o.target) return usage();
 
   // Post-gate decision support: the steps that decide what a human submits.
