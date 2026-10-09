@@ -15,3 +15,9 @@ npm-debug.log*
 *.swp
 .idea/
 .vscode/
+
+# Per-target reports. reports/<domain>/ holds reconnaissance against real
+# third-party systems — subdomain enumeration and live findings. That data
+# belongs to an engagement, not to a backup repo, and must never be committed.
+# The local lab uses state/, which is tracked on purpose.
+reports/
