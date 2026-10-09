@@ -1,0 +1,11 @@
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/user", "status": 200, "body": "{\"id\": 2, \"name\": \"bob\", \"role\": \"admin\", \"email\": \"bob@corp.test\"}", "length": 67, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/user/1", "status": 200, "body": "{\"id\": 1, \"name\": \"alice\", \"owner_id\": \"alice@corp.test\", \"email\": \"alice@corp.test\", \"role\": \"user\"}", "length": 101, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/user/2", "status": 200, "body": "{\"id\": 2, \"name\": \"bob\", \"owner_id\": \"bob@corp.test\", \"email\": \"bob@corp.test\", \"role\": \"user\", \"ssn\": \"***-**-1234\"}", "length": 117, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/user/3", "status": 200, "body": "{\"id\": 3, \"name\": \"carol\", \"owner_id\": \"carol@corp.test\", \"email\": \"carol@corp.test\", \"role\": \"user\", \"plan\": \"pro\"}", "length": 116, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/admin", "status": 403, "body": "{\"err\": \"forbidden\"}", "length": 20, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/gql", "status": 200, "body": "{\"data\": {\"__schema\": {\"queryType\": {\"name\": \"Query\"}}}}", "length": 56, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/r?q=test", "status": 200, "body": "<html><body><p>you said: test</p></body></html>", "length": 47, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/ssti?name=test", "status": 200, "body": "", "length": 0, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/files?f=README.md", "status": 400, "body": "[Errno 2] No such file or directory: 'README.md'", "length": 48, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/metrics", "status": 200, "body": "# HELP up\nup 1\ndb_password=supersecret\n", "length": 39, "id": "userB"}
+{"method": "GET", "url": "http://127.0.0.1:8931/api/v1/admin", "status": 200, "body": "{\"flag\": \"flag{local_toolchain_validation_only}\"}", "length": 49, "id": "userB"}

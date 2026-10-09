@@ -90,7 +90,16 @@ function makeLead(o) {
     actor: o.actor,
     state: o.state,
     // Proof requirements: what must be demonstrated before this can be reported.
-    proof_needed: o.proof_needed || defaultProof(cls),
+    // Normalised to an array — callers pass arrays in some places and a bare
+    // string in others (hunt.js, prober.js), and gate.js maps over this. A string
+    // here crashed the queue build with "proof_needed.map is not a function",
+    // taking the whole attention queue down with it.
+    proof_needed: (Array.isArray(o.proof_needed)
+      ? o.proof_needed
+      : o.proof_needed
+        ? [String(o.proof_needed)]
+        : defaultProof(cls)
+    ).filter((x) => x != null && String(x).trim()),
     tsv: new Date().toISOString(),
     tags: Array.isArray(o.tags) ? o.tags : [],
     chain_hints: o.chain_hints || [],

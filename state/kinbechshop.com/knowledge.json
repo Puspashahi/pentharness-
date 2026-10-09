@@ -1,7 +1,7 @@
 {
   "target": "https://kinbechshop.com",
   "created": "2026-09-30T08:39:28.917Z",
-  "updated": "2026-09-30T08:40:09.197Z",
+  "updated": "2026-10-08T15:50:45.582Z",
   "tech": [
     "apache apisix",
     "bootstrap:5.3.0",
@@ -22,7 +22,7 @@
         "params": [],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.446Z"
       }
     ],
     [
@@ -184,7 +184,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -196,7 +196,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -218,7 +218,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -238,7 +238,7 @@
         "params": [],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.447Z"
       }
     ],
     [
@@ -370,7 +370,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -387,10 +387,27 @@
       "https://kinbechshop.com/quick-post/",
       {
         "first_seen": "2026-09-30T08:39:48.958Z",
-        "params": [],
-        "forms": 0,
+        "params": [
+          "csrfmiddlewaretoken",
+          "images",
+          "title",
+          "description",
+          "videos",
+          "documents",
+          "category",
+          "price",
+          "condition",
+          "brand",
+          "latitude",
+          "longitude",
+          "location",
+          "address",
+          "name",
+          "phone"
+        ],
+        "forms": 16,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.447Z"
       }
     ],
     [
@@ -418,11 +435,13 @@
       {
         "first_seen": "2026-09-30T08:39:48.958Z",
         "params": [
-          "category"
+          "category",
+          "q",
+          "location"
         ],
-        "forms": 0,
+        "forms": 3,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -464,7 +483,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -476,7 +495,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -488,7 +507,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -500,7 +519,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:51:34.246Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -832,7 +851,7 @@
         ],
         "forms": 0,
         "has_auth": false,
-        "last_seen": "2026-09-30T08:39:48.970Z"
+        "last_seen": "2026-10-08T15:33:37.646Z"
       }
     ],
     [
@@ -884,12 +903,207 @@
         "has_auth": false,
         "last_seen": "2026-09-30T08:51:34.246Z"
       }
+    ],
+    [
+      "https://kinbechshop.com/search/?q=1",
+      {
+        "first_seen": "2026-10-08T15:24:43.040Z",
+        "params": [],
+        "forms": 2,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:24:43.041Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/search/",
+      {
+        "first_seen": "2026-10-08T15:24:43.040Z",
+        "params": [
+          "q"
+        ],
+        "forms": 10,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.448Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/?q=1",
+      {
+        "first_seen": "2026-10-08T15:24:43.042Z",
+        "params": [],
+        "forms": 1,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:24:43.042Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/",
+      {
+        "first_seen": "2026-10-08T15:24:43.042Z",
+        "params": [
+          "q",
+          "csrfmiddlewaretoken",
+          "category",
+          "location"
+        ],
+        "forms": 6,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.447Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/alerts/create/",
+      {
+        "first_seen": "2026-10-08T15:24:43.042Z",
+        "params": [
+          "csrfmiddlewaretoken",
+          "email",
+          "phone",
+          "category",
+          "location"
+        ],
+        "forms": 11,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.447Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/?csrfmiddlewaretoken=1",
+      {
+        "first_seen": "2026-10-08T15:24:43.042Z",
+        "params": [],
+        "forms": 1,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:24:43.042Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/shops/",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "district"
+        ],
+        "forms": 2,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.447Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/b2b/",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.447Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/b2b/search/",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q"
+        ],
+        "forms": 1,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.447Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Books%20&%20Hobbies",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "location",
+          "category"
+        ],
+        "forms": 3,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.646Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Computers",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "location",
+          "category"
+        ],
+        "forms": 3,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.646Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Fashion",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "location",
+          "category"
+        ],
+        "forms": 3,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.646Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Furniture",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "location",
+          "category"
+        ],
+        "forms": 3,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.646Z"
+      }
+    ],
+    [
+      "https://kinbechshop.com/ads/?category=Games",
+      {
+        "first_seen": "2026-10-08T15:33:37.447Z",
+        "params": [
+          "q",
+          "location",
+          "category"
+        ],
+        "forms": 3,
+        "has_auth": false,
+        "last_seen": "2026-10-08T15:33:37.646Z"
+      }
     ]
   ],
   "params": [
     "q",
     "next",
-    "category"
+    "category",
+    "csrfmiddlewaretoken",
+    "email",
+    "phone",
+    "location",
+    "district",
+    "images",
+    "title",
+    "description",
+    "videos",
+    "documents",
+    "price",
+    "condition",
+    "brand",
+    "latitude",
+    "longitude",
+    "address",
+    "name"
   ],
   "auth": {
     "observed": false,
@@ -913,6 +1127,13 @@
       "chains": 0,
       "complete": false,
       "tsv": "2026-09-30T08:40:09.197Z"
+    },
+    {
+      "hunt": true,
+      "findings": 0,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-10-08T15:50:45.582Z"
     }
   ]
 }

@@ -1,5 +1,275 @@
 [
   {
+    "id": "1a1338f7508d26ad",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Books%20&%20Hobbies",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.614Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "22fd0da3981b0f31",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Electronics",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.615Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "2b1e8feb929f97af",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Fashion",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.615Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "55b9be677954dee1",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/search/",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.611Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 20,
+    "seen_count": 20
+  },
+  {
+    "id": "5d720e6b6e9db6a6",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Furniture",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.616Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "6401ee5e758438c2",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Computers",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.615Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "66fb2cd41f25514e",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/shops/",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.614Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "ab02d30d310d2197",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/b2b/search/",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.614Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "ac788a06b428ca22",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.612Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "c55aa27cb548cf54",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'q'",
+    "url": "https://kinbechshop.com/ads/?category=Games",
+    "param": "category",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=200; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.616Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "e5c420a864d90102",
+    "cls": "xss",
+    "title": "Browser-injected xss candidate in 'title'",
+    "url": "https://kinbechshop.com/quick-post/",
+    "source": "browser-inject",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=403; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "payload executes in the target origin (DOM proof)"
+    ],
+    "tsv": "2026-10-08T15:33:37.614Z",
+    "tags": [
+      "browser",
+      "xss"
+    ],
+    "chain_hints": [],
+    "priority": 70,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
     "id": "012c7b47b997656c",
     "cls": "recon",
     "title": "discovered endpoint",
@@ -90,8 +360,8 @@
     "priority": 40,
     "crawl_total": 1,
     "shape": "kinbechshop.com/",
-    "observations": 4,
-    "seen_count": 4
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "1cbcb1cda61cd2f3",
@@ -422,8 +692,8 @@
     ],
     "chain_hints": [],
     "priority": 40,
-    "observations": 4,
-    "seen_count": 4
+    "observations": 5,
+    "seen_count": 5
   },
   {
     "id": "53445a908962c3b1",
@@ -1438,6 +1708,30 @@
     "priority": 40,
     "crawl_total": 79,
     "shape": "kinbechshop.com/ads/? Animals,category",
+    "observations": 4,
+    "seen_count": 4
+  },
+  {
+    "id": "bb9d1563bd853545",
+    "cls": "sqli",
+    "title": "Browser-injected sqli candidate in 'csrfmiddlewaretoken'",
+    "url": "https://kinbechshop.com/alerts/create/",
+    "source": "browser-inject",
+    "severity_hint": "high",
+    "confidence": "unverified",
+    "evidence": "form-submitted injection; status=403; response differs from baseline",
+    "asset": "kinbechshop.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-10-08T15:33:37.613Z",
+    "tags": [
+      "browser",
+      "sqli"
+    ],
+    "chain_hints": [],
+    "priority": 40,
     "observations": 4,
     "seen_count": 4
   },

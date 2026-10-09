@@ -1,0 +1,160 @@
+{
+  "tool": "pentharness",
+  "target": "https://myopenpass.com",
+  "startedAt": "2026-09-30T16:23:06.784Z",
+  "durationSec": 60,
+  "steps": [
+    {
+      "step": "change",
+      "detail": "since 2026-09-30 15:40:29: no new surface"
+    },
+    {
+      "step": "change",
+      "detail": "22 endpoint(s) never probed in any run — untested surface is not a clean result"
+    },
+    {
+      "step": "map",
+      "detail": "httpx: 1 host"
+    },
+    {
+      "step": "map",
+      "detail": "katana: 1 url -> 1 shapes, kept 1"
+    },
+    {
+      "step": "  js",
+      "detail": "18 out-of-scope host(s) referenced in JS, not recorded or tested: reactjs.org, www.w3.org, www.thetradedesk.com, nextjs.org, …"
+    },
+    {
+      "step": "js",
+      "detail": "7 script(s), 1944KB, 7 minified, 0 from source maps"
+    },
+    {
+      "step": "js",
+      "detail": "0 endpoint(s) from JS (0 never crawled before)"
+    },
+    {
+      "step": "js",
+      "detail": "1 credential-shaped string(s) in JS (needs confirmation; may be library constants): private-key"
+    },
+    {
+      "step": "browser",
+      "detail": "5 page(s) visited by clicking, 0 form(s) examined"
+    },
+    {
+      "step": "browser",
+      "detail": "no form injection produced an observable effect"
+    },
+    {
+      "step": "predict",
+      "detail": "0 parameter(s) ranked; top: none"
+    },
+    {
+      "step": "execute",
+      "detail": "skipped — no parameters known yet"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 0, refuted 0, hypothesis 0"
+    },
+    {
+      "step": "graphql",
+      "detail": "https://myopenpass.com/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "https://myopenpass.com/api/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "https://myopenpass.com/gql: no __schema in response"
+    },
+    {
+      "step": "chain",
+      "detail": "0 composable attack path(s)"
+    },
+    {
+      "step": "change",
+      "detail": "since 2026-09-30 15:40:29: no new surface"
+    },
+    {
+      "step": "change",
+      "detail": "snapshot saved: 38 endpoint(s), 15 host(s), 16 probed"
+    }
+  ],
+  "coverage": {
+    "pages": 1,
+    "endpoints": 5,
+    "params": 0,
+    "lenses": 2,
+    "identities": 0,
+    "complete": false,
+    "gaps": [
+      "pages: 1/5",
+      "identities compared: 0/2 — single-identity runs cannot prove authorization flaws"
+    ],
+    "statement": "Coverage: 1 page(s), 5 endpoint(s), 0 param(s), 2 lens(es), 0 identit(y/ies). INCOMPLETE — missing: pages: 1/5; identities compared: 0/2 — single-identity runs cannot prove authorization flaws. Treat results as partial, not as an absence of findings."
+  },
+  "chains": [],
+  "findings": [],
+  "suppressed": [],
+  "proof": {
+    "nonce": "189bb2908019",
+    "proven": 0,
+    "refuted": 0,
+    "hypothesis": 0
+  },
+  "change": {
+    "firstRun": false,
+    "since": "2026-09-30T15:40:29.649Z",
+    "newHosts": [],
+    "newEndpoints": [],
+    "newParams": [],
+    "goneHosts": [],
+    "goneEndpoints": [],
+    "untested": [
+      "myopenpass.com/_next/static/TciFINzj_Rp87watJ-5h4/_buildManifest.js",
+      "myopenpass.com/_next/static/TciFINzj_Rp87watJ-5h4/_ssgManifest.js",
+      "myopenpass.com/_next/static/chunks/framework-6080337cf9f60710.js",
+      "myopenpass.com/_next/static/chunks/main-8abcd8dd26dcb00b.js",
+      "myopenpass.com/_next/static/chunks/pages/index-dc2e312dff148ea8.js",
+      "myopenpass.com/_next/static/chunks/webpack-18e1333887fe60bd.js",
+      "myopenpass.com/account-deleted",
+      "myopenpass.com/api",
+      "myopenpass.com/api/auth/signin",
+      "myopenpass.com/api/connections",
+      "myopenpass.com/api/device-sessions",
+      "myopenpass.com/api/log",
+      "myopenpass.com/api/operational/version",
+      "myopenpass.com/api/profile",
+      "myopenpass.com/api/profile/passkeys",
+      "myopenpass.com/api/profile/phone-number",
+      "myopenpass.com/api/recovery-methods",
+      "myopenpass.com/legal/privacy-policy",
+      "myopenpass.com/legal/terms-of-service",
+      "myopenpass.com/oauth/access_token",
+      "myopenpass.com/oauth/authorize",
+      "myopenpass.com/publishers"
+    ],
+    "resolvedFindings": [],
+    "summary": "22 endpoint(s) never probed",
+    "untestedKnown": [
+      "https://myopenpass.com/_next/static/chunks/pages/_app-862f48ab4b4e85fd.js",
+      "https://argocd.stg.myopenpass.com",
+      "https://cdn.myopenpass.com",
+      "https://internal.stg.myopenpass.com",
+      "https://argocd.prd.myopenpass.com",
+      "https://auth.myopenpass.com",
+      "https://myopenpass.com",
+      "https://internal.myopenpass.com",
+      "https://dev.myopenpass.com",
+      "https://partner.myopenpass.com",
+      "https://argocd.dev.myopenpass.com",
+      "https://demo.myopenpass.com",
+      "https://www.myopenpass.com",
+      "https://internal.dev.myopenpass.com",
+      "https://stg.myopenpass.com",
+      "https://atlantis-ext.myopenpass.com"
+    ],
+    "pendingFindingCompare": false
+  }
+}

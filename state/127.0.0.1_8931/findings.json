@@ -1,0 +1,110 @@
+[
+  {
+    "type": "finding",
+    "id": "23788190ca1998ba",
+    "title": "PROVEN broken function-level authorization: userA was denied GET http://127.0.0.1:8931/api/v1/admin and then granted it by client-supplied input",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/api/v1/admin",
+    "category": "authz",
+    "description": "Same identity, same route: 403 then 200. The authorization decision changes with a client-controlled value, so the client can grant itself the privileged response. Denied body: {\"err\": \"forbidden\"}. Granted body: {\"flag\": \"flag{local_toolchain_validation_only}\"}.",
+    "evidence": "Same identity, same route: 403 then 200. The authorization decision changes with a client-controlled value, so the client can grant itself the privileged response. Denied body: {\"err\": \"forbidden\"}. Granted body: {\"flag\": \"flag{local_toolchain_validation_only}\"}.",
+    "tool_used": "authmatrix",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "65c5a40c40f1fa99",
+    "title": "PROVEN cross-identity disclosure: userA read an object owned by userB",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/api/v1/user/3",
+    "category": "authz",
+    "description": "probe payload carries the owner's identity marker (carol@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/3.",
+    "evidence": "probe payload carries the owner's identity marker (carol@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/3.",
+    "tool_used": "authmatrix",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "7df5b3bfa929623e",
+    "title": "PROVEN cross-identity disclosure: userB read an object owned by userA",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/api/v1/user/2",
+    "category": "authz",
+    "description": "probe payload carries the owner's identity marker (bob@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/2.",
+    "evidence": "probe payload carries the owner's identity marker (bob@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/2.",
+    "tool_used": "authmatrix",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "8ccba9992b54c212",
+    "title": "PROVEN cross-identity disclosure: userA read an object owned by userB",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/api/v1/user/1",
+    "category": "authz",
+    "description": "probe payload carries the owner's identity marker (alice@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/1.",
+    "evidence": "probe payload carries the owner's identity marker (alice@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/1.",
+    "tool_used": "authmatrix",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "caa691dbbd862510",
+    "title": "GraphQL resolver authorization gap: nested-sensitive on ssn",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/gql",
+    "category": "authz",
+    "description": "sensitive field User.ssn is reachable as a nested resolver. Baseline (1) and probe (2) both resolved: {\"ok\":true,\"echo\":{\"query\":\"query{ me { ... on User { ssn } } }\",\"variables\":{}}}",
+    "evidence": "sensitive field User.ssn is reachable as a nested resolver. Baseline (1) and probe (2) both resolved: {\"ok\":true,\"echo\":{\"query\":\"query{ me { ... on User { ssn } } }\",\"variables\":{}}}",
+    "tool_used": "graphql",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "07772407f1592a05",
+    "title": "PROVEN insecure deserialization: pickle (python protocol 0) payload on http://127.0.0.1:8931/deser was decoded by the server",
+    "severity": "critical",
+    "target": "http://127.0.0.1:8931/deser",
+    "category": "deser",
+    "description": "POSTing a valid pickle (python protocol 0) payload whose decoded value is the sentinel PHDSER94 returned 200 with the sentinel present: \"ok 'PHDSER94'\". The sentinel was never sent as plain text, so the server must have deserialized the object. Control: the same string as plain text returned 400 without the sentinel.",
+    "evidence": "POSTing a valid pickle (python protocol 0) payload whose decoded value is the sentinel PHDSER94 returned 200 with the sentinel present: \"ok 'PHDSER94'\". The sentinel was never sent as plain text, so the server must have deserialized the object. Control: the same string as plain text returned 400 without the sentinel.",
+    "tool_used": "deser",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "292c166d93636ef0",
+    "title": "script execution from reflected parameter q",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/r?q=test",
+    "category": "xss",
+    "description": "payload script executed in origin http://127.0.0.1:8931; response status 200. A reflected value was not sufficient — the sentinel was set in the target's own JS context.",
+    "evidence": "payload script executed in origin http://127.0.0.1:8931; response status 200. A reflected value was not sufficient — the sentinel was set in the target's own JS context.",
+    "tool_used": "oracle:proveXss",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "67be9a37ccdede2d",
+    "title": "GraphQL introspection enabled: 1 types, 0 mutations, 0 queries",
+    "severity": "medium",
+    "target": "http://127.0.0.1:8931/gql",
+    "category": "config",
+    "description": "Introspection is enabled in production. Exposed 0 mutation(s) and 0 query field(s), including types with sensitive fields: User. An entire attack surface with no endpoint enumeration required.",
+    "evidence": "Introspection is enabled in production. Exposed 0 mutation(s) and 0 query field(s), including types with sensitive fields: User. An entire attack surface with no endpoint enumeration required.",
+    "tool_used": "graphql",
+    "confidence": "confirmed"
+  },
+  {
+    "type": "finding",
+    "id": "1170daf8ff2369d8",
+    "title": "PROVEN mass assignment: role is accepted from the client and persists",
+    "severity": "high",
+    "target": "http://127.0.0.1:8931/api/v1/profile",
+    "category": "mass-assignment",
+    "description": "POST with {\"role\": \"pentharness-massassign-role-49220311\"} returned 200 and the value was echoed. A separate follow-up request carrying none of that input still returned 200 with the value present: {\"name\":\"user1\",\"role\":\"pentharness-massassign-role-49220311\"}. A field the client UI never sends controls server state.",
+    "evidence": "POST with {\"role\": \"pentharness-massassign-role-49220311\"} returned 200 and the value was echoed. A separate follow-up request carrying none of that input still returned 200 with the value present: {\"name\":\"user1\",\"role\":\"pentharness-massassign-role-49220311\"}. A field the client UI never sends controls server state.",
+    "tool_used": "massassignment",
+    "confidence": "confirmed"
+  }
+]

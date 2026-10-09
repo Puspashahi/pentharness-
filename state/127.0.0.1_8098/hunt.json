@@ -1,9 +1,13 @@
 {
   "tool": "pentharness",
   "target": "http://127.0.0.1:8098",
-  "startedAt": "2026-09-30T11:53:12.475Z",
-  "durationSec": 19,
+  "startedAt": "2026-10-08T15:05:59.388Z",
+  "durationSec": 63,
   "steps": [
+    {
+      "step": "change",
+      "detail": "baseline recorded: 1 host(s), 1 endpoint(s). The next run will report what changed."
+    },
     {
       "step": "map",
       "detail": "httpx: 1 host"
@@ -13,8 +17,12 @@
       "detail": "katana: 1 url -> 1 shapes, kept 1"
     },
     {
+      "step": "subs",
+      "detail": "no subdomains discovered"
+    },
+    {
       "step": "auth",
-      "detail": "alice authenticated (1 cookies) — JS, browser and crawl phases now run logged in"
+      "detail": "userA authenticated (1 cookies) — JS, browser and crawl phases now run logged in"
     },
     {
       "step": "js",
@@ -42,19 +50,19 @@
     },
     {
       "step": "authz",
-      "detail": "alice: reused existing session, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/alice.jsonl (30 row(s))"
+      "detail": "userA: reused existing session, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/userA.jsonl (30 row(s))"
     },
     {
       "step": "authz",
-      "detail": "bob: authenticated, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/bob.jsonl (30 row(s))"
+      "detail": "userB: authenticated, replayed 30 route(s) -> /home/batist/tools/pentharness/state/127.0.0.1_8098/captures/userB.jsonl (30 row(s))"
     },
     {
       "step": "authz",
-      "detail": "enumeration: 4 object URL(s) walked as alice"
+      "detail": "enumeration: 4 object URL(s) walked as userA"
     },
     {
       "step": "authz",
-      "detail": "enumeration: 4 object URL(s) walked as bob"
+      "detail": "enumeration: 4 object URL(s) walked as userB"
     },
     {
       "step": "enumerate",
@@ -103,6 +111,14 @@
     {
       "step": "chain",
       "detail": "0 composable attack path(s)"
+    },
+    {
+      "step": "change",
+      "detail": "since : 1 new host(s), 1 new endpoint(s)"
+    },
+    {
+      "step": "change",
+      "detail": "snapshot saved: 2 endpoint(s), 1 host(s), 2 probed"
     }
   ],
   "coverage": {
@@ -127,17 +143,37 @@
       "severity": "high",
       "target": "http://127.0.0.1:8098/cases/100",
       "category": "authz",
-      "description": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
-      "evidence": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as alice.",
+      "description": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as userA.",
+      "evidence": "Object identifier \"100\" is sequential and contiguous (span 13). Requesting the 12 adjacent IDs returned 6 responses carrying another identity's data (50% of probes). Owned object baseline: status 200, 212 bytes. Samples: 101, 103, 105. Observed while authenticated as userA.",
       "tool_used": "enumerate",
       "confidence": "confirmed"
     }
   ],
   "suppressed": [],
   "proof": {
-    "nonce": "178729e368e5",
+    "nonce": "e6c7695e12cc",
     "proven": 0,
     "refuted": 0,
     "hypothesis": 0
+  },
+  "change": {
+    "firstRun": true,
+    "newHosts": [
+      "127.0.0.1"
+    ],
+    "newEndpoints": [
+      "127.0.0.1:8098/login"
+    ],
+    "newParams": [],
+    "goneHosts": [],
+    "goneEndpoints": [],
+    "untested": [
+      "127.0.0.1:8098/login"
+    ],
+    "tested": [],
+    "resolvedFindings": [],
+    "summary": "1 new host(s), 1 new endpoint(s), 1 endpoint(s) never probed",
+    "untestedKnown": [],
+    "pendingFindingCompare": false
   }
 }

@@ -260,10 +260,13 @@ function introspectionFinding(endpoint, res) {
   if (!res || !res.ok) return null;
   const s = res.schema;
   if (!s) return null;
-  const sensitive = [...s.types.values()].filter((t) => t.kind === 'OBJECT' && (t.fields || []).some((f) => SENSITIVE_FIELD.test(f.name)));
+  const sensitive = [...s.types.values()].filter((t) => (t.kind || 'OBJECT') === 'OBJECT' && (t.fields || []).some((f) => SENSITIVE_FIELD.test(f.name)));
   return makeLead({
     cls: 'config',
     title: `GraphQL introspection enabled: ${s.types.size} types, ${s.mutations.length} mutations, ${s.queries.length} queries`,
+    // Directly observed: we received a 200 carrying a full __schema. This is not
+    // an inference from source or from error text, so it is confirmed evidence.
+    confidence: 'confirmed',
     url: endpoint,
     source: 'graphql',
     severity_hint: sensitive.length ? 'medium' : 'info',

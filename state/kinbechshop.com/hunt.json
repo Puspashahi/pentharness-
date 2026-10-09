@@ -1,28 +1,272 @@
 {
   "tool": "pentharness",
   "target": "https://kinbechshop.com",
-  "startedAt": "2026-09-30T08:39:28.916Z",
-  "durationSec": 40,
+  "startedAt": "2026-10-08T15:23:26.786Z",
+  "durationSec": 1639,
   "steps": [
+    {
+      "step": "change",
+      "detail": "baseline recorded: 6 host(s), 85 endpoint(s). The next run will report what changed."
+    },
     {
       "step": "map",
       "detail": "httpx: 1 host"
     },
     {
       "step": "map",
-      "detail": "katana: 34583 url -> 682 shapes, kept 80"
+      "detail": "katana: 1 url -> 1 shapes, kept 1"
+    },
+    {
+      "step": "auth",
+      "detail": "userA: password field stayed hidden — the login flow needs a recipe selector"
+    },
+    {
+      "step": "  form",
+      "detail": "GET /search/ [q]"
+    },
+    {
+      "step": "  form",
+      "detail": "GET /search/ [q]"
+    },
+    {
+      "step": "  form",
+      "detail": "GET / [q]"
+    },
+    {
+      "step": "  form",
+      "detail": "POST /alerts/create/ [csrfmiddlewaretoken, email, phone]"
+    },
+    {
+      "step": "  form",
+      "detail": "GET / [csrfmiddlewaretoken]"
+    },
+    {
+      "step": "  js",
+      "detail": "14 out-of-scope host(s) referenced in JS, not recorded or tested: pagead2.googlesyndication.com, www.google.com, services.google.com, tpc.googlesyndication.com, …"
+    },
+    {
+      "step": "js",
+      "detail": "5 form(s) parsed for parameters"
+    },
+    {
+      "step": "js",
+      "detail": "6 script(s), 1159KB, 5 minified, 0 from source maps"
+    },
+    {
+      "step": "js",
+      "detail": "0 endpoint(s) from JS (0 never crawled before)"
+    },
+    {
+      "step": "browser",
+      "detail": "12 page(s) visited by clicking, 23 form(s) examined"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on / [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on / [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "SQLI candidate via form on /alerts/create/ [field: csrfmiddlewaretoken] status=403"
+    },
+    {
+      "step": "  found",
+      "detail": "SQLI candidate via form on /alerts/create/ [field: csrfmiddlewaretoken] status=403"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on / [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on / [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "SQLI candidate via form on /alerts/create/ [field: csrfmiddlewaretoken] status=403"
+    },
+    {
+      "step": "  found",
+      "detail": "SQLI candidate via form on /alerts/create/ [field: csrfmiddlewaretoken] status=403"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /shops/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /shops/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /b2b/search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /b2b/search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /quick-post/ [field: title] status=403"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Books%20&%20Hobbies [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Books%20&%20Hobbies [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Computers [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Computers [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Electronics [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Electronics [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Fashion [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Fashion [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Furniture [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Furniture [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /search/ [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Games [field: q] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /ads/?category=Games [field: q] status=200"
     },
     {
       "step": "predict",
-      "detail": "3 parameter(s) ranked; top: q(xss/injection), category(xss/injection), next(xss)"
+      "detail": "20 parameter(s) ranked; top: price(authz/business), category(xss/injection), q(xss/injection), title(xss/injection)"
     },
     {
       "step": "execute",
-      "detail": "probed 10 hypothesis/hypotheses; 0 proven"
+      "detail": "probed 20 hypothesis/hypotheses; 0 proven"
     },
     {
       "step": "prove",
-      "detail": "proven 0, refuted 10, hypothesis 0"
+      "detail": "xss oracle rendered 35 target(s); 0 executed"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 0, refuted 20, hypothesis 0"
+    },
+    {
+      "step": "authz",
+      "detail": "userA: password field stayed hidden — the login flow needs a recipe selector (captcha present — needs a human) (MFA/2FA present — needs a human)"
+    },
+    {
+      "step": "authz",
+      "detail": "userB: password field stayed hidden — the login flow needs a recipe selector (captcha present — needs a human) (MFA/2FA present — needs a human)"
+    },
+    {
+      "step": "authz",
+      "detail": "only 0 identity/identities usable — the authorization matrix needs 2; IDOR cannot be proven without it"
     },
     {
       "step": "graphql",
@@ -39,28 +283,232 @@
     {
       "step": "chain",
       "detail": "0 composable attack path(s)"
+    },
+    {
+      "step": "change",
+      "detail": "since : 6 new host(s), 85 new endpoint(s), 3 new parameter(s)"
+    },
+    {
+      "step": "change",
+      "detail": "snapshot saved: 98 endpoint(s), 6 host(s), 95 probed"
     }
   ],
   "coverage": {
     "pages": 1,
-    "endpoints": 80,
-    "params": 3,
-    "lenses": 0,
-    "identities": 0,
+    "endpoints": 18,
+    "params": 20,
+    "lenses": 3,
+    "identities": 2,
     "complete": false,
     "gaps": [
-      "pages: 1/5",
-      "identities compared: 0/2 — single-identity runs cannot prove authorization flaws"
+      "pages: 1/5"
     ],
-    "statement": "Coverage: 1 page(s), 80 endpoint(s), 3 param(s), 0 lens(es), 0 identit(y/ies). INCOMPLETE — missing: pages: 1/5; identities compared: 0/2 — single-identity runs cannot prove authorization flaws. Treat results as partial, not as an absence of findings."
+    "statement": "Coverage: 1 page(s), 18 endpoint(s), 20 param(s), 3 lens(es), 2 identit(y/ies). INCOMPLETE — missing: pages: 1/5. Treat results as partial, not as an absence of findings."
   },
   "chains": [],
   "findings": [],
   "suppressed": [],
   "proof": {
-    "nonce": "9b8dbdd0b4c9",
+    "nonce": "9ac07b7cfe17",
     "proven": 0,
-    "refuted": 10,
+    "refuted": 20,
     "hypothesis": 0
+  },
+  "change": {
+    "firstRun": true,
+    "newHosts": [
+      "accounts.google.com",
+      "cdn.jsdelivr.net",
+      "cdnjs.cloudflare.com",
+      "kinbechshop.com",
+      "nepal.kinbechshop.com",
+      "www.gstatic.com"
+    ],
+    "newEndpoints": [
+      "accounts.google.com/gsi/client",
+      "cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+      "cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+      "kinbechshop.com",
+      "kinbechshop.com/?q=",
+      "kinbechshop.com/ad/1969/indoor-spinning-exercise-bike-for-home-workout",
+      "kinbechshop.com/ad/1993/bakery",
+      "kinbechshop.com/ad/2011/comfortable-solid-wooden-rocking-chair",
+      "kinbechshop.com/ad/2012/hero-xpulse-200-motorcycle-in-excellent-condition",
+      "kinbechshop.com/ad/2013/large-heavy-duty-metal-dog-cage-outdoor-kennel",
+      "kinbechshop.com/ad/2014/honda-cb-hornet-160r-well-maintained-clean-condition",
+      "kinbechshop.com/ad/2015/tvs-ntorq-125-scooter-in-great-condition",
+      "kinbechshop.com/ad/2016/brand-new-sarathi-champion-electric-scooter-stylish-city-ev",
+      "kinbechshop.com/ad/2017/why-skilled-nepali-workers-are-exploring-careers-in-oil-gas-petrochemical-and-energy-services",
+      "kinbechshop.com/ad/2018/hero-honda-cbz-xtreme-motorcycle-good-running-condition",
+      "kinbechshop.com/ad/2019/clean-shinex-power-plus-10x-advanced-toilet-cleaner-original-fresh",
+      "kinbechshop.com/ad/2020/gold-foil-m-charizard-ex-pokemon-card-collectible",
+      "kinbechshop.com/ad/2021/anker-charger-with-cable",
+      "kinbechshop.com/ad/2022/well-maintained-used-hyundai-hatchback-car-with-clean-interior",
+      "kinbechshop.com/ad/2023/swatch-irony-swiss-watch-blue-dial-vintage-second-hand",
+      "kinbechshop.com/ad/2024/swatch-irony-chronograph-swiss-watch-white-dial-vintage",
+      "kinbechshop.com/ad/2025/lorus-sports-day-date-watch-vintage-second-hand",
+      "kinbechshop.com/ad/2026/hmt-kohinoor-vintage-watch-17-jewels-made-in-india",
+      "kinbechshop.com/ad/2027/hmt-vintage-watch-black-dial-made-in-india",
+      "kinbechshop.com/ad/2028/romanson-rectangular-dress-watch-vintage-second-hand",
+      "kinbechshop.com/ad/2029/citizen-quartz-day-date-watch-green-dial-vintage",
+      "kinbechshop.com/ad/2030/seiko-5-automatic-watch-day-date-vintage-second-hand",
+      "kinbechshop.com/ad/2031/royal-enfield-classic-350-black-great-condition",
+      "kinbechshop.com/ad/2032/iphone-13-fresh-condition-premium-phone",
+      "kinbechshop.com/ad/2033/timberland-style-boots-new-rs-200-off",
+      "kinbechshop.com/ad/2034/harley-davidson-inspired-leather-boot-new-rs-200-off",
+      "kinbechshop.com/ad/2035/penny-loafers-new-rs-200-off",
+      "kinbechshop.com/ad/2036/chelsea-boot-new-rs-200-off",
+      "kinbechshop.com/ad/2037/high-ankle-boots-new-rs-200-off",
+      "kinbechshop.com/ad/2038/kids-study-table-writing-table-nepali-made-offer-rs-1100",
+      "kinbechshop.com/ad/2039/saajan-bollywood-movie-original-audio-cassette-tape-sealed",
+      "kinbechshop.com/ad/2041/water-purifier-ro-sales-installation-water-treatment-service-gulariya-bardiya",
+      "kinbechshop.com/ads",
+      "kinbechshop.com/ads/?category=Books & Hobbies",
+      "kinbechshop.com/ads/?category=Electronics",
+      "kinbechshop.com/ads/?category=Health & Beauty",
+      "kinbechshop.com/ads/?category=Home & Living",
+      "kinbechshop.com/ads/?category=Pets & Animals",
+      "kinbechshop.com/ads/?q=",
+      "kinbechshop.com/ads/?q=&page=1",
+      "kinbechshop.com/assets",
+      "kinbechshop.com/auth/otp/email/send",
+      "kinbechshop.com/auth/otp/email/verify",
+      "kinbechshop.com/auth/otp/phone/verify",
+      "kinbechshop.com/auth/otp/whatsapp/send",
+      "kinbechshop.com/auth/otp/whatsapp/verify",
+      "kinbechshop.com/facebook-login/?next=/study-materials/post",
+      "kinbechshop.com/forgot-password",
+      "kinbechshop.com/form.action",
+      "kinbechshop.com/google-login",
+      "kinbechshop.com/help-assistant/ask",
+      "kinbechshop.com/help-assistant/requirement",
+      "kinbechshop.com/help-assistant/search",
+      "kinbechshop.com/jobs/jobs",
+      "kinbechshop.com/login",
+      "kinbechshop.com/login/?next=/study-materials/post",
+      "kinbechshop.com/login/classifieds/views.py",
+      "kinbechshop.com/offline",
+      "kinbechshop.com/quick-post",
+      "kinbechshop.com/register",
+      "kinbechshop.com/room-rent-in-kathmandu",
+      "kinbechshop.com/sell/assistant",
+      "kinbechshop.com/services/all",
+      "kinbechshop.com/shops/dashboard",
+      "kinbechshop.com/shops/register",
+      "kinbechshop.com/static",
+      "kinbechshop.com/static/classifieds/admin.css",
+      "kinbechshop.com/static/classifieds/home.css",
+      "kinbechshop.com/static/classifieds/manifest.json",
+      "kinbechshop.com/static/classifieds/premium.css",
+      "kinbechshop.com/static/classifieds/pwa.js",
+      "kinbechshop.com/static/classifieds/site-footer.css",
+      "kinbechshop.com/static/classifieds/tools.js",
+      "kinbechshop.com/study-materials/post",
+      "kinbechshop.com/sw.js",
+      "kinbechshop.com/templates/base.html",
+      "kinbechshop.com/topup",
+      "nepal.kinbechshop.com",
+      "www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+      "www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"
+    ],
+    "newParams": [
+      "category",
+      "next",
+      "q"
+    ],
+    "goneHosts": [],
+    "goneEndpoints": [],
+    "untested": [
+      "accounts.google.com/gsi/client",
+      "cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+      "cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+      "kinbechshop.com",
+      "kinbechshop.com/?q=",
+      "kinbechshop.com/ad/1969/indoor-spinning-exercise-bike-for-home-workout",
+      "kinbechshop.com/ad/1993/bakery",
+      "kinbechshop.com/ad/2011/comfortable-solid-wooden-rocking-chair",
+      "kinbechshop.com/ad/2012/hero-xpulse-200-motorcycle-in-excellent-condition",
+      "kinbechshop.com/ad/2013/large-heavy-duty-metal-dog-cage-outdoor-kennel",
+      "kinbechshop.com/ad/2014/honda-cb-hornet-160r-well-maintained-clean-condition",
+      "kinbechshop.com/ad/2015/tvs-ntorq-125-scooter-in-great-condition",
+      "kinbechshop.com/ad/2016/brand-new-sarathi-champion-electric-scooter-stylish-city-ev",
+      "kinbechshop.com/ad/2017/why-skilled-nepali-workers-are-exploring-careers-in-oil-gas-petrochemical-and-energy-services",
+      "kinbechshop.com/ad/2018/hero-honda-cbz-xtreme-motorcycle-good-running-condition",
+      "kinbechshop.com/ad/2019/clean-shinex-power-plus-10x-advanced-toilet-cleaner-original-fresh",
+      "kinbechshop.com/ad/2020/gold-foil-m-charizard-ex-pokemon-card-collectible",
+      "kinbechshop.com/ad/2021/anker-charger-with-cable",
+      "kinbechshop.com/ad/2022/well-maintained-used-hyundai-hatchback-car-with-clean-interior",
+      "kinbechshop.com/ad/2023/swatch-irony-swiss-watch-blue-dial-vintage-second-hand",
+      "kinbechshop.com/ad/2024/swatch-irony-chronograph-swiss-watch-white-dial-vintage",
+      "kinbechshop.com/ad/2025/lorus-sports-day-date-watch-vintage-second-hand",
+      "kinbechshop.com/ad/2026/hmt-kohinoor-vintage-watch-17-jewels-made-in-india",
+      "kinbechshop.com/ad/2027/hmt-vintage-watch-black-dial-made-in-india",
+      "kinbechshop.com/ad/2028/romanson-rectangular-dress-watch-vintage-second-hand",
+      "kinbechshop.com/ad/2029/citizen-quartz-day-date-watch-green-dial-vintage",
+      "kinbechshop.com/ad/2030/seiko-5-automatic-watch-day-date-vintage-second-hand",
+      "kinbechshop.com/ad/2031/royal-enfield-classic-350-black-great-condition",
+      "kinbechshop.com/ad/2032/iphone-13-fresh-condition-premium-phone",
+      "kinbechshop.com/ad/2033/timberland-style-boots-new-rs-200-off",
+      "kinbechshop.com/ad/2034/harley-davidson-inspired-leather-boot-new-rs-200-off",
+      "kinbechshop.com/ad/2035/penny-loafers-new-rs-200-off",
+      "kinbechshop.com/ad/2036/chelsea-boot-new-rs-200-off",
+      "kinbechshop.com/ad/2037/high-ankle-boots-new-rs-200-off",
+      "kinbechshop.com/ad/2038/kids-study-table-writing-table-nepali-made-offer-rs-1100",
+      "kinbechshop.com/ad/2039/saajan-bollywood-movie-original-audio-cassette-tape-sealed",
+      "kinbechshop.com/ad/2041/water-purifier-ro-sales-installation-water-treatment-service-gulariya-bardiya",
+      "kinbechshop.com/ads",
+      "kinbechshop.com/ads/?category=Books & Hobbies",
+      "kinbechshop.com/ads/?category=Electronics",
+      "kinbechshop.com/ads/?category=Health & Beauty",
+      "kinbechshop.com/ads/?category=Home & Living",
+      "kinbechshop.com/ads/?category=Pets & Animals",
+      "kinbechshop.com/ads/?q=",
+      "kinbechshop.com/ads/?q=&page=1",
+      "kinbechshop.com/assets",
+      "kinbechshop.com/auth/otp/email/send",
+      "kinbechshop.com/auth/otp/email/verify",
+      "kinbechshop.com/auth/otp/phone/verify",
+      "kinbechshop.com/auth/otp/whatsapp/send",
+      "kinbechshop.com/auth/otp/whatsapp/verify",
+      "kinbechshop.com/facebook-login/?next=/study-materials/post",
+      "kinbechshop.com/forgot-password",
+      "kinbechshop.com/form.action",
+      "kinbechshop.com/google-login",
+      "kinbechshop.com/help-assistant/ask",
+      "kinbechshop.com/help-assistant/requirement",
+      "kinbechshop.com/help-assistant/search",
+      "kinbechshop.com/jobs/jobs",
+      "kinbechshop.com/login",
+      "kinbechshop.com/login/?next=/study-materials/post",
+      "kinbechshop.com/login/classifieds/views.py",
+      "kinbechshop.com/offline",
+      "kinbechshop.com/quick-post",
+      "kinbechshop.com/register",
+      "kinbechshop.com/room-rent-in-kathmandu",
+      "kinbechshop.com/sell/assistant",
+      "kinbechshop.com/services/all",
+      "kinbechshop.com/shops/dashboard",
+      "kinbechshop.com/shops/register",
+      "kinbechshop.com/static",
+      "kinbechshop.com/static/classifieds/admin.css",
+      "kinbechshop.com/static/classifieds/home.css",
+      "kinbechshop.com/static/classifieds/manifest.json",
+      "kinbechshop.com/static/classifieds/premium.css",
+      "kinbechshop.com/static/classifieds/pwa.js",
+      "kinbechshop.com/static/classifieds/site-footer.css",
+      "kinbechshop.com/static/classifieds/tools.js",
+      "kinbechshop.com/study-materials/post",
+      "kinbechshop.com/sw.js",
+      "kinbechshop.com/templates/base.html",
+      "kinbechshop.com/topup",
+      "nepal.kinbechshop.com",
+      "www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+      "www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"
+    ],
+    "tested": [],
+    "resolvedFindings": [],
+    "summary": "6 new host(s), 85 new endpoint(s), 3 new parameter(s), 85 endpoint(s) never probed",
+    "untestedKnown": [],
+    "pendingFindingCompare": false
   }
 }

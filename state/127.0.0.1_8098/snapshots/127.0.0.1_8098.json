@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "target": "http://127.0.0.1:8098",
+  "ts": "2026-10-08T15:07:02.692Z",
+  "endpoints": [
+    "127.0.0.1:8098",
+    "127.0.0.1:8098/login"
+  ],
+  "hosts": [
+    "127.0.0.1"
+  ],
+  "params": [],
+  "findings": [
+    {
+      "id": "enum-ae882dc8f4ec",
+      "title": "PROVEN object enumeration: 6/12 adjacent IDs on /cases/:id expose another identity's object",
+      "severity": "high"
+    }
+  ],
+  "testedEndpoints": [
+    "http://127.0.0.1:8098/cases/100",
+    "http://127.0.0.1:8098"
+  ]
+}

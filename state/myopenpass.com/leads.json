@@ -1,0 +1,403 @@
+[
+  {
+    "id": "92888f9d6e922f3a",
+    "cls": "secrets",
+    "title": "Embedded private-key in /_next/static/chunks/pages/_app-862f48ab4b4e85fd.js",
+    "url": "https://myopenpass.com/_next/static/chunks/pages/_app-862f48ab4b4e85fd.js",
+    "source": "js-analysis",
+    "severity_hint": "high",
+    "confidence": "unverified",
+    "evidence": "private-key in client-side JavaScript (value truncated, never stored)",
+    "asset": "myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "key validated as live OR proven in-repo exposure"
+    ],
+    "tsv": "2026-09-30T15:39:50.341Z",
+    "tags": [
+      "js",
+      "secret"
+    ],
+    "chain_hints": [],
+    "priority": 80,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "0855e63e3b01676e",
+    "cls": "recon",
+    "title": "Subdomain: argocd.stg.myopenpass.com — possibly forgotten",
+    "url": "https://argocd.stg.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 8; discovered via undefined",
+    "asset": "argocd.stg.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "1e26f1082ce04e60",
+    "cls": "recon",
+    "title": "Subdomain: cdn.myopenpass.com — source or CI system",
+    "url": "https://cdn.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 8; discovered via undefined",
+    "asset": "cdn.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "372798db82ddd988",
+    "cls": "recon",
+    "title": "Subdomain: internal.stg.myopenpass.com — internal-facing host",
+    "url": "https://internal.stg.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 16; discovered via undefined",
+    "asset": "internal.stg.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.277Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "383fa88a04386449",
+    "cls": "recon",
+    "title": "Subdomain: argocd.prd.myopenpass.com",
+    "url": "https://argocd.prd.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 0; discovered via undefined",
+    "asset": "argocd.prd.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "403b91b38a017df3",
+    "cls": "recon",
+    "title": "Subdomain: auth.myopenpass.com — sensitive name",
+    "url": "https://auth.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 6; discovered via undefined",
+    "asset": "auth.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "41ffd2ebe099e7f5",
+    "cls": "recon",
+    "title": "discovered endpoint",
+    "url": "https://myopenpass.com",
+    "source": "katana",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "{\"timestamp\":\"2026-09-30T21:09:01.72722125+05:30\",\"request\":{\"method\":\"GET\",\"endpoint\":\"https://myopenpass.com\",\"raw\":\"GET / HTTP/1.1\\r\\nHost: myopenpass.com\\r\\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36\\r\\nAccept",
+    "asset": "myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:10.508Z",
+    "tags": [],
+    "chain_hints": [],
+    "priority": 40,
+    "crawl_total": 1,
+    "shape": "myopenpass.com/",
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "57f72266ded6a5a3",
+    "cls": "recon",
+    "title": "Subdomain: internal.myopenpass.com — internal-facing host",
+    "url": "https://internal.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 8; discovered via undefined",
+    "asset": "internal.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "6c501f2622efa9ab",
+    "cls": "recon",
+    "title": "Subdomain: dev.myopenpass.com — development environment",
+    "url": "https://dev.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 18; discovered via undefined",
+    "asset": "dev.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.277Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "705b4bacdbb8aed1",
+    "cls": "recon",
+    "title": "Subdomain: partner.myopenpass.com",
+    "url": "https://partner.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 0; discovered via undefined",
+    "asset": "partner.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "af9517c9ab7625e9",
+    "cls": "recon",
+    "title": "Subdomain: argocd.dev.myopenpass.com — possibly forgotten",
+    "url": "https://argocd.dev.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 8; discovered via undefined",
+    "asset": "argocd.dev.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "b1f5bbe00e0b23b5",
+    "cls": "recon",
+    "title": "Subdomain: demo.myopenpass.com",
+    "url": "https://demo.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 0; discovered via undefined",
+    "asset": "demo.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "b67fe57647218f15",
+    "cls": "recon",
+    "title": "464 GET",
+    "url": "https://myopenpass.com",
+    "source": "httpx",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "status=464 tech=Amazon ELB,Amazon Web Services cname= len=0",
+    "asset": "myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:38:55.434Z",
+    "tags": [
+      "Amazon ELB",
+      "Amazon Web Services"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 2,
+    "seen_count": 2
+  },
+  {
+    "id": "d4886c81cea0c4cb",
+    "cls": "recon",
+    "title": "Subdomain: www.myopenpass.com",
+    "url": "https://www.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 0; discovered via undefined",
+    "asset": "www.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "eaa254aed3ff6a92",
+    "cls": "recon",
+    "title": "Subdomain: internal.dev.myopenpass.com — internal-facing host",
+    "url": "https://internal.dev.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 16; discovered via undefined",
+    "asset": "internal.dev.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.277Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "f2a1d42875f17132",
+    "cls": "recon",
+    "title": "Subdomain: stg.myopenpass.com — non-production environment",
+    "url": "https://stg.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "medium",
+    "confidence": "unverified",
+    "evidence": "score 18; discovered via undefined",
+    "asset": "stg.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.277Z",
+    "tags": [
+      "subdomain",
+      "interesting"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  },
+  {
+    "id": "fcb046ea0a3f3838",
+    "cls": "recon",
+    "title": "Subdomain: atlantis-ext.myopenpass.com",
+    "url": "https://atlantis-ext.myopenpass.com",
+    "source": "subfinder",
+    "severity_hint": "info",
+    "confidence": "unverified",
+    "evidence": "score 0; discovered via undefined",
+    "asset": "atlantis-ext.myopenpass.com",
+    "identity": "anonymous",
+    "proof_needed": [
+      "manual confirmation"
+    ],
+    "tsv": "2026-09-30T15:39:41.278Z",
+    "tags": [
+      "subdomain"
+    ],
+    "chain_hints": [],
+    "priority": 40,
+    "observations": 1,
+    "seen_count": 1
+  }
+]

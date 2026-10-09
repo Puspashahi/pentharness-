@@ -1,0 +1,423 @@
+{
+  "tool": "pentharness",
+  "target": "http://127.0.0.1:8931",
+  "startedAt": "2026-10-09T12:42:34.264Z",
+  "durationSec": 37,
+  "steps": [
+    {
+      "step": "change",
+      "detail": "since 2026-10-09 12:37:57: no new surface"
+    },
+    {
+      "step": "change",
+      "detail": "7 endpoint(s) never probed in any run — untested surface is not a clean result"
+    },
+    {
+      "step": "map",
+      "detail": "httpx: 1 host"
+    },
+    {
+      "step": "map",
+      "detail": "katana: 15 url -> 15 shapes, kept 15"
+    },
+    {
+      "step": "  form",
+      "detail": "POST /api/v1/profile [name, role]"
+    },
+    {
+      "step": "js",
+      "detail": "1 form(s) parsed for parameters"
+    },
+    {
+      "step": "js",
+      "detail": "1 script(s), 0KB, 1 minified, 0 from source maps"
+    },
+    {
+      "step": "js",
+      "detail": "3 endpoint(s) from JS (0 never crawled before)"
+    },
+    {
+      "step": "  js",
+      "detail": "http://127.0.0.1:8931/api/v1"
+    },
+    {
+      "step": "  js",
+      "detail": "http://127.0.0.1:8931/user/"
+    },
+    {
+      "step": "  js",
+      "detail": "http://127.0.0.1:8931/static/app.js"
+    },
+    {
+      "step": "js",
+      "detail": "1 credential-shaped string(s) in JS (needs confirmation; may be library constants): aws-access-key"
+    },
+    {
+      "step": "browser",
+      "detail": "10 page(s) visited by clicking, 4 form(s) examined"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /api/v1/profile [field: name] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /api/v1/profile [field: name] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /api/v1/profile [field: name] status=200"
+    },
+    {
+      "step": "  found",
+      "detail": "XSS candidate via form on /api/v1/profile [field: name] status=200"
+    },
+    {
+      "step": "predict",
+      "detail": "5 parameter(s) ranked; top: role(authz/business), q(xss/injection), name(xss/injection), u()"
+    },
+    {
+      "step": "execute",
+      "detail": "probed 5 hypothesis/hypotheses; 0 proven"
+    },
+    {
+      "step": "prove",
+      "detail": "xss oracle rendered 4 target(s); 2 executed"
+    },
+    {
+      "step": "prove",
+      "detail": "proven 2, refuted 5, hypothesis 0"
+    },
+    {
+      "step": "authz",
+      "detail": "authz: using 2 pre-captured identities (userA, userB)"
+    },
+    {
+      "step": "authz",
+      "detail": "authz: 8 finding(s) across 10 request shape(s)"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8931/gql: 1 types, 1 resolver gap(s), 0 blocked"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8931/graphql: no __schema in response"
+    },
+    {
+      "step": "graphql",
+      "detail": "http://127.0.0.1:8931/api/graphql: no __schema in response"
+    },
+    {
+      "step": "deser",
+      "detail": "1 candidate(s); 1 proven, 0 server error(s)"
+    },
+    {
+      "step": "massassign",
+      "detail": "4 write target(s); 1 proven, 0 echo-only (not stored)"
+    },
+    {
+      "step": "chain",
+      "detail": "1 composable attack path(s)"
+    },
+    {
+      "step": "change",
+      "detail": "since 2026-10-09 12:37:57: no new surface"
+    },
+    {
+      "step": "change",
+      "detail": "snapshot saved: 24 endpoint(s), 1 host(s), 19 probed"
+    }
+  ],
+  "coverage": {
+    "pages": 11,
+    "endpoints": 18,
+    "params": 5,
+    "lenses": 5,
+    "identities": 2,
+    "complete": true,
+    "gaps": [],
+    "statement": "Coverage: 11 page(s), 18 endpoint(s), 5 param(s), 5 lens(es), 2 identit(y/ies). Complete for the measured surface."
+  },
+  "chains": [
+    {
+      "key": "fa63d6c37f5898ad>23788190ca1998ba",
+      "length": 2,
+      "stages": [
+        "secrets",
+        "authz"
+      ],
+      "asset": "127.0.0.1:8931",
+      "identity": "anonymous",
+      "impact": 50,
+      "severity": "high",
+      "narrative": "Embedded aws-access-key in /static/app.js -> PROVEN broken function-level authorization: userA was denied GET http://127.0.0.1:8931/api/v1/admin and then granted it by client-supplied input",
+      "steps": [
+        {
+          "lead": "fa63d6c37f5898ad",
+          "cls": "secrets",
+          "title": "Embedded aws-access-key in /static/app.js",
+          "url": "http://127.0.0.1:8931/static/app.js",
+          "proof_needed": [
+            "key validated as live OR proven in-repo exposure"
+          ]
+        },
+        {
+          "lead": "23788190ca1998ba",
+          "cls": "authz",
+          "title": "PROVEN broken function-level authorization: userA was denied GET http://127.0.0.1:8931/api/v1/admin and then granted it by client-supplied input",
+          "url": "http://127.0.0.1:8931/api/v1/admin",
+          "proof_needed": [
+            "replay with and without the privilege-asserting header/field",
+            "confirm the program does not intend the client to assert its own role"
+          ]
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "type": "finding",
+      "id": "23788190ca1998ba",
+      "title": "PROVEN broken function-level authorization: userA was denied GET http://127.0.0.1:8931/api/v1/admin and then granted it by client-supplied input",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/api/v1/admin",
+      "category": "authz",
+      "description": "Same identity, same route: 403 then 200. The authorization decision changes with a client-controlled value, so the client can grant itself the privileged response. Denied body: {\"err\": \"forbidden\"}. Granted body: {\"flag\": \"flag{local_toolchain_validation_only}\"}.",
+      "evidence": "Same identity, same route: 403 then 200. The authorization decision changes with a client-controlled value, so the client can grant itself the privileged response. Denied body: {\"err\": \"forbidden\"}. Granted body: {\"flag\": \"flag{local_toolchain_validation_only}\"}.",
+      "tool_used": "authmatrix",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "65c5a40c40f1fa99",
+      "title": "PROVEN cross-identity disclosure: userA read an object owned by userB",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/api/v1/user/3",
+      "category": "authz",
+      "description": "probe payload carries the owner's identity marker (carol@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/3.",
+      "evidence": "probe payload carries the owner's identity marker (carol@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/3.",
+      "tool_used": "authmatrix",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "7df5b3bfa929623e",
+      "title": "PROVEN cross-identity disclosure: userB read an object owned by userA",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/api/v1/user/2",
+      "category": "authz",
+      "description": "probe payload carries the owner's identity marker (bob@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/2.",
+      "evidence": "probe payload carries the owner's identity marker (bob@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/2.",
+      "tool_used": "authmatrix",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "8ccba9992b54c212",
+      "title": "PROVEN cross-identity disclosure: userA read an object owned by userB",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/api/v1/user/1",
+      "category": "authz",
+      "description": "probe payload carries the owner's identity marker (alice@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/1.",
+      "evidence": "probe payload carries the owner's identity marker (alice@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/1.",
+      "tool_used": "authmatrix",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "caa691dbbd862510",
+      "title": "GraphQL resolver authorization gap: nested-sensitive on ssn",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/gql",
+      "category": "authz",
+      "description": "sensitive field User.ssn is reachable as a nested resolver. Baseline (1) and probe (2) both resolved: {\"ok\":true,\"echo\":{\"query\":\"query{ me { ... on User { ssn } } }\",\"variables\":{}}}",
+      "evidence": "sensitive field User.ssn is reachable as a nested resolver. Baseline (1) and probe (2) both resolved: {\"ok\":true,\"echo\":{\"query\":\"query{ me { ... on User { ssn } } }\",\"variables\":{}}}",
+      "tool_used": "graphql",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "07772407f1592a05",
+      "title": "PROVEN insecure deserialization: pickle (python protocol 0) payload on http://127.0.0.1:8931/deser was decoded by the server",
+      "severity": "critical",
+      "target": "http://127.0.0.1:8931/deser",
+      "category": "deser",
+      "description": "POSTing a valid pickle (python protocol 0) payload whose decoded value is the sentinel PHDSER94 returned 200 with the sentinel present: \"ok 'PHDSER94'\". The sentinel was never sent as plain text, so the server must have deserialized the object. Control: the same string as plain text returned 400 without the sentinel.",
+      "evidence": "POSTing a valid pickle (python protocol 0) payload whose decoded value is the sentinel PHDSER94 returned 200 with the sentinel present: \"ok 'PHDSER94'\". The sentinel was never sent as plain text, so the server must have deserialized the object. Control: the same string as plain text returned 400 without the sentinel.",
+      "tool_used": "deser",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "292c166d93636ef0",
+      "title": "script execution from reflected parameter q",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/r?q=test",
+      "category": "xss",
+      "description": "payload script executed in origin http://127.0.0.1:8931; response status 200. A reflected value was not sufficient — the sentinel was set in the target's own JS context.",
+      "evidence": "payload script executed in origin http://127.0.0.1:8931; response status 200. A reflected value was not sufficient — the sentinel was set in the target's own JS context.",
+      "tool_used": "oracle:proveXss",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "67be9a37ccdede2d",
+      "title": "GraphQL introspection enabled: 1 types, 0 mutations, 0 queries",
+      "severity": "medium",
+      "target": "http://127.0.0.1:8931/gql",
+      "category": "config",
+      "description": "Introspection is enabled in production. Exposed 0 mutation(s) and 0 query field(s), including types with sensitive fields: User. An entire attack surface with no endpoint enumeration required.",
+      "evidence": "Introspection is enabled in production. Exposed 0 mutation(s) and 0 query field(s), including types with sensitive fields: User. An entire attack surface with no endpoint enumeration required.",
+      "tool_used": "graphql",
+      "confidence": "confirmed"
+    },
+    {
+      "type": "finding",
+      "id": "1170daf8ff2369d8",
+      "title": "PROVEN mass assignment: role is accepted from the client and persists",
+      "severity": "high",
+      "target": "http://127.0.0.1:8931/api/v1/profile",
+      "category": "mass-assignment",
+      "description": "POST with {\"role\": \"pentharness-massassign-role-49220311\"} returned 200 and the value was echoed. A separate follow-up request carrying none of that input still returned 200 with the value present: {\"name\":\"user1\",\"role\":\"pentharness-massassign-role-49220311\"}. A field the client UI never sends controls server state.",
+      "evidence": "POST with {\"role\": \"pentharness-massassign-role-49220311\"} returned 200 and the value was echoed. A separate follow-up request carrying none of that input still returned 200 with the value present: {\"name\":\"user1\",\"role\":\"pentharness-massassign-role-49220311\"}. A field the client UI never sends controls server state.",
+      "tool_used": "massassignment",
+      "confidence": "confirmed"
+    }
+  ],
+  "suppressed": [
+    {
+      "id": "494e483038156037",
+      "title": "PROVEN broken function-level authorization: userB was denied GET http://127.0.0.1:8931/api/v1/admin and then granted it by client-supplied input",
+      "cls": "authz",
+      "url": "http://127.0.0.1:8931/api/v1/admin",
+      "source": "authmatrix",
+      "reason": "duplicate",
+      "explanation": "Already present in the findings set.",
+      "severity_hint": "high",
+      "evidence": "Same identity, same route: 403 then 200. The authorization decision changes with a client-controlled value, so the client can grant itself the privileged response. Denied body: {\"err\": \"forbidden\"}. Granted body: {\"flag\": \"flag{local_toolchain_validation_only}\"}.",
+      "detail": {
+        "reasons": [
+          "same class and endpoint as 23788190ca1998ba"
+        ]
+      },
+      "tsv": "2026-10-09T12:43:11.167Z"
+    },
+    {
+      "id": "a65351947b714ab7",
+      "title": "PROVEN cross-identity disclosure: userA read an object owned by userB",
+      "cls": "authz",
+      "url": "http://127.0.0.1:8931/api/v1/user/2",
+      "source": "authmatrix",
+      "reason": "duplicate",
+      "explanation": "Already present in the findings set.",
+      "severity_hint": "high",
+      "evidence": "probe payload carries the owner's identity marker (bob@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/2.",
+      "detail": {
+        "reasons": [
+          "same class and endpoint as 7df5b3bfa929623e"
+        ]
+      },
+      "tsv": "2026-10-09T12:43:11.168Z"
+    },
+    {
+      "id": "ddb0fd1d3e655788",
+      "title": "PROVEN cross-identity disclosure: userB read an object owned by userA",
+      "cls": "authz",
+      "url": "http://127.0.0.1:8931/api/v1/user/3",
+      "source": "authmatrix",
+      "reason": "duplicate",
+      "explanation": "Already present in the findings set.",
+      "severity_hint": "high",
+      "evidence": "probe payload carries the owner's identity marker (carol@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/3.",
+      "detail": {
+        "reasons": [
+          "same class and endpoint as 65c5a40c40f1fa99"
+        ]
+      },
+      "tsv": "2026-10-09T12:43:11.168Z"
+    },
+    {
+      "id": "f5fb529c47eda64a",
+      "title": "PROVEN cross-identity disclosure: userB read an object owned by userA",
+      "cls": "authz",
+      "url": "http://127.0.0.1:8931/api/v1/user/1",
+      "source": "authmatrix",
+      "reason": "duplicate",
+      "explanation": "Already present in the findings set.",
+      "severity_hint": "high",
+      "evidence": "probe payload carries the owner's identity marker (alice@corp.test). Observed on GET http://127.0.0.1:8931/api/v1/user/1.",
+      "detail": {
+        "reasons": [
+          "same class and endpoint as 8ccba9992b54c212"
+        ]
+      },
+      "tsv": "2026-10-09T12:43:11.168Z"
+    },
+    {
+      "id": "5fed3e1bf91c86ab",
+      "title": "script execution from reflected parameter q",
+      "cls": "xss",
+      "url": "http://127.0.0.1:8931/r",
+      "source": "oracle:proveXss",
+      "reason": "duplicate",
+      "explanation": "Already present in the findings set.",
+      "severity_hint": "high",
+      "evidence": "payload script executed in origin http://127.0.0.1:8931; response status 200. A reflected value was not sufficient — the sentinel was set in the target's own JS context.",
+      "detail": {
+        "reasons": [
+          "same class and endpoint as 292c166d93636ef0"
+        ]
+      },
+      "tsv": "2026-10-09T12:43:11.168Z"
+    }
+  ],
+  "proof": {
+    "nonce": "4915cd7977d9",
+    "proven": 2,
+    "refuted": 5,
+    "hypothesis": 0
+  },
+  "change": {
+    "firstRun": false,
+    "since": "2026-10-09T12:37:57.902Z",
+    "newHosts": [],
+    "newEndpoints": [],
+    "newParams": [],
+    "goneHosts": [],
+    "goneEndpoints": [],
+    "untested": [
+      "127.0.0.1:8931/api/v1",
+      "127.0.0.1:8931/echo",
+      "127.0.0.1:8931/files",
+      "127.0.0.1:8931/flag",
+      "127.0.0.1:8931/redirect",
+      "127.0.0.1:8931/redirect?to=",
+      "127.0.0.1:8931/slow"
+    ],
+    "resolvedFindings": [],
+    "summary": "7 endpoint(s) never probed",
+    "untestedKnown": [
+      "http://127.0.0.1:8931/api/v1/admin",
+      "http://127.0.0.1:8931/api/v1/user/3",
+      "http://127.0.0.1:8931/api/v1/user/2",
+      "http://127.0.0.1:8931/api/v1/user/1",
+      "http://127.0.0.1:8931/gql",
+      "http://127.0.0.1:8931/deser",
+      "http://127.0.0.1:8931/static/app.js",
+      "http://127.0.0.1:8931/r?q=test",
+      "http://127.0.0.1:8931/r",
+      "http://127.0.0.1:8931/api/v1/profile",
+      "http://127.0.0.1:8931/ssti?name=test",
+      "http://127.0.0.1:8931",
+      "http://127.0.0.1:8931/user/",
+      "http://127.0.0.1:8931/app",
+      "http://127.0.0.1:8931/ssrf?u=http://127.0.0.1/",
+      "http://127.0.0.1:8931/metrics",
+      "http://127.0.0.1:8931/static/spa.js",
+      "http://127.0.0.1:8931/files?f=README.md",
+      "http://127.0.0.1:8931/api/v1/user"
+    ],
+    "pendingFindingCompare": false
+  }
+}

@@ -12,6 +12,7 @@
  * Phases:
  *   recon   map the target (httpx/nuclei/katana/arjun) -> knowledge base
  *   scan    run detectors (webfuzz/nuclei) -> leads
+ *   discover  ffuf path enumeration + differential parameter confirmation into the KB
  *   ingest  normalise any tool JSON dropped in --from
  *   correlate  build candidate attack chains from leads
  *   queue   emit the bounded attention queue for the model to reason over
@@ -45,6 +46,7 @@ const signal = require('./signal');
 const evidence = require('./evidence');
 const priorart = require('./priorart');
 const { hunt } = require('./hunt');
+const discover = require('./discover');
 
 const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
@@ -87,6 +89,10 @@ function parseArgs(argv) {
       case '--diff-only': o.diffOnly = true; break;
       case '--ask-prior-art': (o.askPriorArt = o.askPriorArt || []).push(next()); break;
       case '--skip-js': o.skipJs = true; break;
+      case '--max-discover': o.maxDiscover = parseInt(next(), 10) || o.maxDiscover; break;
+      case '--wordlist': o.wordlist = next(); break;
+      case '--skip-discover-params': o.skipDiscoverParams = true; break;
+      case '--skip-discover': o.skipDiscover = true; break;
       case '--skip-browser': o.skipBrowser = true; break;
       case '--skip-subs': o.skipSubs = true; break;
       case '--scope': (o.scope = o.scope || []).push(next()); break;
@@ -118,7 +124,7 @@ function usage() {
 pentharness — deterministic harness for AI-assisted pentesting
 
   pentharness <target> [--hunt] [phases...]   # --hunt = one-command autonomous run
-  pentharness <target> [--phase recon,scan,jslogic,prioritise,authz,prove,ingest,correlate,queue,gate,report]
+  pentharness <target> [--phase discover,recon,scan,jslogic,prioritise,authz,prove,ingest,correlate,queue,gate,report]
                [--from tool.json ...] [--identity id=file ...] [--js PATH]
                [--max-pages N] [--timeout MS] [--answer FILE] [--prove FILE] [--no-scan]
 
@@ -129,6 +135,7 @@ Phases
   prioritise  rank known parameters by predicted vuln class -> plan.json
   authz       dual-identity response diffing -> the authorization matrix (--identity x2)
   prove       deterministic validators + adversarial refutation (--prove obs.json)
+  discover    ffuf path enumeration + differential parameter confirmation -> knowledge base
   ingest      normalise existing tool JSON passed with --from
   correlate   build candidate attack chains (shared asset/param/identity)
   queue       emit the bounded attention queue for LLM reasoning
@@ -372,6 +379,29 @@ async function phaseScan(o, store, kb) {
   for (const l of nuLeads) { store.add(l); kb.learnEndpoint(l.url, { param: l.param }); }
   notes.push(`nuclei: ${nuLeads.length} template match(es)${nuLeads.length ? '' : toolNote(nu)}`);
 
+  return notes;
+}
+
+/**
+ * Discovery bootstrap: dictionary path enumeration plus differential parameter
+ * confirmation, feeding only the knowledge base. It sends no attack payloads and
+ * judges nothing — predict, prober, oracle, oob and gate remain the only things
+ * that decide what is real. Without it the predict -> execute chain has nothing
+ * to start from whenever the index page advertises no routes.
+ */
+async function phaseDiscover(o, kb) {
+  const notes = [];
+  const r = await discover.bootstrap({
+    target: o.target,
+    kb,
+    log: (p, m) => console.log(`${C.dim}${p.padEnd(9)}${C.r} ${m}`),
+    wordlist: o.wordlist,
+    maxPaths: o.maxDiscover || 400,
+    maxParamsPerPath: o.maxParamsPerPath || 24,
+    skipParams: o.skipDiscoverParams,
+    headerPolicy: o.headerPolicy,
+  });
+  notes.push(`discover: enumerated ${r.paths} path(s), confirmed ${r.params} parameter(s) by differential response`);
   return notes;
 }
 
@@ -756,6 +786,25 @@ async function phaseProve(o, store, dir) {
 /** One-command autonomous pipeline: map -> predict -> execute -> prove -> contest -> chain -> gate. */
 async function runHunt(o) {
   const dir = path.join(STATE, slug(o.target));
+  // Seed the knowledge base before the pipeline starts. `hunt` is fed, not
+  // self-starting: predict ranks parameters, prober executes payloads and
+  // validators decide, all of them read the KB. When the index page advertises
+  // no routes the KB arrives empty, the predict -> execute chain never begins,
+  // and the run reports 0 parameters and proves nothing — correct, and blind at
+  // the same time. Discovery is additive, so it runs first and the pipeline
+  // below behaves identically on a target where the crawler already did the job.
+  if (!o.skipDiscover && !o.noScan) {
+    const kbPath = path.join(dir, 'knowledge.json');
+    const kb = TargetKB.load(kbPath) || new TargetKB(o.target);
+    const r = await discover.bootstrap({
+      target: o.target, kb,
+      log: (p, m) => console.log(`${C.dim}${p.padEnd(9)}${C.r} ${m}`),
+      wordlist: o.wordlist, maxPaths: o.maxDiscover || 400,
+      maxParamsPerPath: o.maxParamsPerPath || 24,
+    });
+    kb.save(kbPath);
+    console.log(`${C.dim}discover enumerated ${r.paths} path(s), confirmed ${r.params} parameter(s)${C.r}`);
+  }
   const res = await hunt({
     target: o.target, stateDir: dir,
     concurrency: o.concurrency, maxEndpoints: o.maxPages,
@@ -1036,7 +1085,7 @@ async function main() {
 
   const notes = [];
   let runPhases = new Set(o.phases.length === 1 && o.phases[0] === 'report'
-    ? ['recon', 'scan', 'jslogic', 'prioritise', 'authz', 'prove', 'ingest', 'correlate', 'queue', 'gate']
+    ? ['discover', 'recon', 'scan', 'jslogic', 'prioritise', 'authz', 'prove', 'ingest', 'correlate', 'queue', 'gate']
     : o.phases);
 
   for (const p of runPhases) coverage.phase(p);
@@ -1046,6 +1095,7 @@ async function main() {
   console.log(`${C.dim}kb${C.r}     ${prior} endpoint(s) known from prior runs${C.r}\n`);
 
   if (runPhases.has('recon') && !o.noScan) notes.push(...await phaseRecon(o, kb, store));
+  if (runPhases.has('discover')) notes.push(...await phaseDiscover(o, kb));
   if (runPhases.has('scan') && !o.noScan) notes.push(...await phaseScan(o, store, kb));
   if (runPhases.has('jslogic')) notes.push(...phaseJsLogic(o, store, kb));
   if (runPhases.has('authz')) notes.push(...await phaseAuthz(o, store, kb, coverage, matrix));
@@ -1109,10 +1159,37 @@ async function main() {
     const answers = o.answer ? loadAnswers(o.answer) : {};
     let report = 0, hold = 0, drop = 0;
     const findings = [];
+    // Deduplicate on (class, normalised endpoint). The same proven issue can
+    // enter the store from several proof paths — e.g. an XSS proven once with
+    // the query string intact and once against the bare path — and shipping both
+    // costs a triage cycle and reads as padding. Keep the first, record the rest.
+    const seen = new Map();
+    let dupes = 0;
+    const normEp = (u) => {
+      try {
+        const p = new URL(String(u || ''));
+        return `${p.origin}${p.pathname}`.toLowerCase();
+      } catch {
+        return String(u || '').split('?')[0].toLowerCase();
+      }
+    };
     for (const l of store.all()) {
       const ans = answers[l.id] || {};
       const res = toFinding(l, ans);
-      if (res.ok) { report++; findings.push(res.finding); }
+      if (res.ok) {
+        const key = `${String(l.cls || '').toLowerCase()}|${normEp(l.url)}`;
+        if (seen.has(key)) {
+          dupes++;
+          ledger.suppress(l, 'duplicate', {
+            reasons: [`same class and endpoint as ${seen.get(key)}: ${normEp(l.url)}`],
+          });
+          drop++;
+          continue;
+        }
+        seen.set(key, l.id);
+        report++;
+        findings.push(res.finding);
+      }
       else if (res.verdict.verdict === 'drop') {
         // Record the dismissal with its reason and evidence, so a reviewer can
         // tell a working filter from one that is discarding real issues.
@@ -1125,6 +1202,7 @@ async function main() {
     console.log(`  ${C.grn}report-ready${C.r} ${report}   (proof + impact + by-design + reproduction)`);
     console.log(`  ${C.yel}hold${C.r}        ${hold}   (need proof / impact / by-design argument)`);
     console.log(`  ${C.dim}drop${C.r}        ${drop}   (${Object.keys(ledger.byReason()).join(', ') || 'none'})`);
+    if (dupes) console.log(`  ${C.dim}dedup${C.r}       ${dupes}   (same class + endpoint already reported)`);
 
     // Coverage gate: a partial run must never read as a complete assessment.
     const cov = coverage.assess();

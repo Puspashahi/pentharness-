@@ -98,7 +98,12 @@ function evaluate(f = {}) {
  * This is the bounded attention queue: one decision per lead, not a wall.
  */
 function triagePrompt(lead) {
-  const proofNeeded = (lead.proof_needed || []).map((p) => `  - ${p}`).join('\n');
+  const needed = Array.isArray(lead.proof_needed)
+    ? lead.proof_needed
+    : lead.proof_needed
+      ? [String(lead.proof_needed)]
+      : [];
+  const proofNeeded = needed.map((p) => `  - ${p}`).join('\n');
   return [
     `LEAD ${lead.id} [${lead.cls}] (${lead.source})`,
     `title:    ${lead.title}`,

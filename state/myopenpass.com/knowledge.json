@@ -1,0 +1,460 @@
+{
+  "target": "https://myopenpass.com",
+  "created": "2026-09-30T15:38:52.301Z",
+  "updated": "2026-09-30T16:24:06.326Z",
+  "tech": [],
+  "endpoints": [
+    [
+      "https://myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:10.509Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T16:23:59.398Z"
+      }
+    ],
+    [
+      "https://dev.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://stg.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://internal.dev.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://internal.stg.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://internal.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://argocd.dev.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://cdn.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://argocd.stg.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://auth.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://partner.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://demo.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://www.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://argocd.prd.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://atlantis-ext.myopenpass.com",
+      {
+        "first_seen": "2026-09-30T15:39:41.277Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:41.277Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/chunks/webpack-18e1333887fe60bd.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/chunks/framework-6080337cf9f60710.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/chunks/pages/index-dc2e312dff148ea8.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/chunks/main-8abcd8dd26dcb00b.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/account-deleted",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/TciFINzj_Rp87watJ-5h4/_buildManifest.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/TciFINzj_Rp87watJ-5h4/_ssgManifest.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/oauth/authorize",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/oauth/access_token",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/profile/passkeys",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/auth/signin",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/profile",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/connections",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/connections/",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/recovery-methods",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/profile/phone-number",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/device-sessions",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/device-sessions/",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/log",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/api/operational/version",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/_next/static/chunks/pages/_app-862f48ab4b4e85fd.js",
+      {
+        "first_seen": "2026-09-30T15:39:50.305Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T15:39:50.305Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/",
+      {
+        "first_seen": "2026-09-30T15:40:20.852Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T16:23:59.398Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/publishers",
+      {
+        "first_seen": "2026-09-30T15:40:20.852Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T16:23:59.398Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/legal/privacy-policy",
+      {
+        "first_seen": "2026-09-30T15:40:20.852Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T16:23:59.398Z"
+      }
+    ],
+    [
+      "https://myopenpass.com/legal/terms-of-service",
+      {
+        "first_seen": "2026-09-30T15:40:20.852Z",
+        "params": [],
+        "forms": 0,
+        "has_auth": false,
+        "last_seen": "2026-09-30T16:23:59.398Z"
+      }
+    ]
+  ],
+  "params": [],
+  "auth": {
+    "observed": false,
+    "scheme": [],
+    "cookie_names": [],
+    "login_endpoints": []
+  },
+  "ai_surface": {
+    "agent_endpoints": [],
+    "tool_inventories": [],
+    "instruction_leaks": [],
+    "guardrails": []
+  },
+  "rate_limited": [],
+  "negatives": [],
+  "prior_chains": [],
+  "history": [
+    {
+      "hunt": true,
+      "findings": 0,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T15:40:29.650Z"
+    },
+    {
+      "hunt": true,
+      "findings": 0,
+      "chains": 0,
+      "complete": false,
+      "tsv": "2026-09-30T16:24:06.326Z"
+    }
+  ]
+}

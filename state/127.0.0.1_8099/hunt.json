@@ -1,16 +1,12 @@
 {
   "tool": "pentharness",
   "target": "http://127.0.0.1:8099",
-  "startedAt": "2026-09-30T14:19:08.525Z",
-  "durationSec": 41,
+  "startedAt": "2026-09-30T15:15:44.161Z",
+  "durationSec": 22,
   "steps": [
     {
       "step": "change",
-      "detail": "since 2026-09-30 14:19:08: 1 endpoint(s) never probed, 1 previous finding(s) no longer reproduce"
-    },
-    {
-      "step": "change",
-      "detail": "1 endpoint(s) never probed in any run — untested surface is not a clean result"
+      "detail": "baseline recorded: 0 host(s), 0 endpoint(s). The next run will report what changed."
     },
     {
       "step": "map",
@@ -19,10 +15,6 @@
     {
       "step": "map",
       "detail": "katana: 1 url -> 1 shapes, kept 1"
-    },
-    {
-      "step": "subs",
-      "detail": "no subdomains discovered"
     },
     {
       "step": "  form",
@@ -74,7 +66,7 @@
     },
     {
       "step": "change",
-      "detail": "since 2026-09-30 14:19:08: 1 endpoint(s) never probed"
+      "detail": "since : no new surface"
     },
     {
       "step": "change",
@@ -111,28 +103,23 @@
   ],
   "suppressed": [],
   "proof": {
-    "nonce": "10807099ab00",
+    "nonce": "45f305a1744d",
     "proven": 1,
     "refuted": 0,
     "hypothesis": 0
   },
   "change": {
-    "firstRun": false,
-    "since": "2026-09-30T14:19:08.425Z",
+    "firstRun": true,
     "newHosts": [],
     "newEndpoints": [],
     "newParams": [],
     "goneHosts": [],
     "goneEndpoints": [],
-    "untested": [
-      "127.0.0.1:8099/search?q=1"
-    ],
+    "untested": [],
+    "tested": [],
     "resolvedFindings": [],
-    "summary": "1 endpoint(s) never probed",
-    "untestedKnown": [
-      "http://127.0.0.1:8099/search",
-      "http://127.0.0.1:8099"
-    ],
+    "summary": "no change since the last run",
+    "untestedKnown": [],
     "pendingFindingCompare": false
   }
 }

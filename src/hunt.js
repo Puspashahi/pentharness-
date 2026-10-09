@@ -46,6 +46,9 @@ const takeover = require('./takeover');
 const change = require('./change');
 const { scanPostMessage } = require('./postmessage');
 const { runProtocolStage } = require('./protocol-stage');
+const massassign = require('./massassign');
+const deser = require('./deser');
+const oracle = require('./oracle');
 
 const slug = (t) => String(t).replace(/^https?:\/\//, '').replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 80);
 
@@ -269,7 +272,11 @@ async function hunt(o) {
       log('js', 'no application scripts captured');
     }
     if (jsRes.secrets.length) {
-      log('js', `${jsRes.secrets.length} embedded credential(s): ${[...new Set(jsRes.secrets.map((s) => s.kind))].join(', ')}`);
+      // Only claim what was actually recorded. A vendor chunk containing a PEM
+      // *constant* produced "1 embedded credential(s)" while findings.json held
+      // zero, which is exactly the kind of overstatement the harness exists to
+      // prevent.
+      log('js', `${jsRes.secrets.length} credential-shaped string(s) in JS (needs confirmation; may be library constants): ${[...new Set(jsRes.secrets.map((s) => s.kind))].join(', ')}`);
       for (const s of jsRes.secrets.slice(0, 5)) store.add(makeLead({
         cls: 'secrets', title: `Embedded ${s.kind} in ${String(s.url).replace(/^https?:\/\/[^/]+/, '')}`,
         url: s.url, source: 'js-analysis', severity_hint: 'high',
@@ -370,6 +377,69 @@ async function hunt(o) {
       for (const l of probeOut.leads) store.add(l);
       for (const e of probeOut.evidence) if (e.ship) { coverage.endpoint(e.url); coverage.page(e.url); }
       log('execute', `probed ${probeOut.evidence.length} hypothesis/hypotheses; ${probeOut.evidence.filter((e) => e.ship).length} proven`);
+
+      // XSS cannot be proven over HTTP, and the harness is right to refuse it:
+      // a reflected string is not execution, so the HTTP prober records the
+      // reflection and the validator drops it. That left every --hunt run
+      // structurally incapable of proving XSS however blatant the bug — the
+      // reflection was always refuted and never escalated. The browser oracle
+      // exists for exactly this and was never called from this path. It runs
+      // here, while the browser is still open, because execution has to be
+      // observed in the target origin rather than inferred from a response body.
+      if (browser) {
+        const xssParams = new Set(ranked.filter((r) => (r.classes || []).includes('xss')).map((r) => r.param));
+        const xssTargets = [];
+        for (const [url, e] of kb.endpoints) {
+          for (const p of e.params || []) if (xssParams.has(p)) xssTargets.push({ url, param: p });
+        }
+        if (xssTargets.length) {
+          try {
+            const hits = await oracle.proveXss(browser, xssTargets, { headerPolicy: o.headerPolicy, timeout: o.timeout });
+            log('prove', `xss oracle rendered ${xssTargets.length} target(s); ${hits.length} executed`);
+            for (const h of hits) {
+              const ev = {
+                execution: { executed: true, origin: h.origin },
+                targetOrigin: h.targetOrigin,
+                reflected: true,
+                executed: true,
+              };
+              const v = V.judge('xss', ev);
+              if (!v.ship) continue;
+              // Reproduce from the same payload that executed, not from the
+              // first one in the list: the oracle escalates cheapest-first and
+              // stops at the first that runs, so the id it returns is the one
+              // that actually worked.
+              const payload = (oracle.xssPayloads() || []).find((p) => p.id === h.payload);
+              const reproUrl = payload ? oracle.inject(h.url, h.param, payload.value) : h.url;
+              const lead = makeLead({
+                cls: 'xss',
+                title: `script execution from reflected parameter ${h.param}`,
+                url: h.url,
+                param: h.param,
+                source: 'oracle:proveXss',
+                severity_hint: 'high',
+                confidence: 'confirmed',
+                evidence: `payload ${h.payload} executed in origin ${h.origin}; response status ${h.status}. A reflected value was not sufficient — the sentinel was set in the target's own JS context.`,
+                reproduction: `GET ${String(reproUrl).replace(/[\r\n]/g, '')}`,
+                proof_needed: 'script executed in the target origin, not merely reflected',
+                identity: 'anonymous',
+              });
+              lead.judgement = v;
+              store.add(lead);
+              probeOut.evidence.push({
+                url: h.url, cls: 'xss', param: h.param, verdict: 'proven', ship: true,
+                proof: v.why, judgement: v,
+              });
+              coverage.endpoint(h.url);
+              coverage.page(h.url);
+            }
+          } catch (e) {
+            log('prove', `xss oracle failed: ${String(e.message || e).slice(0, 80)}`);
+          }
+        } else {
+          log('prove', 'xss oracle skipped — no parameter predicted as xss');
+        }
+      }
     } finally {
       // Close the browser, and drop the context that came from it. Handing a
       // closed context to the protocol stage made every graphql/jwt/cache probe
@@ -389,11 +459,24 @@ async function hunt(o) {
   log('prove', `proven ${proven.length}, refuted ${refuted.length}, hypothesis ${hypotheses.length}`);
 
   // ---- identity + authorization + enumeration (automated) ----
-  if (o.accounts && Object.keys(o.accounts).length >= 2) {
+  // Two identities unlock the authorization class, which is the highest-yield
+  // thing this harness can find. It runs from EITHER credentials OR
+  // pre-captured `--identity` files. It used to require credentials only, which
+  // meant `--hunt --identity a=file b=file` silently skipped the entire
+  // class — no warning, no error, just an "authz" line that never appeared and
+  // a coverage report claiming single-identity. That is the worst kind of
+  // failure in a tool whose entire premise is honesty.
+  const captures = (o.identities || []).reduce((acc, s) => {
+    if (s && s.id && s.file) acc[s.id] = s.file;
+    return acc;
+  }, {});
+  const captureIds = Object.keys(captures);
+  if (captureIds.length >= 2) {
     coverage.phase('authz');
-    for (const id of Object.keys(o.accounts)) coverage.identity(id);
+    for (const id of captureIds) coverage.identity(id);
     const stage = await runAuthzStage(loadPlaywright(), {
       target: o.target, loginUrl: o.loginUrl, accounts: o.accounts, stateDir: dir,
+      captures,
       headful: o.headful, maxEnumTargets: o.maxEnum, enumSamples: o.enumSamples,
       mode: o.authMode, oauth: o.authMode === 'oauth', selectors: o.selectors, routes: o.routes, headerPolicy: o.headerPolicy, reuseStorage: session ? session.storage : null, reuseIdentity: session ? session.identity : null,
     });
@@ -424,6 +507,56 @@ async function hunt(o) {
     });
     for (const l of ps.leads) store.add(l);
     if (ps.observedJwtWeak) coverage.lens('jwt-mutation');
+
+    // Insecure deserialization. Sentinel-based and inert: no code execution is
+    // attempted, because a `__reduce__` payload proves nothing that an error
+    // message has not already falsely "proven" a hundred times.
+    try {
+      const dsTargets = [...new Set([...(kb.endpoints instanceof Map ? kb.endpoints.keys() : Object.keys(kb.endpoints || {}))]
+        .filter((u) => /^https?:/i.test(u) && deser.CANDIDATE.test(u)))]
+        .slice(0, o.maxDeserTargets || 8);
+      let dErr = 0;
+      for (const t of dsTargets) {
+        const r = await deser.probe(psCtx, t, { headers: hp.active ? hp.playwright() : {} });
+        dErr += r.errors;
+        for (const l of r.findings) store.add(l);
+      }
+      coverage.lens('deserialization');
+      if (dsTargets.length) {
+        log('deser', `${dsTargets.length} candidate(s); ${[...store.all()].filter((l) => l.cls === 'deser' && l.confidence === 'confirmed').length} proven, ${dErr} server error(s)`);
+      }
+    } catch (e) {
+      log('deser', `skipped: ${String(e.message || e).slice(0, 80)}`);
+    }
+
+    // Mass assignment: write-then-read. Needs a live context, so it runs here
+    // rather than over captures.
+    try {
+      // kb.endpoints is a Map, not an object — Object.keys() on it returns
+      // nothing, which would have made this pass silently test zero endpoints.
+      const maTargets = [...new Set([...(kb.endpoints instanceof Map ? kb.endpoints.keys() : Object.keys(kb.endpoints || {}))]
+        .filter((u) => /^https?:/i.test(u) && massassign.WRITE_TARGET.test(u)))]
+        .slice(0, o.maxMassAssignTargets || 8);
+      if (maTargets.length) {
+        let echoes = 0;
+        const nonce = String(Date.now()).slice(-8);
+        for (const t of maTargets) {
+          const r = await massassign.probe(psCtx, t, {
+            nonce,
+            headers: hp.active ? hp.playwright() : {},
+            maxFields: 4,
+            onEchoOnly: () => { echoes++; },
+          });
+          for (const l of r.findings) store.add(l);
+        }
+        const proven = [...store.all()].filter((l) => l.cls === 'mass-assignment' && l.confidence === 'confirmed').length;
+        coverage.lens('mass-assignment');
+        log('massassign', `${maTargets.length} write target(s); ${proven} proven, ${echoes} echo-only (not stored)`);
+      }
+    } catch (e) {
+      log('massassign', `skipped: ${String(e.message || e).slice(0, 80)}`);
+    }
+
     if (psCtx && psCtx.__close) await psCtx.__close().catch(() => {});
   }
 
@@ -437,9 +570,32 @@ async function hunt(o) {
   const answers = o.answers ? readJson(o.answers, {}) : {};
   const findings = [];
   let hold = 0;
+  // Deduplicate on (class, endpoint-without-query). The same proven issue can
+  // enter the store via several proof paths — the same XSS proven once with the
+  // query intact and once against the bare path — and shipping both reads as
+  // padding and burns a triage cycle. Keep the first, suppress the rest.
+  const normEp = (u) => {
+    try {
+      const p = new URL(String(u || ''));
+      return `${p.origin}${p.pathname}`.toLowerCase();
+    } catch {
+      return String(u || '').split('?')[0].toLowerCase();
+    }
+  };
+  const seen = new Map();
+  const admit = (finding, lead) => {
+    const key = `${String(lead.cls || finding.category || '').toLowerCase()}|${normEp(lead.url || finding.target)}`;
+    if (seen.has(key)) {
+      ledger.suppress(lead, 'duplicate', { reasons: [`same class and endpoint as ${seen.get(key)}`] });
+      return false;
+    }
+    seen.set(key, lead.id);
+    findings.push(finding);
+    return true;
+  };
   for (const l of store.all()) {
     const res = toFinding(l, answers[l.id] || {});
-    if (res.ok) findings.push(res.finding);
+    if (res.ok) admit(res.finding, l);
     else if (res.verdict.verdict === 'drop') ledger.suppress(l, (res.verdict.reasons[0] || 'filtered').split(':')[0]);
     else hold++;
   }
@@ -447,7 +603,7 @@ async function hunt(o) {
   for (const l of store.all()) {
     if (l.confidence !== 'confirmed') continue;
     if (findings.some((f) => f.id === l.id)) continue;
-    findings.push({ type: 'finding', id: l.id, title: l.title, severity: l.severity_hint || 'high', target: l.url, category: l.cls, description: l.evidence, evidence: l.evidence, tool_used: l.source, confidence: 'confirmed' });
+    admit({ type: 'finding', id: l.id, title: l.title, severity: l.severity_hint || 'high', target: l.url, category: l.cls, description: l.evidence, evidence: l.evidence, tool_used: l.source, confidence: 'confirmed' }, l);
   }
 
   const cov = coverage.assess();
@@ -587,8 +743,31 @@ async function jsPhase(o, kb, store, coverage, log) {
     const newOnes = analysed.endpoints.filter((u) => !known.has(u));
     analysed.newEndpoints = newOnes.length;
 
-    for (const u of newOnes.slice(0, 200)) kb.learnEndpoint(u);
-    for (const u of newOnes.slice(0, 40)) coverage.endpoint(u);
+    // Scope-gate what the JS phase discovered. Vendor bundles reference dozens
+    // of third-party hosts (reactjs.org, www.w3.org, github.com, login.microsoftonline.com,
+    // statsigcdn, mui.com, …). Recording them made the knowledge base a list of
+    // hosts we had no authorisation to touch, and inflated every downstream
+    // count. The analyser is deliberately not scope-aware — it reports what it
+    // literally saw — so the filter belongs here, where the authorised scope is known.
+    const scopeRules = (o.scope && o.scope.length)
+      ? o.scope
+      : [(() => { try { return new URL(o.target).hostname; } catch { return ''; } })()];
+    const allowed = [];
+    const refused = new Set();
+    for (const u of newOnes) {
+      let host = '';
+      try { host = new URL(u).hostname; } catch { continue; }
+      if (subdomains.inScope(host, scopeRules).ok) allowed.push(u);
+      else refused.add(host);
+    }
+    for (const u of allowed.slice(0, 200)) kb.learnEndpoint(u);
+    for (const u of allowed.slice(0, 40)) coverage.endpoint(u);
+    if (refused.size) {
+      const uniq = [...refused];
+      analysed.endpoints = allowed;
+      analysed.newEndpoints = allowed.length;
+      log('  js', `${uniq.length} out-of-scope host(s) referenced in JS, not recorded or tested: ${uniq.slice(0, 4).join(', ')}${uniq.length > 4 ? ', …' : ''}`);
+    }
     for (const f of analysed.findings.slice(0, 20)) {
       store.add(makeLead({
         cls: 'jslogic', title: `Client-side auth logic: ${f.kind || f.title || 'signal'}`,
@@ -656,6 +835,16 @@ async function browserPhase(o, kb, store, coverage, log) {
       for (const fld of f.fields || []) kb.learnEndpoint(f.action, { param: fld, forms: 1 });
     }
     for (const u of res.endpoints.slice(0, 100)) coverage.endpoint(u);
+
+    // Pages the browser actually rendered. A page is only "covered" when a real
+    // client fetched and rendered it -- discovered-but-never-visited URLs are
+    // endpoint shapes, not exercised pages, and counting them would let the gate
+    // pass on discovery alone. These were navigated and had their DOM read, so
+    // they are genuinely exercised.
+    for (const v of res.visited || []) {
+      coverage.page(v.url);
+      coverage.endpoint(v.url);
+    }
     return res;
   } catch (e) {
     log('browser', `failed: ${String(e.message || e).slice(0, 120)}`);
