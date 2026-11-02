@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pentharness evidence report",
+  "type": "object",
+  "required": ["schemaVersion", "tool", "safety"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "safety": { "type": "string", "minLength": 1 },
+    "provenance": {
+      "type": "object",
+      "required": ["algorithm", "digest"],
+      "properties": {
+        "algorithm": { "const": "sha256" },
+        "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "candidates": { "type": "array" },
+    "findings": { "type": "array" },
+    "observations": { "type": "array" },
+    "results": { "type": "array" }
+  },
+  "additionalProperties": true
+}

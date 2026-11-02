@@ -358,6 +358,17 @@ It is a compiled evidence-integrity tool, not a vulnerability detector: bad
 records and duplicate observations are surfaced for review, never converted
 into findings.
 
+All Node.js, Python, and Go reports use the shared versioned contract in
+`schemas/evidence-report.schema.json`. Validate one or more reports before
+merging them into a review bundle:
+
+```bash
+scripts/pentharness.sh contract state/report-a.json state/report-b.json
+```
+
+The contract requires a producer, safety statement, schema version, and
+SHA-256 provenance when supplied. Validation failures stop the command.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
@@ -480,6 +491,7 @@ src/openapi.js       OpenAPI request and lifecycle planner
 python/pentharness_api.py  dependency-free Python API analyzer
 python/pentharness_corpus.py  capture differential analyzer
 cmd/pentharness-evidence/  Go evidence validation and hashing tool
+schemas/evidence-report.schema.json  cross-language report contract
 
 test/                deterministic regression suites, plus optional browser and
                      online suites, including OpenAPI, metamorphic, and tenant proof tests

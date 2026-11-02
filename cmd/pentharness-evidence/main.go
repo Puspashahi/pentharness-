@@ -37,6 +37,7 @@ type fileResult struct {
 }
 
 type report struct {
+	SchemaVersion     int          `json:"schemaVersion"`
 	Tool              string       `json:"tool"`
 	Safety            string       `json:"safety"`
 	Files             int          `json:"files"`
@@ -123,9 +124,10 @@ func main() {
 	}
 	sort.Slice(results, func(i, j int) bool { return results[i].File < results[j].File })
 	output := report{
-		Tool:   "pentharness-go-evidence",
-		Safety: "passive JSONL validation and hashing; no network requests; not a vulnerability detector",
-		Files:  len(results), Rows: totalRows, Invalid: totalInvalid,
+		SchemaVersion: 1,
+		Tool:          "pentharness-go-evidence",
+		Safety:        "passive JSONL validation and hashing; no network requests; not a vulnerability detector",
+		Files:         len(results), Rows: totalRows, Invalid: totalInvalid,
 		DuplicateEvidence: duplicates, Results: results,
 	}
 	encoder := json.NewEncoder(os.Stdout)

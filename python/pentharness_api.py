@@ -100,6 +100,7 @@ def analyze(value: Any) -> Dict[str, Any]:
 
     canonical = json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
     return {
+        "schemaVersion": 1,
         "tool": "pentharness-python-api",
         "format": document.get("openapi") or document.get("swagger") or "unknown",
         "title": (document.get("info") or {}).get("title"),
