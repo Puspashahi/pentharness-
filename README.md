@@ -418,7 +418,16 @@ passed to later stages.
 
 ```bash
 npm test
+npm run test:python
+npm run test:go
+npm run test:all
 ```
+
+The repository runs JavaScript, Python, and Go checks separately and through
+`npm run test:all`. GitHub Actions repeats the same checks on pushes and pull
+requests; browser suites remain explicit environment skips when Playwright is
+not installed. Cross-language report changes should not merge unless all
+language jobs and the Bash integration job pass.
 
 The offline suite is discovered automatically from `test/`, so new regression
 suites do not require a runner edit. Browser suites are skipped with an explicit
