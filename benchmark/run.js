@@ -24,24 +24,43 @@ async function main() {
     const scenarioStart = performance.now();
     let observed = 'no-candidate';
     let reason = '';
+    let evidence = {};
     if (scenario.id === 'idor-cross-user') {
       const owner = await request(base, scenario.route, { 'x-user': 'bob' });
       const foreign = await request(base, scenario.route, { 'x-user': 'alice' });
       requests += 2;
       observed = foreign.status === 200 && foreign.body.includes('"owner":"bob"') ? 'candidate' : 'no-candidate';
       reason = `owner=${owner.status}, foreign=${foreign.status}, foreignContainsOwner=${foreign.body.includes('"owner":"bob"')}`;
+      evidence = {
+        requestCount: 2,
+        identities: ['bob', 'alice'],
+        statuses: [owner.status, foreign.status],
+        ownershipMarker: foreign.body.includes('"owner":"bob"'),
+      };
     } else if (scenario.id === 'reflected-xss') {
       const payload = '<benchmark-xss>';
       const response = await request(base, `/search?q=${encodeURIComponent(payload)}`);
       requests++;
       observed = response.status === 200 && response.body.includes(payload) ? 'candidate' : 'no-candidate';
       reason = `status=${response.status}, reflected=${response.body.includes(payload)}`;
+      evidence = {
+        requestCount: 1,
+        status: response.status,
+        payload,
+        reflected: response.body.includes(payload),
+      };
     } else if (scenario.id === 'secure-owner-control') {
       const owner = await request(base, scenario.route, { 'x-user': 'alice' });
       const foreign = await request(base, scenario.route, { 'x-user': 'bob' });
       requests += 2;
       observed = foreign.status === 200 ? 'candidate' : 'no-candidate';
       reason = `owner=${owner.status}, foreign=${foreign.status}`;
+      evidence = {
+        requestCount: 2,
+        identities: ['alice', 'bob'],
+        statuses: [owner.status, foreign.status],
+        deniedForeign: foreign.status === 403,
+      };
     }
     results.push({
       id: scenario.id,
@@ -50,6 +69,7 @@ async function main() {
       observed,
       outcome: observed === scenario.expectation ? 'true-positive' : 'false-negative',
       reason,
+      evidence,
       proofMs: Math.round((performance.now() - scenarioStart) * 100) / 100,
     });
   }

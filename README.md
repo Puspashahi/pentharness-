@@ -473,7 +473,8 @@ control, and explicitly reports SQLi, SSRF, race, GraphQL, OAuth, WebSocket,
 and MCP scenarios as not tested until their fixtures and oracles are complete.
 Metrics include true/false positives, false negatives, request count, proof
 time, and executable coverage. A partial benchmark is never presented as
-complete coverage.
+complete coverage. Golden evidence fixtures under `benchmark/golden/` lock the
+stable proof observations while allowing measured proof time to vary.
 
 ---
 
