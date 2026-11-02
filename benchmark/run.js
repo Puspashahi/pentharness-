@@ -5,6 +5,7 @@ const path = require('path');
 const { performance } = require('perf_hooks');
 const { start } = require('./lab');
 const { create: createRunManifest } = require('../src/run-manifest');
+const { fromManifest } = require('../src/capabilities');
 
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
 
@@ -103,6 +104,7 @@ async function main() {
       finishedAt: new Date().toISOString(),
       options: { mode: 'local-benchmark', loopbackOnly: true },
     }),
+    capabilities: fromManifest(manifest).toJSON(),
     metrics: {
       scenarios: manifest.scenarios.length,
       executable: executable.length,

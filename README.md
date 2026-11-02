@@ -213,6 +213,12 @@ boundary for scope checks, prohibited paths, headers, budgets, approval gates,
 and per-request audit records. A transport callback cannot bypass those
 decisions.
 
+Benchmark and hunt reports expose a capability matrix with explicit
+`supported`, `planned`, `executed`, `proven`, `unsupported`, and `not-tested`
+states. Planned or unavailable coverage is never counted as clean.
+Stable run-status codes are: `0` clean, `10` findings, `11` incomplete,
+`12` policy-blocked, and `13` infrastructure failure.
+
 Run `npm run doctor` or `scripts/pentharness.sh doctor` for offline environment
 diagnostics. It checks required runtimes and permissions, reports optional
 Python/Go/Playwright/browser capabilities without pretending they are present,

@@ -18,6 +18,8 @@ assert.ok(report.runManifest.inputs.packageJsonSha256.match(/^[a-f0-9]{64}$/));
 assert.strictEqual(report.runManifest.options.loopbackOnly, true);
 assert.strictEqual(report.runManifest.environment.cwd, path.join(__dirname, '..'));
 assert.ok(report.runManifest.tools.node.startsWith('v'));
+assert.strictEqual(report.capabilities.summary.supported, 3);
+assert.strictEqual(report.capabilities.summary.planned, 7);
 assert.strictEqual(report.tool, 'pentharness-benchmark');
 assert.strictEqual(report.metrics.falsePositives, 0);
 assert.strictEqual(report.metrics.falseNegatives, 0);
