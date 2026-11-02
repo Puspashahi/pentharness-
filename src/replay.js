@@ -7,8 +7,8 @@ const { HeaderPolicy } = require('./headerpolicy');
 const { verifyApprovalToken } = require('./approval');
 const { ResourceBudget } = require('./resource-budget');
 const { resolve: resolveConfig, publicConfig } = require('./config');
-
-const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+const { RequestBroker } = require('./request-broker');
+const { SAFE_METHODS } = require('./replay-methods');
 
 function readRows(file, identity) {
   let raw;
@@ -79,8 +79,13 @@ async function execute(replayPlan, transport, opts = {}) {
   if (!replayPlan || !Array.isArray(replayPlan.requests)) throw new TypeError('replay plan is required');
   if (typeof transport !== 'function') throw new TypeError('transport function is required');
   const observations = [];
-  const limiter = new HeaderPolicy({ throttle: opts.throttle });
   const budget = opts.budget instanceof ResourceBudget ? opts.budget : new ResourceBudget(opts.budget);
+  const broker = new RequestBroker({
+    config: replayPlan.config || {},
+    policy: new HeaderPolicy({ throttle: opts.throttle }),
+    budget,
+    transport,
+  });
   for (const request of replayPlan.requests) {
     if (!request.replayable) {
       observations.push({ ...request, skipped: true, reason: 'state-changing request requires explicit approval' });
@@ -90,10 +95,11 @@ async function execute(replayPlan, transport, opts = {}) {
       observations.push({ ...request, skipped: true, reason: 'state-changing request requires a valid approval token' });
       continue;
     }
-    await limiter.take();
-    const release = budget.acquire(Buffer.byteLength(String(request.body || '')));
-    let result;
-    try { result = await transport(request); } finally { release(); }
+    const result = await broker.request(request);
+    if (result && result.blocked) {
+      observations.push({ ...request, skipped: true, reason: result.reason });
+      continue;
+    }
     const response = {
       status: Number(result && result.status || 0),
       headers: result && result.headers || {},
@@ -118,6 +124,7 @@ async function execute(replayPlan, transport, opts = {}) {
     observations,
     candidates: [],
     budget: budget.toJSON(),
+    audit: broker.audit,
   };
 }
 

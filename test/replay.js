@@ -32,6 +32,7 @@ t('executes safe requests and redacts ambient credentials', async () => {
   const report = await R.execute(plan, async () => ({ status: 200, body: '{"ok":true}' }));
   assert.strictEqual(report.schemaVersion, 1);
   assert.match(report.observations[0].evidence.request.headers.Authorization, /redacted/i);
+  assert.strictEqual(report.audit[0].decision, 'allow');
 });
 t('requires a scoped approval token for state-changing replay', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pentharness-replay-'));

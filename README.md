@@ -208,6 +208,11 @@ recipe values, environment variables, and explicit options are merged in a
 defined order; invalid limits, missing scope, and approval conflicts fail
 before any request is sent.
 
+Replay execution runs through `src/request-broker.js`, the single policy
+boundary for scope checks, prohibited paths, headers, budgets, approval gates,
+and per-request audit records. A transport callback cannot bypass those
+decisions.
+
 ---
 
 ## Honesty rules
