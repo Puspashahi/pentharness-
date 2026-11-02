@@ -33,6 +33,11 @@ grep -q 'openapi:' <<<"$openapi_output"
 python_api_output="$("$ROOT/scripts/pentharness.sh" python-api "$TMP/openapi.json")"
 grep -q 'pentharness-python-api' <<<"$python_api_output"
 
+printf '%s\n' '{"url":"https://target.test/me","status":200,"body":"{\"id\":1}"}' > "$TMP/alice.jsonl"
+printf '%s\n' '{"url":"https://target.test/me","status":200,"body":"{\"id\":2}"}' > "$TMP/bob.jsonl"
+python_corpus_output="$("$ROOT/scripts/pentharness.sh" python-corpus "$TMP/alice.jsonl" "$TMP/bob.jsonl")"
+grep -q 'pentharness-python-corpus' <<<"$python_corpus_output"
+
 secret_output="$("$ROOT/scripts/pentharness.sh" secrets "$TMP/app.js")"
 grep -q '"github-token"' <<<"$secret_output"
 ! grep -q 'abcdefghijklmnopqrstuvwxyz01' <<<"$secret_output"
