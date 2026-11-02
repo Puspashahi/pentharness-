@@ -23,7 +23,7 @@ Usage:
   scripts/pentharness.sh python-corpus CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh go-evidence CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh contract REPORT.json [REPORT.json ...]
-  scripts/pentharness.sh replay TARGET --capture id=FILE [--scope HOST] [--execute]
+  scripts/pentharness.sh replay TARGET --capture id=FILE [--scope HOST] [--config FILE] [--execute]
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -262,6 +262,7 @@ NODE
     APPROVAL_SECRET="${PENTHARNESS_APPROVAL_SECRET:-}"
     MAX_REQUESTS="${PENTHARNESS_MAX_REQUESTS:-100}"
     MAX_BYTES="${PENTHARNESS_MAX_BYTES:-10485760}"
+    CONFIG_FILE=""
     while [[ $# -gt 0 ]]; do
       case "$1" in
         --capture) [[ -n "${2:-}" ]] || die "--capture requires id=file"; CAPTURES+=("$2"); shift 2 ;;
@@ -272,6 +273,7 @@ NODE
         --approval-secret) [[ -n "${2:-}" ]] || die "--approval-secret requires a secret"; APPROVAL_SECRET="$2"; shift 2 ;;
         --max-requests) [[ -n "${2:-}" ]] || die "--max-requests requires a number"; MAX_REQUESTS="$2"; shift 2 ;;
         --max-bytes) [[ -n "${2:-}" ]] || die "--max-bytes requires a number"; MAX_BYTES="$2"; shift 2 ;;
+        --config) [[ -n "${2:-}" ]] || die "--config requires a JSON file"; CONFIG_FILE="$2"; shift 2 ;;
         *) die "unknown replay option '$1'" ;;
       esac
     done
@@ -282,7 +284,8 @@ NODE
       file="${spec#*=}"
       [[ -e "$file" ]] || die "capture does not exist: $file"
     done
-    TARGET="$TARGET" CAPTURES="$(printf '%s\n' "${CAPTURES[@]}")" SCOPES="$(printf '%s\n' "${SCOPES[@]}")" EXECUTE="$EXECUTE" THROTTLE="$THROTTLE" APPROVAL_TOKEN="$APPROVAL_TOKEN" APPROVAL_SECRET="$APPROVAL_SECRET" MAX_REQUESTS="$MAX_REQUESTS" MAX_BYTES="$MAX_BYTES" \
+    [[ -z "$CONFIG_FILE" || -e "$CONFIG_FILE" ]] || die "config does not exist: $CONFIG_FILE"
+    TARGET="$TARGET" CAPTURES="$(printf '%s\n' "${CAPTURES[@]}")" SCOPES="$(printf '%s\n' "${SCOPES[@]}")" EXECUTE="$EXECUTE" THROTTLE="$THROTTLE" APPROVAL_TOKEN="$APPROVAL_TOKEN" APPROVAL_SECRET="$APPROVAL_SECRET" MAX_REQUESTS="$MAX_REQUESTS" MAX_BYTES="$MAX_BYTES" CONFIG_FILE="$CONFIG_FILE" \
       "$NODE_BIN" - <<'NODE'
 const R = require('./src/replay');
 const captures = process.env.CAPTURES.trim().split('\n').map((spec) => {
@@ -291,6 +294,7 @@ const captures = process.env.CAPTURES.trim().split('\n').map((spec) => {
 });
 const scope = process.env.SCOPES.split('\n').filter(Boolean);
 const p = R.plan(captures, {
+  ...(process.env.CONFIG_FILE ? { config: process.env.CONFIG_FILE } : {}),
   scope,
   execute: process.env.EXECUTE === '1',
   throttle: Number(process.env.THROTTLE || 0),

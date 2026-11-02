@@ -203,6 +203,11 @@ Findings carry an explicit lifecycle (`lead`, `candidate`, `proven`, `refuted`,
 timestamped reasons and validated transitions. This keeps unproven,
 suppressed, and refuted results distinct from accepted findings.
 
+Replay and bounded execution use one validated configuration resolver. Defaults,
+recipe values, environment variables, and explicit options are merged in a
+defined order; invalid limits, missing scope, and approval conflicts fail
+before any request is sent.
+
 ---
 
 ## Honesty rules

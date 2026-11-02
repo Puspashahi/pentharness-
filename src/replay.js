@@ -6,6 +6,7 @@ const { inScope } = require('./subdomains');
 const { HeaderPolicy } = require('./headerpolicy');
 const { verifyApprovalToken } = require('./approval');
 const { ResourceBudget } = require('./resource-budget');
+const { resolve: resolveConfig, publicConfig } = require('./config');
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
@@ -30,12 +31,13 @@ function readRows(file, identity) {
 }
 
 function plan(captures, opts = {}) {
-  const scopes = Array.isArray(opts.scope) ? opts.scope : (opts.scope ? [opts.scope] : []);
-  const policy = opts.headerPolicy || new HeaderPolicy({ headers: opts.headers, throttle: opts.throttle });
+  const config = resolveConfig(opts);
+  const scopes = config.scope;
+  const policy = opts.headerPolicy || new HeaderPolicy({ headers: config.headers, throttle: config.throttle });
   const rows = captures.flatMap((capture) => readRows(capture.file, capture.identity));
   const requests = [];
   const blocked = [];
-  for (const row of rows.slice(0, opts.maxRequests || 100)) {
+  for (const row of rows.slice(0, config.maxRequests)) {
     let host;
     try { host = new URL(row.url).hostname; } catch { blocked.push({ row, reason: 'invalid URL' }); continue; }
     const scope = inScope(host, scopes);
@@ -46,7 +48,7 @@ function plan(captures, opts = {}) {
       ? verifyApprovalToken(opts.approvalToken, {
         action: 'state-change',
         scope: host,
-        secret: opts.approvalSecret,
+        secret: config.approvalSecret,
       })
       : { ok: true };
     requests.push({
@@ -58,17 +60,18 @@ function plan(captures, opts = {}) {
       body: row.body,
       stateChanging,
       approvalRequired: stateChanging,
-      replayable: SAFE_METHODS.has(row.method) || (opts.allowStateChange === true && approval.ok),
+      replayable: SAFE_METHODS.has(row.method) || (config.allowStateChange && approval.ok),
       approval: stateChanging ? { required: true, approved: approval.ok, reason: approval.reason } : { required: false },
     });
   }
   return {
     safety: 'scope-gated, rate-limited, redaction-safe replay; state-changing requests require explicit approval',
-    dryRun: opts.execute !== true,
+    dryRun: !config.execute,
     requests,
     blocked,
     policy: policy.toJSON(),
-    budget: new ResourceBudget(opts.budget).toJSON(),
+    budget: new ResourceBudget(config).toJSON(),
+    config: publicConfig(config),
   };
 }
 

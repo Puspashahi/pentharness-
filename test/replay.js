@@ -21,13 +21,13 @@ t('scope-gates and blocks state changes by default', () => {
     JSON.stringify({ method: 'POST', url: 'https://api.test/delete' }),
     JSON.stringify({ method: 'GET', url: 'https://outside.test/x' }),
   ].join('\n'));
-  const result = R.plan([{ identity: 'alice', file }], { scope: ['api.test'] });
+  const result = R.plan([{ identity: 'alice', file }], { scope: ['api.test'], maxRequests: 100 });
   assert.strictEqual(result.requests.length, 2);
   assert.strictEqual(result.requests[1].replayable, false);
   assert.strictEqual(result.blocked.length, 1);
 });
 t('executes safe requests and redacts ambient credentials', async () => {
-  const plan = R.plan([{ identity: 'alice', file: '/missing' }], { scope: ['api.test'] });
+  const plan = R.plan([{ identity: 'alice', file: '/missing' }], { scope: ['api.test'], maxRequests: 100 });
   plan.requests = [{ identity: 'alice', method: 'GET', url: 'https://api.test/me', headers: { Authorization: 'Bearer secret' }, body: null, replayable: true }];
   const report = await R.execute(plan, async () => ({ status: 200, body: '{"ok":true}' }));
   assert.strictEqual(report.schemaVersion, 1);
@@ -37,14 +37,19 @@ t('requires a scoped approval token for state-changing replay', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pentharness-replay-'));
   const file = path.join(dir, 'a.jsonl');
   fs.writeFileSync(file, JSON.stringify({ method: 'POST', url: 'https://api.test/update' }));
-  const blocked = R.plan([{ identity: 'alice', file }], { scope: ['api.test'], allowStateChange: true, approvalSecret: 'test-secret' });
+  assert.throws(
+    () => R.plan([{ identity: 'alice', file }], { scope: ['api.test'], allowStateChange: true, approvalSecret: 'test-secret', maxRequests: 100 }),
+    /approvalToken/,
+  );
+  const blocked = R.plan([{ identity: 'alice', file }], { scope: ['api.test'], maxRequests: 100 });
   assert.strictEqual(blocked.requests[0].replayable, false);
   const token = createApprovalToken({ action: 'state-change', scope: 'api.test', expiresAt: Date.now() + 60000, secret: 'test-secret' });
-  const approved = R.plan([{ identity: 'alice', file }], { scope: ['api.test'], allowStateChange: true, approvalToken: token, approvalSecret: 'test-secret' });
+  const approved = R.plan([{ identity: 'alice', file }], { scope: ['api.test'], allowStateChange: true, approvalToken: token, approvalSecret: 'test-secret', maxRequests: 100 });
   assert.strictEqual(approved.requests[0].replayable, true);
+  assert.ok(!JSON.stringify(approved).includes('test-secret'));
 });
 t('enforces hard request and byte budgets', async () => {
-  const plan = R.plan([{ identity: 'alice', file: '/missing' }], { scope: ['api.test'] });
+  const plan = R.plan([{ identity: 'alice', file: '/missing' }], { scope: ['api.test'], maxRequests: 100 });
   plan.requests = [
     { identity: 'alice', method: 'GET', url: 'https://api.test/1', headers: {}, body: '123', replayable: true },
     { identity: 'alice', method: 'GET', url: 'https://api.test/2', headers: {}, body: '123', replayable: true },
