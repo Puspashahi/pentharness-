@@ -220,6 +220,29 @@ states. Planned or unavailable coverage is never counted as clean.
 Stable run-status codes are: `0` clean, `10` findings, `11` incomplete,
 `12` policy-blocked, and `13` infrastructure failure.
 
+### Optional AI advisory providers
+
+AI is optional and advisory only: it can suggest hypotheses, mutations,
+prioritization, or explanations, but it cannot create findings or bypass scope,
+approval, budgets, or deterministic proof validators. Configure one
+OpenAI-compatible provider with environment variables; keys are read at runtime
+and never included in public configuration or evidence:
+
+```bash
+export PENTHARNESS_AI_PROVIDER=nvidia
+export NVIDIA_API_KEY=...
+export PENTHARNESS_AI_MODEL=meta/llama-3.1-8b-instruct
+```
+
+Presets include `nvidia`, `grok`/`xai`, `openai`, `openrouter`, `groq`,
+`mistral`, `together`, `github-models`/`copilot`, `ollama`, and `lmstudio`.
+`copilot` is an alias for GitHub Models; a Copilot subscription is not itself a
+portable API key. Use a GitHub Models token where that service is available.
+Custom OpenAI-compatible gateways can set `PENTHARNESS_AI_BASE_URL` and
+`PENTHARNESS_AI_API_KEY`. Verify provider terms, quotas, and data handling before
+sending target-derived context; local Ollama/LM Studio is preferred for
+sensitive evidence.
+
 Run `npm run doctor` or `scripts/pentharness.sh doctor` for offline environment
 diagnostics. It checks required runtimes and permissions, reports optional
 Python/Go/Playwright/browser capabilities without pretending they are present,
