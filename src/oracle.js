@@ -159,7 +159,7 @@ async function captureIdentity(browser, loginUrl, creds, opts = {}) {
  * Replay a set of routes under a storage state and record every observation, in
  * the JSONL format `authmatrix.readCapture` consumes.
  */
-async function replay(browser, storageState, baseUrl, routes = DEFAULT_ROUTES) {
+async function replay(browser, storageState, baseUrl, routes = DEFAULT_ROUTES, opts = {}) {
   const context = await browser.newContext({ storageState, viewport: { width: 1280, height: 800 }, ignoreHTTPSErrors: true, extraHTTPHeaders: (opts && opts.headerPolicy && opts.headerPolicy.active) ? opts.headerPolicy.playwright() : undefined });
   const page = await context.newPage();
   const rows = [];
