@@ -258,6 +258,18 @@ and `REVIEW` labels, the reason for each signal, and the next proof step.
 Use `PENTHARNESS_JSON=1` for machine-readable JSON. Static matches are never
 described as confirmed vulnerabilities.
 
+The Bash wrapper also exposes the tenant phase:
+
+```bash
+scripts/pentharness.sh tenant https://target.test \
+  --model ./tenant-records.json \
+  --identity alice=./alice.jsonl \
+  --identity bob=./bob.jsonl
+```
+
+Recon limits can be set with `--max-targets N`, `--timeout-ms N`, and
+`--workdir PATH`; all remain scope-gated.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
