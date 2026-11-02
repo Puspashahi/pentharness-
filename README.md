@@ -460,6 +460,21 @@ discovery misses.
 The suite includes a live out-of-band callback test that skips cleanly when the
 public interactsh instance rate-limits, so it stays deterministic.
 
+## Benchmark lab
+
+Run the local benchmark without contacting any external host:
+
+```bash
+npm run benchmark
+```
+
+The lab currently executes IDOR, reflected-XSS, and a secure authorization
+control, and explicitly reports SQLi, SSRF, race, GraphQL, OAuth, WebSocket,
+and MCP scenarios as not tested until their fixtures and oracles are complete.
+Metrics include true/false positives, false negatives, request count, proof
+time, and executable coverage. A partial benchmark is never presented as
+complete coverage.
+
 ---
 
 ## Layout

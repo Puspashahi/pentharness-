@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "name": "pentharness-local-benchmark",
+  "safety": "local-only; binds to loopback; no external requests",
+  "scenarios": [
+    {
+      "id": "idor-cross-user",
+      "class": "authz",
+      "status": "executable",
+      "expectation": "candidate",
+      "route": "/api/orders/2"
+    },
+    {
+      "id": "reflected-xss",
+      "class": "xss",
+      "status": "executable",
+      "expectation": "candidate",
+      "route": "/search"
+    },
+    {
+      "id": "secure-owner-control",
+      "class": "authz",
+      "status": "executable",
+      "expectation": "no-candidate",
+      "route": "/api/secure-orders/1"
+    },
+    { "id": "sqli", "class": "injection", "status": "planned" },
+    { "id": "ssrf", "class": "ssrf", "status": "planned" },
+    { "id": "race-condition", "class": "race", "status": "planned" },
+    { "id": "graphql-authz", "class": "authz", "status": "planned" },
+    { "id": "oauth", "class": "oauth", "status": "planned" },
+    { "id": "websocket-authz", "class": "authz", "status": "planned" },
+    { "id": "mcp-tool-authz", "class": "ai", "status": "planned" }
+  ]
+}
