@@ -23,6 +23,7 @@ Usage:
   scripts/pentharness.sh python-corpus CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh go-evidence CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh contract REPORT.json [REPORT.json ...]
+  scripts/pentharness.sh replay TARGET --capture id=FILE [--scope HOST] [--execute]
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -37,6 +38,7 @@ Commands:
   python-corpus Compare captured API responses across identities.
   go-evidence  Validate and hash large JSONL evidence sets with Go.
   contract     Validate reports against the shared cross-language contract.
+  replay       Plan or execute bounded, scope-gated capture replays.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -247,6 +249,48 @@ const results = files.map((file) => {
 });
 process.stdout.write(JSON.stringify({ schemaVersion: 1, tool: 'pentharness-contract', reports: results }, null, 2) + '\n');
 if (results.some((r) => r.valid.length)) process.exitCode = 1;
+NODE
+    ;;
+  replay)
+    [[ -n "${2:-}" ]] || die "replay requires a target URL"
+    shift 2
+    CAPTURES=()
+    SCOPES=()
+    EXECUTE=0
+    THROTTLE=0
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --capture) [[ -n "${2:-}" ]] || die "--capture requires id=file"; CAPTURES+=("$2"); shift 2 ;;
+        --scope) [[ -n "${2:-}" ]] || die "--scope requires a host"; SCOPES+=("$2"); shift 2 ;;
+        --execute) EXECUTE=1; shift ;;
+        --throttle-per-min) [[ -n "${2:-}" ]] || die "--throttle-per-min requires a number"; THROTTLE="$2"; shift 2 ;;
+        *) die "unknown replay option '$1'" ;;
+      esac
+    done
+    [[ ${#CAPTURES[@]} -gt 0 ]] || die "replay requires --capture id=FILE"
+    [[ ${#SCOPES[@]} -gt 0 ]] || die "replay requires explicit --scope HOST"
+    for spec in "${CAPTURES[@]}"; do
+      [[ "$spec" == *=* ]] || die "--capture must use id=FILE"
+      file="${spec#*=}"
+      [[ -e "$file" ]] || die "capture does not exist: $file"
+    done
+    TARGET="$TARGET" CAPTURES="$(printf '%s\n' "${CAPTURES[@]}")" SCOPES="$(printf '%s\n' "${SCOPES[@]}")" EXECUTE="$EXECUTE" THROTTLE="$THROTTLE" \
+      "$NODE_BIN" - <<'NODE'
+const R = require('./src/replay');
+const captures = process.env.CAPTURES.trim().split('\n').map((spec) => {
+  const i = spec.indexOf('=');
+  return { identity: spec.slice(0, i), file: spec.slice(i + 1) };
+});
+const scope = process.env.SCOPES.split('\n').filter(Boolean);
+const p = R.plan(captures, { scope, execute: process.env.EXECUTE === '1', throttle: Number(process.env.THROTTLE || 0) });
+if (process.env.EXECUTE !== '1') {
+  process.stdout.write(JSON.stringify({ tool: 'pentharness-replay-plan', ...p }, null, 2) + '\n');
+  process.exit(0);
+}
+R.execute(p, async (request) => {
+  const response = await fetch(request.url, { method: request.method, headers: request.headers, body: request.body, redirect: 'manual' });
+  return { status: response.status, headers: Object.fromEntries(response.headers.entries()), body: await response.text() };
+}).then((report) => process.stdout.write(JSON.stringify(report, null, 2) + '\n'));
 NODE
     ;;
   help|-h|--help)

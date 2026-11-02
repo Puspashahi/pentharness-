@@ -369,6 +369,26 @@ scripts/pentharness.sh contract state/report-a.json state/report-b.json
 The contract requires a producer, safety statement, schema version, and
 SHA-256 provenance when supplied. Validation failures stop the command.
 
+## Safe request replay
+
+Replay captured requests only after confirming written authorization:
+
+```bash
+# Dry-run plan; no network requests
+scripts/pentharness.sh replay https://target.test \
+  --capture alice=./userA.jsonl --capture bob=./userB.jsonl \
+  --scope target.test
+
+# Explicit execution of replayable safe methods
+scripts/pentharness.sh replay https://target.test \
+  --capture alice=./userA.jsonl --scope target.test \
+  --execute --throttle-per-min 25
+```
+
+Replay is scope-gated before requests, rejects prohibited paths, redacts
+credentials in evidence, rate-limits execution, and skips state-changing
+methods unless the caller explicitly enables them in the library API.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
