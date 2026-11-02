@@ -21,6 +21,10 @@ const DIR = __dirname;
 const SUITE_TIMEOUT_MS = 120000;
 
 const ONLINE = ['oauth-oob.js', 'priorart.js'];
+const OPTIONAL_BROWSER = ['browser.js', 'two-step-login.js'];
+const HAS_PLAYWRIGHT = (() => {
+  try { require.resolve('playwright'); return true; } catch { return false; }
+})();
 
 // Fixture servers, not suites. Each file ends at server.listen() and runs
 // forever by design, so it is driven by hand against the browser phases
@@ -74,8 +78,14 @@ async function main() {
 
   let passed = 0, failed = 0;
   const bad = [];
+  const skipped = [];
 
   for (const f of suites) {
+    if (OPTIONAL_BROWSER.includes(f) && !HAS_PLAYWRIGHT) {
+      skipped.push(`${f} (Playwright not installed)`);
+      console.log(`  skip ${f} (Playwright not installed; install with npm install)`);
+      continue;
+    }
     const r = await run(f);
     passed += r.passed;
     failed += r.failed;
@@ -88,6 +98,7 @@ async function main() {
 
   console.log(`\n${passed} passed, ${failed} failed across ${suites.length} suites`);
   if (!online) console.log(`skipped ${ONLINE.length} online suites (--online to include): ${ONLINE.join(', ')}`);
+  if (skipped.length) console.log(`skipped ${skipped.length} environment suites: ${skipped.join(', ')}`);
 
   process.exit(failed || bad.length ? 1 : 0);
 }
