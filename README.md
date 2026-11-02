@@ -335,6 +335,17 @@ anonymous state-changing routes as candidates, and attaches a SHA-256 source
 fingerprint. It never makes network requests or promotes schema observations
 to findings without runtime proof.
 
+For captured API traffic, compare the same request across identities:
+
+```bash
+scripts/pentharness.sh python-corpus ./userA.jsonl ./userB.jsonl
+```
+
+The analyzer ignores common volatile fields, reports identity-dependent status
+or semantic-body changes as candidates, and preserves line-level evidence plus
+bounded proof requirements. A difference is not treated as an IDOR unless
+ownership, intended role behavior, and exact replay are verified.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,

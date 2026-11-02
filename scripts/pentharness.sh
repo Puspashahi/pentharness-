@@ -20,6 +20,7 @@ Usage:
   scripts/pentharness.sh metamorphic TARGET --cases FILE
   scripts/pentharness.sh openapi TARGET --spec FILE
   scripts/pentharness.sh python-api SPEC
+  scripts/pentharness.sh python-corpus CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -31,6 +32,7 @@ Commands:
   metamorphic Evaluate explicit behavioral relations from observed JSON.
   openapi     Build safe, provenance-hashed API plans from an OpenAPI JSON file.
   python-api  Analyze an OpenAPI JSON document with the Python companion.
+  python-corpus Compare captured API responses across identities.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -210,6 +212,12 @@ NODE
     command -v "${PYTHON_BIN:-python3}" >/dev/null 2>&1 || die "python3 is required for python-api"
     [[ -e "$2" ]] || die "OpenAPI JSON does not exist: $2"
     exec "${PYTHON_BIN:-python3}" "$ROOT/python/pentharness_api.py" --json < "$2"
+    ;;
+  python-corpus)
+    [[ $# -ge 2 ]] || die "python-corpus requires at least one JSONL capture"
+    command -v "${PYTHON_BIN:-python3}" >/dev/null 2>&1 || die "python3 is required for python-corpus"
+    for capture in "${@:2}"; do [[ -e "$capture" ]] || die "capture does not exist: $capture"; done
+    exec "${PYTHON_BIN:-python3}" "$ROOT/python/pentharness_corpus.py" "${@:2}"
     ;;
   help|-h|--help)
     usage
