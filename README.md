@@ -475,6 +475,9 @@ Metrics include true/false positives, false negatives, request count, proof
 time, and executable coverage. A partial benchmark is never presented as
 complete coverage. Golden evidence fixtures under `benchmark/golden/` lock the
 stable proof observations while allowing measured proof time to vary.
+Each report also includes a run manifest with the repository revision and
+dirty-state indicator, input hashes, runtime versions, sanitized environment,
+options, timestamps, and declared dependency versions.
 
 ---
 

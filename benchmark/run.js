@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { performance } = require('perf_hooks');
 const { start } = require('./lab');
+const { create: createRunManifest } = require('../src/run-manifest');
 
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
 
@@ -13,6 +14,7 @@ async function request(base, route, headers = {}) {
 }
 
 async function main() {
+  const startedAt = new Date().toISOString();
   const fixture = await start();
   const base = `http://127.0.0.1:${fixture.port}`;
   const executable = manifest.scenarios.filter((scenario) => scenario.status === 'executable');
@@ -95,6 +97,12 @@ async function main() {
     tool: 'pentharness-benchmark',
     safety: manifest.safety,
     manifest: 'benchmark/manifest.json',
+    runManifest: createRunManifest({
+      root: path.join(__dirname, '..'),
+      startedAt,
+      finishedAt: new Date().toISOString(),
+      options: { mode: 'local-benchmark', loopbackOnly: true },
+    }),
     metrics: {
       scenarios: manifest.scenarios.length,
       executable: executable.length,
