@@ -548,6 +548,12 @@ function phaseTenant(o, store, dir) {
     return notes;
   }
   const model = tenantGraph.build(records);
+  const captures = (o.identity || []).map((identity) => ({
+    id: identity.id,
+    data: authmatrix.readCapture(path.resolve(identity.file), identity.id),
+  }));
+  const runtime = tenantGraph.proveFromCaptures(model, captures);
+  model.runtime = runtime;
   fs.writeFileSync(path.join(dir, 'tenant-graph.json'), JSON.stringify(model, null, 2), { mode: 0o600 });
   for (const candidate of model.candidates) {
     store.add({
@@ -563,7 +569,25 @@ function phaseTenant(o, store, dir) {
       tags: ['multi-tenant', 'relationship-graph'],
     });
   }
-  notes.push(`tenant: ${model.nodes.length} node(s), ${model.edges.length} relationship(s), ${model.candidates.length} cross-tenant hypothesis/hypotheses, ${model.contradictions.length} contradiction(s)`);
+  for (const proof of runtime.validated) {
+    store.add({
+      cls: 'authz',
+      title: `Runtime cross-tenant disclosure at ${proof.request.method} ${proof.request.url}`,
+      url: proof.request.url,
+      asset: o.target,
+      identity: proof.foreign,
+      confidence: proof.confidence,
+      evidence: `${proof.proof}; owner=${proof.owner}; foreign=${proof.foreign}; markers=${proof.owner_markers.join(', ')}`,
+      proof_needed: [
+        'replay the exact request with both identities',
+        'verify the disclosed markers belong to the owner and are not intentionally shared',
+        'retain sanitized owner and foreign response bodies',
+      ],
+      chain_hints: ['business'],
+      tags: ['multi-tenant', 'runtime-proof'],
+    });
+  }
+  notes.push(`tenant: ${model.nodes.length} node(s), ${model.edges.length} relationship(s), ${model.candidates.length} cross-tenant hypothesis/hypotheses, ${runtime.validated.length} runtime disclosure(s), ${model.contradictions.length} contradiction(s)`);
   return notes;
 }
 

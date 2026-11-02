@@ -273,6 +273,22 @@ the same request is reproduced with a foreign-tenant identity and the response
 is proven to contain protected data. The model accepts either an array of
 records or `{ "records": [...] }`.
 
+For runtime proof, provide captures for the modeled identities:
+
+```bash
+node src/cli.js https://target.test \
+  --phase tenant \
+  --tenant-model ./tenant-records.json \
+  --identity alice=./alice.jsonl \
+  --identity bob=./bob.jsonl
+```
+
+The phase compares identical requests, requires successful responses from both
+identities, and requires owner markers in the foreign response. Explicit share
+edges are skipped as permitted access. Runtime evidence is still emitted as an
+authorization lead for the central proof gate; it is never promoted directly
+to a finding.
+
 ## Scope-aware recon pipeline
 
 `scripts/pentharness.sh recon example.com --scope example.com` optionally

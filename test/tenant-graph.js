@@ -37,6 +37,29 @@ t('keeps hypotheses below confirmed finding status', () => {
   assert.ok(r.candidates.every((c) => c.confidence === 'candidate'));
   assert.match(r.proof_policy, /no vulnerability is confirmed/i);
 });
+t('validates a modeled disclosure from identical captured requests', () => {
+  const model = T.build([
+    { userId: 'alice', tenantId: 'org-a', resourceId: 'invoice-a', owner: true },
+    { userId: 'bob', tenantId: 'org-b', resourceId: 'invoice-a' },
+  ]);
+  const r = T.proveFromCaptures(model, [
+    { id: 'alice', data: [{ method: 'GET', url: '/api/invoice-a', status: 200, body: '{"owner_id":"alice","amount":42}' }] },
+    { id: 'bob', data: [{ method: 'GET', url: '/api/invoice-a', status: 200, body: '{"owner_id":"alice","amount":42}' }] },
+  ]);
+  assert.strictEqual(r.validated.length, 1);
+  assert.strictEqual(r.validated[0].confidence, 'runtime-validated');
+});
+t('does not validate a foreign response without owner markers', () => {
+  const model = T.build([
+    { userId: 'alice', tenantId: 'org-a', resourceId: 'invoice-a', owner: true },
+    { userId: 'bob', tenantId: 'org-b', resourceId: 'invoice-a' },
+  ]);
+  const r = T.proveFromCaptures(model, [
+    { id: 'alice', data: [{ method: 'GET', url: '/api/invoice-a', status: 200, body: '{"owner_id":"alice"}' }] },
+    { id: 'bob', data: [{ method: 'GET', url: '/api/invoice-a', status: 200, body: '{"message":"not found"}' }] },
+  ]);
+  assert.strictEqual(r.validated.length, 0);
+});
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
