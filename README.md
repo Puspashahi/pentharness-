@@ -320,6 +320,21 @@ SHA-256 provenance fingerprint of the source specification. Read-only sequences
 are marked replay-safe; state-changing and delete operations require explicit
 approval and are never executed by this phase.
 
+## Python companion
+
+Node.js remains the browser and orchestration layer. A dependency-free Python
+companion performs passive API-schema analysis:
+
+```bash
+scripts/pentharness.sh python-api ./openapi.json
+python3 test/python_api.py
+```
+
+It inventories operations, reports schema inconsistencies and explicitly
+anonymous state-changing routes as candidates, and attaches a SHA-256 source
+fingerprint. It never makes network requests or promotes schema observations
+to findings without runtime proof.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
@@ -439,6 +454,7 @@ src/grpc.js          gRPC/protobuf contract analysis
 src/pretty-report.js human-readable confidence/proof output
 src/metamorphic.js   stable behavioral-relation evaluator
 src/openapi.js       OpenAPI request and lifecycle planner
+python/pentharness_api.py  dependency-free Python API analyzer
 
 test/                deterministic regression suites, plus optional browser and
                      online suites, including OpenAPI, metamorphic, and tenant proof tests

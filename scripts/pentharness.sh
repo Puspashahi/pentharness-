@@ -19,6 +19,7 @@ Usage:
   scripts/pentharness.sh tenant TARGET --model FILE --identity id=FILE [--identity id=FILE]
   scripts/pentharness.sh metamorphic TARGET --cases FILE
   scripts/pentharness.sh openapi TARGET --spec FILE
+  scripts/pentharness.sh python-api SPEC
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -29,6 +30,7 @@ Commands:
   tenant      Build and optionally prove a multi-tenant model from captures.
   metamorphic Evaluate explicit behavioral relations from observed JSON.
   openapi     Build safe, provenance-hashed API plans from an OpenAPI JSON file.
+  python-api  Analyze an OpenAPI JSON document with the Python companion.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -202,6 +204,12 @@ NODE
     [[ -n "$SPEC" ]] || die "openapi requires --spec FILE"
     [[ -e "$SPEC" ]] || die "OpenAPI spec does not exist: $SPEC"
     exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase openapi --openapi "$SPEC"
+    ;;
+  python-api)
+    [[ -n "${2:-}" ]] || die "python-api requires an OpenAPI JSON file"
+    command -v "${PYTHON_BIN:-python3}" >/dev/null 2>&1 || die "python3 is required for python-api"
+    [[ -e "$2" ]] || die "OpenAPI JSON does not exist: $2"
+    exec "${PYTHON_BIN:-python3}" "$ROOT/python/pentharness_api.py" --json < "$2"
     ;;
   help|-h|--help)
     usage
