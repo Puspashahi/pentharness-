@@ -198,6 +198,11 @@ Written to `state/<target>/`:
 always stated. If the run was partial, the report says so rather than implying
 the target is clean.
 
+Findings carry an explicit lifecycle (`lead`, `candidate`, `proven`, `refuted`,
+`accepted`, `suppressed`, `duplicate`, `stale`, or `needs-review`) with
+timestamped reasons and validated transitions. This keeps unproven,
+suppressed, and refuted results distinct from accepted findings.
+
 ---
 
 ## Honesty rules
