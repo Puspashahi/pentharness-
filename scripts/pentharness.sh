@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Safe local orchestrator. Network activity is delegated to the explicit
+# `hunt` command; local analysis commands never contact targets.
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+NODE_BIN="${NODE_BIN:-node}"
+TARGET="${2:-.}"
+OUT="${PENTHARNESS_OUT:-}"
+JSON_MODE="${PENTHARNESS_JSON:-0}"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  scripts/pentharness.sh local-scan PATH [OUT.json]
+  scripts/pentharness.sh secrets PATH
+  scripts/pentharness.sh jslogic PATH
+  scripts/pentharness.sh grpc PATH
+  scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
+
+Commands:
+  local-scan  Run secrets, JavaScript logic, and .proto analysis locally.
+  secrets     Run the redaction-safe secret scanner.
+  jslogic     Run client-side authorization analysis through the CLI.
+  grpc        Analyze .proto files without making network requests.
+  recon       Run an optional scope-aware recon toolchain (requires --scope).
+  hunt        Delegate an explicitly requested authorized hunt to the CLI.
+
+Environment:
+  PENTHARNESS_MAX_FILES / PENTHARNESS_MAX_BYTES bound local scanning.
+  PENTHARNESS_OUT sets the output file for local-scan.
+  PENTHARNESS_JSON=1 emits machine-readable JSON instead of the human report.
+USAGE
+}
+
+die() {
+  printf 'pentharness: %s\n' "$*" >&2
+  exit 2
+}
+
+[[ $# -ge 1 ]] || { usage; exit 2; }
+COMMAND="$1"
+cd "$ROOT"
+
+case "$COMMAND" in
+  secrets)
+    [[ -e "$TARGET" ]] || die "path does not exist: $TARGET"
+    exec "$ROOT/scripts/pentharness-secrets.sh" "$TARGET"
+    ;;
+  jslogic)
+    [[ -e "$TARGET" ]] || die "path does not exist: $TARGET"
+    exec "$NODE_BIN" "$ROOT/src/cli.js" placeholder.invalid --phase jslogic --js "$TARGET"
+    ;;
+  grpc)
+    [[ -e "$TARGET" ]] || die "path does not exist: $TARGET"
+    TARGET="$TARGET" MAX_FILES="${PENTHARNESS_MAX_FILES:-1000}" MAX_BYTES="${PENTHARNESS_MAX_BYTES:-4194304}" \
+      "$NODE_BIN" - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const G = require('./src/grpc');
+const P = require('./src/pretty-report');
+const maxFiles = Number(process.env.MAX_FILES);
+const maxBytes = Number(process.env.MAX_BYTES);
+const root = path.resolve(process.env.TARGET);
+const files = [];
+function walk(p, depth = 0) {
+  if (files.length >= maxFiles || depth > 6) return;
+  let st;
+  try { st = fs.statSync(p); } catch { return; }
+  if (st.isFile()) {
+    if (st.size <= maxBytes && /\.proto$/i.test(p)) files.push(p);
+    return;
+  }
+  if (!st.isDirectory() || /(?:^|[/\\])(?:\.git|node_modules|vendor|dist|build)(?:[/\\]|$)/.test(p)) return;
+  for (const e of fs.readdirSync(p, { withFileTypes: true })) walk(path.join(p, e.name), depth + 1);
+}
+walk(root);
+const results = files.map((file) => {
+  const analysis = G.analyze(fs.readFileSync(file, 'utf8'), { source: file, path: file });
+  return { file, services: analysis.services, findings: analysis.findings };
+});
+process.stdout.write(JSON.stringify({ tool: 'pentharness-grpc', files: results.length, results }, null, 2) + '\n');
+NODE
+    ;;
+  local-scan)
+    [[ -e "$TARGET" ]] || die "path does not exist: $TARGET"
+    OUT="${3:-$OUT}"
+    TARGET="$TARGET" OUT="${OUT:-}" JSON_MODE="$JSON_MODE" MAX_FILES="${PENTHARNESS_MAX_FILES:-1000}" MAX_BYTES="${PENTHARNESS_MAX_BYTES:-4194304}" \
+      "$NODE_BIN" - <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const S = require('./src/secrets');
+const W = require('./src/jslogic');
+const G = require('./src/grpc');
+const P = require('./src/pretty-report');
+const target = path.resolve(process.env.TARGET);
+const secrets = S.scanPath(target, { maxFiles: Number(process.env.MAX_FILES), maxBytes: Number(process.env.MAX_BYTES) });
+const js = W.scanPath(target);
+const files = S.walkFiles(target, { maxFiles: Number(process.env.MAX_FILES), maxBytes: Number(process.env.MAX_BYTES) })
+  .filter((f) => /\.proto$/i.test(f));
+const grpc = files.map((file) => ({ file, ...G.analyze(fs.readFileSync(file, 'utf8'), { path: file }) }));
+const report = {
+  tool: 'pentharness-local-scan',
+  target,
+  safety: 'local-only; no network requests; values redacted',
+  secrets: { files: secrets.files, findings: secrets.findings },
+  javascript: { files: js.files, leads: js.leads },
+  grpc: { files: grpc.length, results: grpc.map((r) => ({ file: r.file, services: r.services, findings: r.findings })) },
+};
+const text = JSON.stringify(report, null, 2) + '\n';
+if (process.env.OUT) fs.writeFileSync(path.resolve(process.env.OUT), text, { mode: 0o600 });
+if (process.env.JSON_MODE === '1') process.stdout.write(text);
+else process.stdout.write(P.renderLocal(report));
+NODE
+    ;;
+  hunt)
+    [[ -n "${2:-}" ]] || die "hunt requires a target URL"
+    shift 2
+    exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --hunt "$@"
+    ;;
+  recon)
+    [[ -n "${2:-}" ]] || die "recon requires a root domain"
+    shift 2
+    SCOPE=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --scope) [[ -n "${2:-}" ]] || die "--scope requires a domain"; SCOPE="$2"; shift 2 ;;
+        --workdir) [[ -n "${2:-}" ]] || die "--workdir requires a path"; WORKDIR="$2"; shift 2 ;;
+        *) die "unknown recon option '$1'" ;;
+      esac
+    done
+    [[ -n "$SCOPE" ]] || die "recon requires explicit --scope"
+    TARGET="$TARGET" SCOPE="$SCOPE" WORKDIR="${WORKDIR:-}" \
+      "$NODE_BIN" - <<'NODE'
+const R = require('./src/recon-pipeline');
+(async () => {
+  const opts = process.env.WORKDIR ? { workdir: process.env.WORKDIR } : {};
+  const result = await R.run(process.env.TARGET, [process.env.SCOPE], opts);
+  process.stdout.write(JSON.stringify({
+    tool: 'pentharness-recon',
+    policy: 'scope-filtered; scanner matches are recon leads only',
+    ...result,
+  }, null, 2) + '\n');
+  if (!result.ok) process.exitCode = 2;
+})();
+NODE
+    ;;
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    die "unknown command '$COMMAND' (use help)"
+    ;;
+esac

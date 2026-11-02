@@ -196,7 +196,7 @@ async function runAuthzStage(pw, opts) {
     // collect 401s and prove nothing. For each identity we take the object URLs
     // it legitimately holds and walk the adjacent IDs under its own session.
     for (const s of prov.usable) {
-      const ownRows = sets.find((x) => x.id === s).data;
+      const ownRows = readCapture(path.join(stateDir, 'captures', `${s}.jsonl`), s);
       const seeds = [...new Set(ownRows.filter((r) => r.status === 200 && EN.idParamOf(r.url)).map((r) => r.url))]
         .slice(0, Math.ceil((opts.maxEnumTargets || 8) / prov.usable.length));
       if (!seeds.length) continue;

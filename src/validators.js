@@ -75,6 +75,34 @@ const L1 = {
     if (baselineBody === injectedBody) return { pass: false, why: 'response byte-identical to baseline' };
     return { pass: true, strength: 0.5, why: 'response differs from baseline' };
   },
+
+  /** Require repeated measurements to agree before treating a differential as
+   * evidence. One slow request or one dynamic response is noise. */
+  stableSamples(values, tolerance = 0) {
+    if (!Array.isArray(values) || values.length < 2) {
+      return { pass: false, why: 'needs at least two samples' };
+    }
+    const nums = values.map(Number).filter(Number.isFinite);
+    if (nums.length !== values.length) return { pass: false, why: 'samples are not numeric' };
+    const min = Math.min(...nums);
+    const max = Math.max(...nums);
+    if (max - min > tolerance) {
+      return { pass: false, why: `sample spread ${max - min} exceeds tolerance ${tolerance}` };
+    }
+    return { pass: true, why: `${nums.length} samples agree within ${tolerance}` };
+  },
+
+  /** Compare repeated response lengths, not one arbitrary pair. */
+  stableDifferential(baseline, injected, minDelta = 0) {
+    const b = this.stableSamples(baseline, 0);
+    const i = this.stableSamples(injected, 0);
+    if (!b.pass || !i.pass) return { pass: false, why: b.pass ? i.why : b.why };
+    const baselineValue = Number(baseline[0]);
+    const injectedValue = Number(injected[0]);
+    const delta = Math.abs(injectedValue - baselineValue);
+    if (delta <= minDelta) return { pass: false, why: `stable delta ${delta} does not exceed ${minDelta}` };
+    return { pass: true, why: `stable response lengths ${baselineValue} vs ${injectedValue}` };
+  },
 };
 
 /* ------------------------------------------------------------------ *
@@ -187,9 +215,17 @@ const VALIDATORS = {
     const { baseline, booleanTrue, booleanFalse, errorBody, timing } = ev;
     const runs = [];
 
-    if (timing && timing.baseline != null && timing.injected != null) {
-      const r = L1.timingDelta(timing.baseline, timing.injected, ev.thresholdMs || 1500);
-      runs.push({ layer: 1, kind: 'timing', ...r });
+    if (timing && Array.isArray(timing.baselines) && Array.isArray(timing.injectedSamples)) {
+      const stable = L1.stableSamples(timing.baselines, timing.jitterMs || 250);
+      const stableInjected = L1.stableSamples(timing.injectedSamples, timing.jitterMs || 250);
+      if (stable.pass && stableInjected.pass) {
+        const r = L1.timingDelta(timing.baselines[0], timing.injectedSamples[0], ev.thresholdMs || 1500);
+        runs.push({ layer: 1, kind: 'timing', ...r, stability: `${stable.why}; ${stableInjected.why}` });
+      } else {
+        runs.push({ layer: 1, kind: 'timing', pass: false, strength: 0, why: `unstable timing: ${stable.pass ? stableInjected.why : stable.why}` });
+      }
+    } else if (timing && timing.baseline != null && timing.injected != null) {
+      runs.push({ layer: 1, kind: 'timing', pass: false, strength: 0, why: 'single timing pair is insufficient; capture repeated baseline and injected samples' });
     }
     if (errorBody != null) {
       const r = L2.dbError(errorBody);
@@ -205,12 +241,17 @@ const VALIDATORS = {
       }
     }
     if (booleanTrue != null && booleanFalse != null) {
-      const a = booleanTrue.length ?? booleanTrue.status;
-      const b = booleanFalse.length ?? booleanFalse.status;
-      const differs = a !== b;
+      const trueSamples = Array.isArray(booleanTrue.samples) ? booleanTrue.samples : [];
+      const falseSamples = Array.isArray(booleanFalse.samples) ? booleanFalse.samples : [];
+      const stable = L1.stableDifferential(trueSamples, falseSamples, ev.minLengthDelta || 32);
+      const statusDiffers = booleanTrue.status != null && booleanFalse.status != null &&
+        booleanTrue.status !== booleanFalse.status;
+      const differs = stable.pass || (statusDiffers && booleanTrue.status >= 500);
       runs.push({
         layer: 1, kind: 'boolean', pass: differs, strength: differs ? 0.85 : 0,
-        why: differs ? `true=${a} vs false=${b} (responses diverge)` : `true=${a} equals false=${b} (no differential)`,
+        why: differs
+          ? (stable.pass ? stable.why : `true status=${booleanTrue.status} vs false status=${booleanFalse.status}`)
+          : 'single/dynamic response difference is insufficient; capture stable repeated samples',
       });
     }
 

@@ -70,8 +70,22 @@ t('out-of-root file content proves traversal', () => {
 });
 
 console.log('\n== injection validator ==');
-t('boolean differential alone is only a hypothesis', () => {
+t('single boolean differential is rejected', () => {
   const r = V.VALIDATORS.injection({ booleanTrue: { length: 5000 }, booleanFalse: { length: 12 } });
+  assert.strictEqual(r.verdict, 'refuted', r.why);
+});
+t('dynamic response lengths without repeated stability are refuted', () => {
+  const r = V.VALIDATORS.injection({
+    booleanTrue: { samples: [5000, 5112] },
+    booleanFalse: { samples: [12, 45] },
+  });
+  assert.strictEqual(r.verdict, 'refuted', r.why);
+});
+t('stable boolean differential is proven only with repeated samples', () => {
+  const r = V.VALIDATORS.injection({
+    booleanTrue: { samples: [5000, 5000] },
+    booleanFalse: { samples: [12, 12] },
+  });
   assert.strictEqual(r.verdict, 'hypothesis', r.why);
 });
 t('boolean differential + error signature = proven', () => {
@@ -82,8 +96,14 @@ t('boolean differential + error signature = proven', () => {
   });
   assert.strictEqual(r.verdict, 'proven', r.why);
 });
-t('timing delta alone can prove blind injection', () => {
+t('single timing delta is not enough to prove blind injection', () => {
   const r = V.VALIDATORS.injection({ timing: { baseline: 120, injected: 3600 } });
+  assert.strictEqual(r.verdict, 'refuted', r.why);
+});
+t('stable repeated timing delta can prove blind injection', () => {
+  const r = V.VALIDATORS.injection({
+    timing: { baselines: [120, 130], injectedSamples: [3600, 3610] },
+  });
   assert.strictEqual(r.verdict, 'proven', r.why);
 });
 t('the false positive that started everything is refuted', () => {

@@ -94,8 +94,16 @@ async function probeParam(ctx, endpoint) {
 
   // Baseline first, in the same run. Without this every differential is a guess.
   const base = await timed(ctx, build(value));
+  // Dynamic pages and transient latency are common. Keep a second control
+  // sample so validators can require repeatable evidence instead of trusting
+  // one response or one slow request.
+  const baseRepeat = await timed(ctx, build(value));
 
-  const ev = { url, param, baseline: base, classes };
+  const ev = {
+    url, param, baseline: base,
+    baselineSamples: [base, baseRepeat],
+    classes,
+  };
   const attempts = [];
   let differential = null;
 
@@ -109,13 +117,23 @@ async function probeParam(ctx, endpoint) {
       ev.errorIsEcho = r.body === base.body;
       if (V.L2.dbError(r.body).pass) { differential = p; break; }
     } else if (p.kind === 'boolean') {
-      if (p.expect === 'more') ev.booleanTrue = { length: r.length, status: r.status };
-      else ev.booleanFalse = { length: r.length, status: r.status };
+      const repeat = await timed(ctx, build(p.value));
+      const sample = { length: r.length, status: r.status };
+      const repeatSample = { length: repeat.length, status: repeat.status };
+      if (p.expect === 'more') ev.booleanTrue = { ...sample, samples: [r.length, repeat.length] };
+      else ev.booleanFalse = { ...sample, samples: [r.length, repeat.length] };
       if (ev.booleanTrue && ev.booleanFalse) { differential = differential || p; }
     } else if (p.kind === 'time') {
       // Only reached after the cheap checks; never speculative.
-      ev.timing = { baseline: base.ms, injected: r.ms };
-      if (r.ms - base.ms > 1500) { differential = p; break; }
+      const repeat = await timed(ctx, build(p.value));
+      ev.timing = {
+        baselines: [base.ms, baseRepeat.ms],
+        injectedSamples: [r.ms, repeat.ms],
+      };
+      if (Math.min(r.ms, repeat.ms) - Math.max(base.ms, baseRepeat.ms) > 1500) {
+        differential = p;
+        break;
+      }
     } else if (p.kind === 'xss') {
       // Reflection alone is not proof. The browser oracle must confirm execution.
       if (r.body && r.body !== base.body) ev.reflected = true;
