@@ -44,6 +44,7 @@ execute     real payloads with evidence capture
 prove       layered oracles + adversarial refutation
 authz       two identities diffed, sequential-ID enumeration
 protocols   GraphQL / JWT / cache / MCP / postMessage
+tenant      multi-tenant relationship and cross-boundary authorization hypotheses
 correlate   composable attack chains
 gate        proof gate + coverage gate -> findings.json
 change      what is new since last run, and what was never probed
@@ -111,6 +112,7 @@ pentharness https://target.tld --hunt \
 | `--recipe FILE` | Accounts, selectors, routes and headers from JSON |
 | `--oauth` | Drive an IdP flow rather than a plain form |
 | `--identity id=file` | Pre-captured traffic, skips login |
+| `--tenant-model FILE` | JSON relationship records for the multi-tenant graph |
 | `--scope HOST` | Declare program scope (repeatable) |
 | `--domain D` | Enumerate subdomains of D rather than the given host |
 | `--skip-subs` `--skip-takeover` `--skip-browser` `--skip-js` `--skip-change` | Turn off a phase |
@@ -130,8 +132,8 @@ pentharness https://target.tld --hunt \
 
 ### Phases
 
-`recon` `scan` `jslogic` `prioritise` `authz` `prove` `ingest` `correlate`
-`queue` `gate` `report`
+`recon` `scan` `jslogic` `secrets` `tenant` `prioritise` `authz` `prove`
+`ingest` `correlate` `queue` `gate` `report`
 
 ---
 
@@ -141,6 +143,7 @@ pentharness https://target.tld --hunt \
 |---|---|
 | Injection differentials (SQLi, XSS) | real, proven |
 | Broken access control / IDOR | real; needs two identities |
+| Multi-tenant relationship graph | real; candidate generation with contradiction tracking |
 | Sequential-ID enumeration | real, with blast-radius scaling |
 | JavaScript analysis incl. minified | real; source maps fetched when published |
 | Browser auto-click, form submit, injection | real; judged by side effect, not reflection |
@@ -214,6 +217,73 @@ Enforced in code, not just documented:
    reported separately from endpoints that were tested and found fine.
 8. **A live host is not a takeover.** Pointing at a CDN is normal configuration;
    only a de-provisioned resource is a finding.
+9. **One differential is not proof.** Injection timing and boolean-response
+   findings require repeated, stable control and probe samples; transient
+   latency or dynamic response lengths remain hypotheses/refutations.
+10. **Secret regex matches are leads, not leaks.** Values are never stored in
+    findings; placeholders and low-entropy generic assignments are filtered,
+    and live validation remains required.
+
+## P0 stateful testing
+
+`src/workflow.js` models observed application workflows and generates bounded
+skip, reorder, duplicate, and replay mutations. `src/race.js` measures
+concurrent response outcomes, duplicate acceptance, idempotency-key presence,
+and optional before/after state snapshots. State-changing race tests require
+explicit `allowStateChange: true`; both modules produce hypotheses, not
+automatic findings.
+
+The next stateful primitives are `src/differential.js` for semantic response
+comparisons, `src/api-sequence.js` for OpenAPI lifecycle planning, and
+`src/auth-lifecycle.js` for session fixation, logout invalidation, and refresh
+token observations. Their network execution remains caller-controlled so MFA,
+CAPTCHA, recovery, and other controls are never bypassed automatically.
+
+Modern protocol coverage now includes `src/websocket.js` for WebSocket message
+handler/origin/authorization surface analysis and `src/grpc.js` for lightweight
+`.proto` service, streaming RPC, sensitive-method, and auth-metadata analysis.
+These are static planning signals until authorized replay confirms behavior.
+
+## Bash automation
+
+Use `scripts/pentharness.sh local-scan PATH` for a bounded, local-only scan
+combining secret detection, JavaScript authorization analysis, and gRPC
+`.proto` analysis. Use `scripts/pentharness.sh secrets PATH` for the focused
+redaction-safe scanner. The `hunt` subcommand is the only wrapper path that
+delegates to network testing, and it still requires an explicit target and
+the harness safety controls.
+
+Local scans default to a human-readable report with `CONFIRMED`, `CANDIDATE`,
+and `REVIEW` labels, the reason for each signal, and the next proof step.
+Use `PENTHARNESS_JSON=1` for machine-readable JSON. Static matches are never
+described as confirmed vulnerabilities.
+
+## Multi-tenant relationship modeling
+
+The `tenant` phase models users, tenants, projects, resources, roles,
+invitations, and shares from a researcher-supplied JSON record set:
+
+```bash
+node src/cli.js https://target.test --phase tenant --tenant-model ./tenant-records.json
+```
+
+It writes `tenant-graph.json`, identifies cross-tenant access hypotheses, and
+tracks contradictory access observations. These remain authorization leads until
+the same request is reproduced with a foreign-tenant identity and the response
+is proven to contain protected data. The model accepts either an array of
+records or `{ "records": [...] }`.
+
+## Scope-aware recon pipeline
+
+`scripts/pentharness.sh recon example.com --scope example.com` optionally
+chains `subfinder`, `uncover`, `dnsx`, `httpx`, `katana`, and `nuclei` when
+installed. It requires an explicit matching scope, skips unavailable tools,
+keeps outputs in a bounded working directory, and labels all scanner output as
+recon evidence/leads rather than confirmed vulnerabilities.
+
+Unavailable recon tools are reported as skipped rather than treated as clean
+results, and structured output is filtered for out-of-scope hosts before it is
+passed to later stages.
 
 ---
 
@@ -254,6 +324,7 @@ src/gate.js          proof gate -> findings.json
 src/coverage.js      coverage ledger
 src/suppress.js      suppressed vs filtered ledger
 src/authmatrix.js    ownership-aware authorization matrix
+src/tenant-graph.js  multi-tenant relationship graph and proof hypotheses
 src/authz-stage.js   dual-identity diffing
 src/enumerate.js     sequential-ID enumeration
 src/graphql.js       introspection + resolver authz
