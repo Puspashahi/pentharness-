@@ -24,6 +24,7 @@ Usage:
   scripts/pentharness.sh go-evidence CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh contract REPORT.json [REPORT.json ...]
   scripts/pentharness.sh replay TARGET --capture id=FILE [--scope HOST] [--config FILE] [--execute]
+  scripts/pentharness.sh doctor
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -39,6 +40,7 @@ Commands:
   go-evidence  Validate and hash large JSONL evidence sets with Go.
   contract     Validate reports against the shared cross-language contract.
   replay       Plan or execute bounded, scope-gated capture replays.
+  doctor       Check local runtimes, optional tools, browser support, and permissions.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -59,6 +61,15 @@ COMMAND="$1"
 cd "$ROOT"
 
 case "$COMMAND" in
+  doctor)
+    "$NODE_BIN" - <<'NODE'
+const D = require('./src/doctor');
+const report = D.run({ root: process.cwd() });
+if (process.env.PENTHARNESS_JSON === '1') process.stdout.write(JSON.stringify(report, null, 2) + '\n');
+else process.stdout.write(D.format(report) + '\n');
+process.exitCode = report.exitCode;
+NODE
+    ;;
   secrets)
     [[ -e "$TARGET" ]] || die "path does not exist: $TARGET"
     exec "$ROOT/scripts/pentharness-secrets.sh" "$TARGET"

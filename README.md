@@ -213,6 +213,11 @@ boundary for scope checks, prohibited paths, headers, budgets, approval gates,
 and per-request audit records. A transport callback cannot bypass those
 decisions.
 
+Run `npm run doctor` or `scripts/pentharness.sh doctor` for offline environment
+diagnostics. It checks required runtimes and permissions, reports optional
+Python/Go/Playwright/browser capabilities without pretending they are present,
+and returns exit code 2 only for required failures.
+
 ---
 
 ## Honesty rules
