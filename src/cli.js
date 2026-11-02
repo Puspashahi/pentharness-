@@ -52,6 +52,7 @@ const tenantGraph = require('./tenant-graph');
 const metamorphic = require('./metamorphic');
 const openapi = require('./openapi');
 const ai = require('./ai');
+const { AIClient, configFromEnv: aiConfigFromEnv } = require('./ai-client');
 
 const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
@@ -140,7 +141,7 @@ function usage() {
 pentharness — deterministic harness for AI-assisted pentesting
 
   pentharness <target> [--hunt] [phases...]   # --hunt = one-command autonomous run
-  pentharness <target> [--phase discover,recon,scan,jslogic,prioritise,authz,prove,ingest,correlate,queue,gate,report]
+  pentharness <target> [--phase discover,recon,scan,jslogic,prioritise,authz,prove,ingest,correlate,queue,advise,gate,report]
                [--from tool.json ...] [--identity id=file ...] [--js PATH]
                [--max-pages N] [--timeout MS] [--answer FILE] [--prove FILE] [--no-scan]
 
@@ -160,6 +161,7 @@ Phases
   ingest      normalise existing tool JSON passed with --from
   correlate   build candidate attack chains (shared asset/param/identity)
   queue       emit the bounded attention queue for LLM reasoning
+  advise      ask the configured AI provider for hypotheses/prioritisation (advisory only)
   gate        apply the proof gate + coverage gate -> findings.json
   report      all of the above, in order
 
@@ -1331,6 +1333,30 @@ async function main() {
 
   if (runPhases.has('ai-triage')) {
     notes.push(...await phaseAiTriage(o, dir));
+  }
+
+  if (runPhases.has('advise')) {
+    const q = buildQueue(store, chains, 25);
+    const aiConfig = aiConfigFromEnv(process.env, {
+      provider: o.aiProvider,
+      model: o.aiModel,
+      baseUrl: o.aiBaseUrl,
+    });
+    const advisory = await new AIClient(aiConfig).advise(
+      'Review this bounded queue. Return JSON with an array named hypotheses. Each item must contain leadId or chainId, rationale, a safe next validation step, and confidence. Do not call anything a finding.',
+      { target: o.target, queue: q },
+    );
+    const advisoryPath = path.join(dir, 'advisory.json');
+    fs.writeFileSync(advisoryPath, JSON.stringify({
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      provider: advisory.provider,
+      model: advisory.model,
+      advisory: advisory.text,
+      usage: advisory.usage,
+      deterministicAuthority: 'AI output is advisory; proof validators and policy gates remain authoritative',
+    }, null, 2));
+    console.log(`${C.b}== AI advisory ==${C.r}  ${C.dim}-> ${advisoryPath}${C.r}`);
   }
 
   if (runPhases.has('gate')) {

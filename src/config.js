@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const { configFromEnv: aiConfigFromEnv } = require('./ai-client');
 
 const DEFAULTS = Object.freeze({
   scope: [],
@@ -20,6 +21,7 @@ const DEFAULTS = Object.freeze({
   aiKeyEnv: null,
   aiMaxTokens: 1200,
   aiTimeoutMs: 60000,
+  ai: null,
 });
 
 function positiveInt(value, name, allowZero = false) {
@@ -66,6 +68,11 @@ function resolve(options = {}, env = process.env) {
     ...(env.PENTHARNESS_AI_MODEL ? { aiModel: env.PENTHARNESS_AI_MODEL } : {}),
     ...(env.PENTHARNESS_AI_BASE_URL ? { aiBaseUrl: env.PENTHARNESS_AI_BASE_URL } : {}),
     ...(env.PENTHARNESS_AI_KEY_ENV ? { aiKeyEnv: env.PENTHARNESS_AI_KEY_ENV } : {}),
+    ...(env.PENTHARNESS_AI_PROVIDER ? { ai: {
+      provider: env.PENTHARNESS_AI_PROVIDER,
+      model: env.PENTHARNESS_AI_MODEL,
+      baseUrl: env.PENTHARNESS_AI_BASE_URL,
+    } } : {}),
     ...options,
   };
   const config = {
@@ -91,6 +98,9 @@ function resolve(options = {}, env = process.env) {
     throw new Error('allowStateChange requires approvalToken and approvalSecret');
   }
   if (config.approvalToken && !config.approvalSecret) throw new Error('approvalToken requires approvalSecret');
+  if (merged.ai) {
+    config.ai = aiConfigFromEnv(env, typeof merged.ai === 'object' ? merged.ai : { provider: merged.ai });
+  }
   return Object.freeze(config);
 }
 
@@ -109,6 +119,12 @@ function publicConfig(config) {
     aiProvider: config.aiProvider,
     aiModel: config.aiModel,
     aiConfigured: Boolean(config.aiProvider),
+    ai: config.ai ? {
+      provider: config.ai.provider,
+      baseUrl: config.ai.baseUrl,
+      model: config.ai.model,
+      apiKeyConfigured: Boolean(config.ai.apiKey),
+    } : null,
   };
 }
 
