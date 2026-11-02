@@ -14,6 +14,12 @@ const DEFAULTS = Object.freeze({
   approvalToken: null,
   approvalSecret: null,
   headers: {},
+  aiProvider: null,
+  aiModel: null,
+  aiBaseUrl: null,
+  aiKeyEnv: null,
+  aiMaxTokens: 1200,
+  aiTimeoutMs: 60000,
 });
 
 function positiveInt(value, name, allowZero = false) {
@@ -56,6 +62,10 @@ function resolve(options = {}, env = process.env) {
     ...(env.PENTHARNESS_APPROVAL_TOKEN ? { approvalToken: env.PENTHARNESS_APPROVAL_TOKEN } : {}),
     ...(env.PENTHARNESS_APPROVAL_SECRET ? { approvalSecret: env.PENTHARNESS_APPROVAL_SECRET } : {}),
     ...(env.PENTHARNESS_HEADERS ? { headers: env.PENTHARNESS_HEADERS } : {}),
+    ...(env.PENTHARNESS_AI_PROVIDER ? { aiProvider: env.PENTHARNESS_AI_PROVIDER } : {}),
+    ...(env.PENTHARNESS_AI_MODEL ? { aiModel: env.PENTHARNESS_AI_MODEL } : {}),
+    ...(env.PENTHARNESS_AI_BASE_URL ? { aiBaseUrl: env.PENTHARNESS_AI_BASE_URL } : {}),
+    ...(env.PENTHARNESS_AI_KEY_ENV ? { aiKeyEnv: env.PENTHARNESS_AI_KEY_ENV } : {}),
     ...options,
   };
   const config = {
@@ -69,6 +79,12 @@ function resolve(options = {}, env = process.env) {
     maxConcurrency: positiveInt(merged.maxConcurrency, 'maxConcurrency'),
     execute: merged.execute === true,
     allowStateChange: merged.allowStateChange === true,
+    aiProvider: merged.aiProvider ? String(merged.aiProvider) : null,
+    aiModel: merged.aiModel ? String(merged.aiModel) : null,
+    aiBaseUrl: merged.aiBaseUrl ? String(merged.aiBaseUrl) : null,
+    aiKeyEnv: merged.aiKeyEnv ? String(merged.aiKeyEnv) : null,
+    aiMaxTokens: positiveInt(merged.aiMaxTokens, 'aiMaxTokens'),
+    aiTimeoutMs: positiveInt(merged.aiTimeoutMs, 'aiTimeoutMs'),
   };
   if (config.execute && !config.scope.length) throw new Error('execute requires explicit scope');
   if (config.allowStateChange && (!config.approvalToken || !config.approvalSecret)) {
@@ -90,6 +106,9 @@ function publicConfig(config) {
     allowStateChange: config.allowStateChange,
     approvalConfigured: Boolean(config.approvalToken && config.approvalSecret),
     headers: Object.keys(config.headers),
+    aiProvider: config.aiProvider,
+    aiModel: config.aiModel,
+    aiConfigured: Boolean(config.aiProvider),
   };
 }
 

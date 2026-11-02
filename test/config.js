@@ -18,9 +18,13 @@ const env = resolve({ scope: ['api.test'] }, {
   PENTHARNESS_MAX_REQUESTS: '9',
   PENTHARNESS_MAX_BYTES: '1000',
   PENTHARNESS_HEADERS: 'X-Env: yes',
+  PENTHARNESS_AI_PROVIDER: 'ollama',
+  PENTHARNESS_AI_MODEL: 'llama3.2',
 });
 assert.strictEqual(env.maxRequests, 9);
 assert.strictEqual(env.maxBytes, 1000);
 assert.deepStrictEqual(env.headers, { 'X-Env': 'yes' });
+assert.strictEqual(env.aiProvider, 'ollama');
+assert.strictEqual(env.aiModel, 'llama3.2');
 
 console.log('config: ok');
