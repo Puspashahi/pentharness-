@@ -16,6 +16,7 @@ Usage:
   scripts/pentharness.sh secrets PATH
   scripts/pentharness.sh jslogic PATH
   scripts/pentharness.sh grpc PATH
+  scripts/pentharness.sh tenant TARGET --model FILE --identity id=FILE [--identity id=FILE]
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -23,6 +24,7 @@ Commands:
   secrets     Run the redaction-safe secret scanner.
   jslogic     Run client-side authorization analysis through the CLI.
   grpc        Analyze .proto files without making network requests.
+  tenant      Build and optionally prove a multi-tenant model from captures.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -122,19 +124,27 @@ NODE
     [[ -n "${2:-}" ]] || die "recon requires a root domain"
     shift 2
     SCOPE=""
+    MAX_TARGETS=""
+    TIMEOUT_MS=""
     while [[ $# -gt 0 ]]; do
       case "$1" in
         --scope) [[ -n "${2:-}" ]] || die "--scope requires a domain"; SCOPE="$2"; shift 2 ;;
         --workdir) [[ -n "${2:-}" ]] || die "--workdir requires a path"; WORKDIR="$2"; shift 2 ;;
+        --max-targets) [[ -n "${2:-}" ]] || die "--max-targets requires a number"; MAX_TARGETS="$2"; shift 2 ;;
+        --timeout-ms) [[ -n "${2:-}" ]] || die "--timeout-ms requires a number"; TIMEOUT_MS="$2"; shift 2 ;;
         *) die "unknown recon option '$1'" ;;
       esac
     done
     [[ -n "$SCOPE" ]] || die "recon requires explicit --scope"
-    TARGET="$TARGET" SCOPE="$SCOPE" WORKDIR="${WORKDIR:-}" \
+    TARGET="$TARGET" SCOPE="$SCOPE" WORKDIR="${WORKDIR:-}" MAX_TARGETS="${MAX_TARGETS:-}" TIMEOUT_MS="${TIMEOUT_MS:-}" \
       "$NODE_BIN" - <<'NODE'
 const R = require('./src/recon-pipeline');
 (async () => {
-  const opts = process.env.WORKDIR ? { workdir: process.env.WORKDIR } : {};
+    const opts = {
+      ...(process.env.WORKDIR ? { workdir: process.env.WORKDIR } : {}),
+      ...(process.env.MAX_TARGETS ? { maxTargets: Number(process.env.MAX_TARGETS) } : {}),
+      ...(process.env.TIMEOUT_MS ? { timeoutMs: Number(process.env.TIMEOUT_MS) } : {}),
+    };
   const result = await R.run(process.env.TARGET, [process.env.SCOPE], opts);
   process.stdout.write(JSON.stringify({
     tool: 'pentharness-recon',
@@ -144,6 +154,22 @@ const R = require('./src/recon-pipeline');
   if (!result.ok) process.exitCode = 2;
 })();
 NODE
+    ;;
+  tenant)
+    [[ -n "${2:-}" ]] || die "tenant requires a target URL"
+    shift 2
+    MODEL=""
+    ARGS=()
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --model) [[ -n "${2:-}" ]] || die "--model requires a JSON file"; MODEL="$2"; shift 2 ;;
+        --identity) [[ -n "${2:-}" ]] || die "--identity requires id=file"; ARGS+=(--identity "$2"); shift 2 ;;
+        *) die "unknown tenant option '$1'" ;;
+      esac
+    done
+    [[ -n "$MODEL" ]] || die "tenant requires --model FILE"
+    [[ -e "$MODEL" ]] || die "tenant model does not exist: $MODEL"
+    exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase tenant --tenant-model "$MODEL" "${ARGS[@]}"
     ;;
   help|-h|--help)
     usage
