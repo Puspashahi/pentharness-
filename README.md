@@ -479,6 +479,11 @@ Each report also includes a run manifest with the repository revision and
 dirty-state indicator, input hashes, runtime versions, sanitized environment,
 options, timestamps, and declared dependency versions.
 
+Stateful runs use the crash-safe `StateStore`: checkpoints are written through
+an atomic rename under a lock, include revisions and checksums, retain a
+backup, and support schema migrations and recovery after a torn or corrupted
+primary write.
+
 ---
 
 ## Layout
