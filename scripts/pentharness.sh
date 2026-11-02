@@ -17,6 +17,7 @@ Usage:
   scripts/pentharness.sh jslogic PATH
   scripts/pentharness.sh grpc PATH
   scripts/pentharness.sh tenant TARGET --model FILE --identity id=FILE [--identity id=FILE]
+  scripts/pentharness.sh metamorphic TARGET --cases FILE
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -25,6 +26,7 @@ Commands:
   jslogic     Run client-side authorization analysis through the CLI.
   grpc        Analyze .proto files without making network requests.
   tenant      Build and optionally prove a multi-tenant model from captures.
+  metamorphic Evaluate explicit behavioral relations from observed JSON.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -170,6 +172,20 @@ NODE
     [[ -n "$MODEL" ]] || die "tenant requires --model FILE"
     [[ -e "$MODEL" ]] || die "tenant model does not exist: $MODEL"
     exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase tenant --tenant-model "$MODEL" "${ARGS[@]}"
+    ;;
+  metamorphic)
+    [[ -n "${2:-}" ]] || die "metamorphic requires a target URL"
+    shift 2
+    CASES=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --cases) [[ -n "${2:-}" ]] || die "--cases requires a JSON file"; CASES="$2"; shift 2 ;;
+        *) die "unknown metamorphic option '$1'" ;;
+      esac
+    done
+    [[ -n "$CASES" ]] || die "metamorphic requires --cases FILE"
+    [[ -e "$CASES" ]] || die "metamorphic cases do not exist: $CASES"
+    exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase metamorphic --metamorphic "$CASES"
     ;;
   help|-h|--help)
     usage

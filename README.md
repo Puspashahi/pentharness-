@@ -270,6 +270,41 @@ scripts/pentharness.sh tenant https://target.test \
 Recon limits can be set with `--max-targets N`, `--timeout-ms N`, and
 `--workdir PATH`; all remain scope-gated.
 
+## Metamorphic testing
+
+Metamorphic cases test an explicit behavioral relation when no single expected
+response is available. Cases require repeated stable samples and produce
+candidates or holds, never automatic findings:
+
+```bash
+scripts/pentharness.sh metamorphic https://target.test --cases ./cases.json
+```
+
+Supported relations include `presentation-invariance`,
+`read-order-invariance`, `permission-revocation`, and
+`logout-invalidation`. A case file is either an array or `{ "cases": [...] }`.
+Each side should contain at least two equivalent observations:
+
+```json
+{
+  "cases": [{
+    "id": "logout-check",
+    "relation": "logout-invalidation",
+    "before": [
+      { "status": 200, "body": "{\"id\":\"owned\"}" },
+      { "status": 200, "body": "{\"id\":\"owned\"}" }
+    ],
+    "after": [
+      { "status": 401, "body": "signed out" },
+      { "status": 401, "body": "signed out" }
+    ]
+  }]
+}
+```
+
+The CLI writes `metamorphic.json` under the target state directory and feeds
+violations into the normal business-logic lead queue.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
@@ -387,9 +422,10 @@ src/auth-lifecycle.js session lifecycle observations
 src/websocket.js     WebSocket surface analysis
 src/grpc.js          gRPC/protobuf contract analysis
 src/pretty-report.js human-readable confidence/proof output
+src/metamorphic.js   stable behavioral-relation evaluator
 
 test/                deterministic regression suites, plus optional browser and
-                     online suites
+                     online suites, including metamorphic and tenant proof tests
 ```
 
 ---
