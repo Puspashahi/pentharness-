@@ -1,0 +1,13 @@
+{
+  "id": "reflected-xss",
+  "class": "xss",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 1,
+    "status": 200,
+    "payload": "<benchmark-xss>",
+    "reflected": true
+  }
+}

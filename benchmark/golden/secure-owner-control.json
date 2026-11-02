@@ -1,0 +1,13 @@
+{
+  "id": "secure-owner-control",
+  "class": "authz",
+  "expected": "no-candidate",
+  "observed": "no-candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 2,
+    "identities": ["alice", "bob"],
+    "statuses": [200, 403],
+    "deniedForeign": true
+  }
+}

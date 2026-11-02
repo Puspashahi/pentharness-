@@ -153,6 +153,10 @@ function toFinding(lead, answers = {}) {
       parameter: lead.param,
       reproduction: merged.reproduction,
       chain_of: lead.chain_of,
+      lifecycle: {
+        status: 'proven',
+        history: [{ status: 'proven', reason: 'proof gate satisfied', at: new Date().toISOString() }],
+      },
     },
   };
 }

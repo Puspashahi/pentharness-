@@ -14,6 +14,8 @@
     "test:python": "python3 -m unittest discover -s test -p 'python_*.py'",
     "test:go": "go test ./...",
     "test:all": "npm test && npm run test:python && npm run test:go && bash test/bash-wrapper.sh",
+    "benchmark": "node benchmark/run.js",
+    "doctor": "node -e \"const D=require('./src/doctor'); const r=D.run({root:process.cwd()}); console.log(D.format(r)); process.exitCode=r.exitCode\"",
     "hunt": "node src/cli.js"
   },
   "engines": {

@@ -1,0 +1,13 @@
+{
+  "id": "idor-cross-user",
+  "class": "authz",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 2,
+    "identities": ["bob", "alice"],
+    "statuses": [200, 200],
+    "ownershipMarker": true
+  }
+}

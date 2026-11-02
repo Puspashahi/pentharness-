@@ -198,6 +198,32 @@ Written to `state/<target>/`:
 always stated. If the run was partial, the report says so rather than implying
 the target is clean.
 
+Findings carry an explicit lifecycle (`lead`, `candidate`, `proven`, `refuted`,
+`accepted`, `suppressed`, `duplicate`, `stale`, or `needs-review`) with
+timestamped reasons and validated transitions. This keeps unproven,
+suppressed, and refuted results distinct from accepted findings.
+
+Replay and bounded execution use one validated configuration resolver. Defaults,
+recipe values, environment variables, and explicit options are merged in a
+defined order; invalid limits, missing scope, and approval conflicts fail
+before any request is sent.
+
+Replay execution runs through `src/request-broker.js`, the single policy
+boundary for scope checks, prohibited paths, headers, budgets, approval gates,
+and per-request audit records. A transport callback cannot bypass those
+decisions.
+
+Benchmark and hunt reports expose a capability matrix with explicit
+`supported`, `planned`, `executed`, `proven`, `unsupported`, and `not-tested`
+states. Planned or unavailable coverage is never counted as clean.
+Stable run-status codes are: `0` clean, `10` findings, `11` incomplete,
+`12` policy-blocked, and `13` infrastructure failure.
+
+Run `npm run doctor` or `scripts/pentharness.sh doctor` for offline environment
+diagnostics. It checks required runtimes and permissions, reports optional
+Python/Go/Playwright/browser capabilities without pretending they are present,
+and returns exit code 2 only for required failures.
+
 ---
 
 ## Honesty rules
@@ -386,8 +412,11 @@ scripts/pentharness.sh replay https://target.test \
 ```
 
 Replay is scope-gated before requests, rejects prohibited paths, redacts
-credentials in evidence, rate-limits execution, and skips state-changing
-methods unless the caller explicitly enables them in the library API.
+credentials in evidence, rate-limits execution, enforces hard request/byte
+budgets, and skips state-changing methods unless a scoped, expiring approval
+token is supplied. The CLI accepts `--approval-token`,
+`--approval-secret`, `--max-requests`, and `--max-bytes`; secrets should
+prefer environment variables over shell history.
 
 ## Multi-tenant relationship modeling
 
@@ -459,6 +488,30 @@ discovery misses.
 
 The suite includes a live out-of-band callback test that skips cleanly when the
 public interactsh instance rate-limits, so it stays deterministic.
+
+## Benchmark lab
+
+Run the local benchmark without contacting any external host:
+
+```bash
+npm run benchmark
+```
+
+The lab currently executes IDOR, reflected-XSS, and a secure authorization
+control, and explicitly reports SQLi, SSRF, race, GraphQL, OAuth, WebSocket,
+and MCP scenarios as not tested until their fixtures and oracles are complete.
+Metrics include true/false positives, false negatives, request count, proof
+time, and executable coverage. A partial benchmark is never presented as
+complete coverage. Golden evidence fixtures under `benchmark/golden/` lock the
+stable proof observations while allowing measured proof time to vary.
+Each report also includes a run manifest with the repository revision and
+dirty-state indicator, input hashes, runtime versions, sanitized environment,
+options, timestamps, and declared dependency versions.
+
+Stateful runs use the crash-safe `StateStore`: checkpoints are written through
+an atomic rename under a lock, include revisions and checksums, retain a
+backup, and support schema migrations and recovery after a torn or corrupted
+primary write.
 
 ---
 

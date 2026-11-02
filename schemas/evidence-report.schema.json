@@ -7,6 +7,23 @@
     "schemaVersion": { "const": 1 },
     "tool": { "type": "string", "minLength": 1 },
     "safety": { "type": "string", "minLength": 1 },
+    "runManifest": {
+      "type": "object",
+      "required": ["schemaVersion", "runId", "startedAt", "finishedAt", "inputs", "options", "tools", "environment", "dependencies"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "runId": { "type": "string", "format": "uuid" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "finishedAt": { "type": "string", "format": "date-time" },
+        "repository": { "type": "object" },
+        "inputs": { "type": "object" },
+        "options": { "type": "object" },
+        "tools": { "type": "object" },
+        "environment": { "type": "object" },
+        "dependencies": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
     "provenance": {
       "type": "object",
       "required": ["algorithm", "digest"],
