@@ -273,6 +273,22 @@ the same request is reproduced with a foreign-tenant identity and the response
 is proven to contain protected data. The model accepts either an array of
 records or `{ "records": [...] }`.
 
+For runtime proof, provide captures for the modeled identities:
+
+```bash
+node src/cli.js https://target.test \
+  --phase tenant \
+  --tenant-model ./tenant-records.json \
+  --identity alice=./alice.jsonl \
+  --identity bob=./bob.jsonl
+```
+
+The phase compares identical requests, requires successful responses from both
+identities, and requires owner markers in the foreign response. Explicit share
+edges are skipped as permitted access. Runtime evidence is still emitted as an
+authorization lead for the central proof gate; it is never promoted directly
+to a finding.
+
 ## Scope-aware recon pipeline
 
 `scripts/pentharness.sh recon example.com --scope example.com` optionally
@@ -293,12 +309,13 @@ passed to later stages.
 npm test
 ```
 
-428 tests across 22 suites. Each corresponds to a real defect found and fixed
-during development — parse-shape bugs, a closed browser context handed to a later
-phase, a false blocker detector that rejected a reachable login, a timing oracle
-that returned `p=1.000` on a genuine 96% gap, a takeover fingerprint that called
-a live host vulnerable, and parameter discovery that reported zero on a target
-full of injectable endpoints.
+The offline suite is discovered automatically from `test/`, so new regression
+suites do not require a runner edit. Browser suites are skipped with an explicit
+message when Playwright is not installed; online suites remain opt-in with
+`npm run test:online`. Each test corresponds to a real defect or safety
+invariant, including parse-shape bugs, closed browser contexts, false login
+blockers, unstable timing oracles, takeover false positives, and parameter
+discovery misses.
 
 The suite includes a live out-of-band callback test that skips cleanly when the
 public interactsh instance rate-limits, so it stays deterministic.
@@ -348,8 +365,19 @@ src/evidence.js      redaction + pre-submission audit
 src/capture-io.js    capture read/write
 src/correlate.js     chain composition
 src/oracle.js        browser XSS execution helpers
+src/recon-pipeline.js optional scope-aware recon toolchain
+src/secrets.js       redaction-safe secret detection
+src/workflow.js      stateful workflow mutation planning
+src/race.js          bounded race-condition analysis
+src/differential.js  semantic response comparison
+src/api-sequence.js  OpenAPI lifecycle sequence planning
+src/auth-lifecycle.js session lifecycle observations
+src/websocket.js     WebSocket surface analysis
+src/grpc.js          gRPC/protobuf contract analysis
+src/pretty-report.js human-readable confidence/proof output
 
-test/                22 suites, 428 tests
+test/                deterministic regression suites, plus optional browser and
+                     online suites
 ```
 
 ---

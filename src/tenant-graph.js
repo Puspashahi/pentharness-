@@ -155,4 +155,92 @@ function build(records = []) {
   return graph.plan();
 }
 
-module.exports = { TenantGraph, build, TYPES, idOf, tenantOf };
+function markers(body) {
+  const text = String(body || '');
+  const ids = new Set();
+  const emails = new Set();
+  for (const match of text.matchAll(/\b(owner_id|user_id|account_id|tenant_id|created_by|author_id)\b["']?\s*[=:]\s*["']?([A-Za-z0-9@._-]{3,})/gi)) {
+    ids.add(match[2]);
+  }
+  for (const match of text.matchAll(/\b([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})\b/g)) {
+    emails.add(match[1]);
+  }
+  return { ids, emails };
+}
+
+function markerIntersection(ownerBody, foreignBody) {
+  const owner = markers(ownerBody);
+  const foreign = markers(foreignBody);
+  return [
+    ...[...owner.ids].filter((value) => foreign.ids.has(value)),
+    ...[...owner.emails].filter((value) => foreign.emails.has(value)),
+  ];
+}
+
+/**
+ * Compare real captures for modeled owner/foreign-tenant pairs.
+ *
+ * A 200 response alone is not proof: the foreign response must contain an
+ * ownership marker from the modeled owner. Shared-resource edges are excluded
+ * because a permitted share is not a tenant-isolation failure.
+ */
+function proveFromCaptures(model, captures = []) {
+  const byIdentity = new Map(captures.filter((c) => c && c.id && Array.isArray(c.data)).map((c) => [c.id, c]));
+  const users = new Map(model.nodes.filter((n) => n.type === 'user').map((n) => [n.id, n]));
+  const owns = model.edges.filter((e) => e.relation === 'owns');
+  const resourceTenants = new Map(model.edges.filter((e) => e.relation === 'belongs_to' && e.from.startsWith('resource:'))
+    .map((e) => [e.from, e.to]));
+  const memberships = new Map(model.edges.filter((e) => e.relation === 'member_of')
+    .map((e) => [e.from, e.to]));
+  const sharedResources = new Set(model.edges.filter((e) => e.relation === 'shares').map((e) => e.to));
+  const validated = [];
+  const skipped = [];
+
+  for (const ownerEdge of owns) {
+    const ownerUser = ownerEdge.from.slice('user:'.length);
+    const resource = ownerEdge.to;
+    const ownerTenant = resourceTenants.get(resource);
+    const ownerCapture = byIdentity.get(ownerUser);
+    if (!ownerCapture || !ownerTenant) {
+      skipped.push({ resource, reason: 'missing owner capture or resource tenant mapping' });
+      continue;
+    }
+    if (sharedResources.has(resource)) {
+      skipped.push({ resource, reason: 'resource has an explicit share edge' });
+      continue;
+    }
+    const foreignUsers = [...users.keys()].filter((user) => {
+      const tenant = memberships.get(`user:${user}`);
+      return tenant && tenant !== ownerTenant && byIdentity.has(user);
+    });
+    for (const foreignUser of foreignUsers) {
+      const foreignCapture = byIdentity.get(foreignUser);
+      const ownerRows = new Map(ownerCapture.data
+        .filter((row) => row.status >= 200 && row.status < 300)
+        .map((row) => [`${row.method} ${row.url}`, row]));
+      for (const row of foreignCapture.data) {
+        const ownerRow = ownerRows.get(`${row.method} ${row.url}`);
+        if (!ownerRow || row.status < 200 || row.status >= 300) continue;
+        const shared = markerIntersection(ownerRow.body, row.body);
+        if (!shared.length) continue;
+        validated.push({
+          kind: 'cross-tenant-disclosure',
+          owner: `user:${ownerUser}`,
+          foreign: `user:${foreignUser}`,
+          resource,
+          request: { method: row.method, url: row.url },
+          owner_status: ownerRow.status,
+          foreign_status: row.status,
+          owner_markers: shared,
+          confidence: 'runtime-validated',
+          proof: 'same request returned a body containing modeled owner markers to a foreign-tenant identity',
+        });
+      }
+    }
+  }
+  return { validated, skipped };
+}
+
+module.exports = {
+  TenantGraph, build, proveFromCaptures, markers, markerIntersection, TYPES, idOf, tenantOf,
+};
