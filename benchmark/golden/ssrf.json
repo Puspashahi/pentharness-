@@ -1,0 +1,13 @@
+{
+  "id": "ssrf",
+  "class": "ssrf",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 1,
+    "status": 200,
+    "callbackTarget": "loopback fixture",
+    "internalMarker": true
+  }
+}

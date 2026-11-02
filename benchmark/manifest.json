@@ -24,12 +24,12 @@
       "expectation": "no-candidate",
       "route": "/api/secure-orders/1"
     },
-    { "id": "sqli", "class": "injection", "status": "planned" },
-    { "id": "ssrf", "class": "ssrf", "status": "planned" },
-    { "id": "race-condition", "class": "race", "status": "planned" },
-    { "id": "graphql-authz", "class": "authz", "status": "planned" },
-    { "id": "oauth", "class": "oauth", "status": "planned" },
-    { "id": "websocket-authz", "class": "authz", "status": "planned" },
-    { "id": "mcp-tool-authz", "class": "ai", "status": "planned" }
+    { "id": "sqli", "class": "injection", "status": "executable", "expectation": "candidate", "route": "/api/search" },
+    { "id": "ssrf", "class": "ssrf", "status": "executable", "expectation": "candidate", "route": "/api/fetch" },
+    { "id": "race-condition", "class": "race", "status": "executable", "expectation": "candidate", "route": "/api/race" },
+    { "id": "graphql-authz", "class": "authz", "status": "executable", "expectation": "candidate", "route": "/graphql" },
+    { "id": "oauth", "class": "oauth", "status": "executable", "expectation": "candidate", "route": "/oauth/authorize" },
+    { "id": "websocket-authz", "class": "authz", "status": "executable", "expectation": "candidate", "route": "/ws/orders" },
+    { "id": "mcp-tool-authz", "class": "ai", "status": "executable", "expectation": "candidate", "route": "/mcp/tools/call" }
   ]
 }

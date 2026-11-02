@@ -1,0 +1,13 @@
+{
+  "id": "mcp-tool-authz",
+  "class": "ai",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 1,
+    "status": 200,
+    "tool": "get_order",
+    "crossUserToolData": true
+  }
+}

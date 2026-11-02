@@ -1,0 +1,12 @@
+{
+  "id": "race-condition",
+  "class": "race",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 2,
+    "statuses": [200, 200],
+    "accepted": 2
+  }
+}

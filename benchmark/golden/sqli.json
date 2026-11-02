@@ -1,0 +1,13 @@
+{
+  "id": "sqli",
+  "class": "injection",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 2,
+    "baselineStatus": 200,
+    "probeStatus": 500,
+    "errorDifferential": true
+  }
+}
