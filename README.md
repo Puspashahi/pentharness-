@@ -208,10 +208,11 @@ recipe values, environment variables, and explicit options are merged in a
 defined order; invalid limits, missing scope, and approval conflicts fail
 before any request is sent.
 
-Replay execution runs through `src/request-broker.js`, the single policy
-boundary for scope checks, prohibited paths, headers, budgets, approval gates,
-and per-request audit records. A transport callback cannot bypass those
-decisions.
+Replay and the hunt HTTP request context run through `src/request-broker.js`,
+the policy boundary for scope checks, prohibited paths, headers, budgets,
+approval gates, and per-request audit records. Browser navigation and external
+scanner subprocesses remain separate adapters and are not represented as raw
+`fetch` calls in the hunt request context.
 
 Benchmark and hunt reports expose a capability matrix with explicit
 `supported`, `planned`, `executed`, `proven`, `unsupported`, and `not-tested`
@@ -497,13 +498,14 @@ Run the local benchmark without contacting any external host:
 npm run benchmark
 ```
 
-The lab currently executes IDOR, reflected-XSS, and a secure authorization
-control, and explicitly reports SQLi, SSRF, race, GraphQL, OAuth, WebSocket,
-and MCP scenarios as not tested until their fixtures and oracles are complete.
+The lab executes ten deterministic scenarios: IDOR, reflected-XSS, secure
+authorization control, SQLi, SSRF, race conditions, GraphQL authorization,
+OAuth redirect handling, WebSocket authorization, and MCP tool authorization.
 Metrics include true/false positives, false negatives, request count, proof
-time, and executable coverage. A partial benchmark is never presented as
-complete coverage. Golden evidence fixtures under `benchmark/golden/` lock the
-stable proof observations while allowing measured proof time to vary.
+time, and executable coverage. Golden evidence fixtures under
+`benchmark/golden/` lock stable proof observations while allowing measured proof
+time to vary. The benchmark remains loopback-only and does not claim coverage
+for scenarios that are not in its manifest.
 Each report also includes a run manifest with the repository revision and
 dirty-state indicator, input hashes, runtime versions, sanitized environment,
 options, timestamps, and declared dependency versions.

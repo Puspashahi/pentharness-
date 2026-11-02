@@ -9,9 +9,33 @@ const { fromManifest } = require('../src/capabilities');
 
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
 
-async function request(base, route, headers = {}) {
-  const response = await fetch(`${base}${route}`, { headers });
-  return { status: response.status, body: await response.text() };
+async function request(base, route, headers = {}, options = {}) {
+  const response = await fetch(`${base}${route}`, {
+    method: options.method || 'GET',
+    headers: { ...(headers || {}), ...(options.body ? { 'content-type': 'application/json' } : {}) },
+    body: options.body,
+    redirect: 'manual',
+  });
+  return { status: response.status, body: await response.text(), headers: Object.fromEntries(response.headers.entries()) };
+}
+
+async function upgrade(base, route, headers = {}) {
+  const url = new URL(`${base}${route}`);
+  return new Promise((resolve, reject) => {
+    const req = require('http').request({
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname + url.search,
+      headers: { Connection: 'Upgrade', Upgrade: 'websocket', ...headers },
+    });
+    req.on('upgrade', (response, socket) => {
+      let body = '';
+      socket.on('data', (chunk) => { body += chunk; });
+      socket.on('end', () => resolve({ status: response.statusCode, body, headers: response.headers }));
+    });
+    req.on('error', reject);
+    req.end();
+  });
 }
 
 async function main() {
@@ -64,6 +88,57 @@ async function main() {
         statuses: [owner.status, foreign.status],
         deniedForeign: foreign.status === 403,
       };
+    } else if (scenario.id === 'sqli') {
+      const baseline = await request(base, '/api/search?q=benchmark');
+      const probe = await request(base, '/api/search?q=' + encodeURIComponent("' OR '1'='1"));
+      requests += 2;
+      observed = probe.status === 500 && baseline.status === 200 ? 'candidate' : 'no-candidate';
+      reason = `baseline=${baseline.status}, probe=${probe.status}, errorDifferential=${probe.status !== baseline.status}`;
+      evidence = { requestCount: 2, baselineStatus: baseline.status, probeStatus: probe.status, errorDifferential: probe.status !== baseline.status };
+    } else if (scenario.id === 'ssrf') {
+      const target = `${base}/internal`;
+      const response = await request(base, `/api/fetch?url=${encodeURIComponent(target)}`);
+      requests++;
+      observed = response.status === 200 && response.body.includes('internal-benchmark') ? 'candidate' : 'no-candidate';
+      reason = `status=${response.status}, internalMarker=${response.body.includes('internal-benchmark')}`;
+      evidence = { requestCount: 1, status: response.status, callbackTarget: 'loopback fixture', internalMarker: response.body.includes('internal-benchmark') };
+    } else if (scenario.id === 'race-condition') {
+      const responses = await Promise.all([
+        request(base, scenario.route, {}, { method: 'POST', body: '{}' }),
+        request(base, scenario.route, {}, { method: 'POST', body: '{}' }),
+      ]);
+      requests += 2;
+      const accepted = responses.filter((response) => response.status === 200).length;
+      observed = accepted > 1 ? 'candidate' : 'no-candidate';
+      reason = `concurrentRequests=2, accepted=${accepted}`;
+      evidence = { requestCount: 2, statuses: responses.map((response) => response.status), accepted };
+    } else if (scenario.id === 'graphql-authz') {
+      const owner = await request(base, scenario.route, { 'x-user': 'alice' }, { method: 'POST', body: JSON.stringify({ query: 'query Order($id: ID!) { order(id: $id) { id owner total } }', variables: { id: '1' } }) });
+      const foreign = await request(base, scenario.route, { 'x-user': 'alice' }, { method: 'POST', body: JSON.stringify({ query: 'query Order($id: ID!) { order(id: $id) { id owner total } }', variables: { id: '2' } }) });
+      requests += 2;
+      observed = foreign.status === 200 && foreign.body.includes('"owner":"bob"') ? 'candidate' : 'no-candidate';
+      reason = `owner=${owner.status}, foreign=${foreign.status}, foreignOwnerData=${foreign.body.includes('"owner":"bob"')}`;
+      evidence = { requestCount: 2, statuses: [owner.status, foreign.status], identity: 'alice', foreignOwnerData: foreign.body.includes('"owner":"bob"') };
+    } else if (scenario.id === 'oauth') {
+      const response = await request(base, `/oauth/authorize?client_id=benchmark&redirect_uri=${encodeURIComponent('https://attacker.invalid/callback')}&state=s1`);
+      requests++;
+      const       location = response.headers.location || '';
+      observed = response.status === 302 ? 'candidate' : 'no-candidate';
+      reason = `status=${response.status}, redirectUriAccepted=${response.status === 302}`;
+      evidence = { requestCount: 1, status: response.status, redirectUri: 'https://attacker.invalid/callback', redirectAccepted: response.status === 302, location };
+    } else if (scenario.id === 'websocket-authz') {
+      const response = await upgrade(base, scenario.route, { 'x-user': 'alice' });
+      requests++;
+      const foreignOwnerData = response.headers['x-benchmark-owner'] === 'bob' || response.body.includes('"owner":"bob"');
+      observed = response.status === 101 && foreignOwnerData ? 'candidate' : 'no-candidate';
+      reason = `status=${response.status}, foreignOwnerData=${foreignOwnerData}`;
+      evidence = { requestCount: 1, status: response.status, upgrade: response.status === 101, foreignOwnerData };
+    } else if (scenario.id === 'mcp-tool-authz') {
+      const response = await request(base, scenario.route, { 'x-user': 'alice' }, { method: 'POST', body: JSON.stringify({ tool: 'get_order', arguments: { id: '2' } }) });
+      requests++;
+      observed = response.status === 200 && response.body.includes('"owner":"bob"') ? 'candidate' : 'no-candidate';
+      reason = `status=${response.status}, crossUserToolData=${response.body.includes('"owner":"bob"')}`;
+      evidence = { requestCount: 1, status: response.status, tool: 'get_order', crossUserToolData: response.body.includes('"owner":"bob"') };
     }
     results.push({
       id: scenario.id,

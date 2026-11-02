@@ -1,0 +1,13 @@
+{
+  "id": "graphql-authz",
+  "class": "authz",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 2,
+    "statuses": [200, 200],
+    "identity": "alice",
+    "foreignOwnerData": true
+  }
+}

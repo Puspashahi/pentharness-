@@ -1,0 +1,14 @@
+{
+  "id": "oauth",
+  "class": "oauth",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 1,
+    "status": 302,
+    "redirectUri": "https://attacker.invalid/callback",
+    "redirectAccepted": true,
+    "location": "https://attacker.invalid/callback?code=benchmark-code&state=s1"
+  }
+}

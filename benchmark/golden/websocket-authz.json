@@ -1,0 +1,13 @@
+{
+  "id": "websocket-authz",
+  "class": "authz",
+  "expected": "candidate",
+  "observed": "candidate",
+  "outcome": "true-positive",
+  "evidence": {
+    "requestCount": 1,
+    "status": 101,
+    "upgrade": true,
+    "foreignOwnerData": true
+  }
+}

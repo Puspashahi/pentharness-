@@ -18,18 +18,21 @@ assert.ok(report.runManifest.inputs.packageJsonSha256.match(/^[a-f0-9]{64}$/));
 assert.strictEqual(report.runManifest.options.loopbackOnly, true);
 assert.strictEqual(report.runManifest.environment.cwd, path.join(__dirname, '..'));
 assert.ok(report.runManifest.tools.node.startsWith('v'));
-assert.strictEqual(report.capabilities.summary.supported, 3);
-assert.strictEqual(report.capabilities.summary.planned, 7);
+assert.strictEqual(report.capabilities.summary.supported, 10);
+assert.strictEqual(report.capabilities.summary.planned, undefined);
 assert.strictEqual(report.tool, 'pentharness-benchmark');
 assert.strictEqual(report.metrics.falsePositives, 0);
 assert.strictEqual(report.metrics.falseNegatives, 0);
-assert.strictEqual(report.metrics.tested, 3);
-assert.strictEqual(report.metrics.notTested, 7);
-assert.ok(report.metrics.coverage > 0 && report.metrics.coverage < 1);
+assert.strictEqual(report.metrics.tested, 10);
+assert.strictEqual(report.metrics.notTested, 0);
+assert.strictEqual(report.metrics.coverage, 1);
 assert.ok(report.results.some((item) => item.id === 'idor-cross-user' && item.outcome === 'true-positive'));
 assert.ok(report.results.some((item) => item.id === 'secure-owner-control' && item.expected === 'no-candidate'));
 
-for (const id of ['idor-cross-user', 'reflected-xss', 'secure-owner-control']) {
+for (const id of [
+  'idor-cross-user', 'reflected-xss', 'secure-owner-control', 'sqli', 'ssrf',
+  'race-condition', 'graphql-authz', 'oauth', 'websocket-authz', 'mcp-tool-authz',
+]) {
   const golden = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'benchmark', 'golden', `${id}.json`), 'utf8'));
   const actual = report.results.find((item) => item.id === id);
   assert.ok(actual, `missing benchmark result: ${id}`);

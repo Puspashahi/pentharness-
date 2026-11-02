@@ -38,6 +38,7 @@ const V = require('./validators');
 const N = require('./normalize');
 const { runAuthzStage } = require('./authz-stage');
 const { HeaderPolicy } = require('./headerpolicy');
+const { RequestBroker } = require('./request-broker');
 const jscapture = require('./jscapture');
 const browser = require('./browser');
 const identity = require('./identity');
@@ -94,6 +95,7 @@ async function hunt(o) {
   // which made the later phases throw "hp is not defined" whenever they ran.
   const hp = o.headerPolicy || new HeaderPolicy();
   hpRef = hp;
+  const requestScope = o.scope && o.scope.length ? o.scope : [new URL(o.target).hostname];
 
   // ---- 0b. WHAT CHANGED SINCE LAST TIME ----
   // A rescan that prints the same list teaches nothing. This is the difference
@@ -366,7 +368,7 @@ async function hunt(o) {
         browser = null;
       }
     }
-    if (!sharedCtx) sharedCtx = makeHttpContext();
+    if (!sharedCtx) sharedCtx = makeHttpContext({ scope: requestScope });
     const ctx = sharedCtx;
     try {
       probeOut = await prober.probeAll(ctx, kb, {
@@ -497,8 +499,8 @@ async function hunt(o) {
       const pw2 = loadPlaywright();
       if (pw2) {
         try { const b2 = await pw2.chromium.launch({ headless: true }); psCtx = await b2.newContext({ ignoreHTTPSErrors: true, extraHTTPHeaders: hp.playwright() }); psCtx.__close = () => b2.close(); }
-        catch { psCtx = makeHttpContext(); }
-      } else { psCtx = makeHttpContext(); }
+        catch { psCtx = makeHttpContext({ scope: requestScope }); }
+      } else { psCtx = makeHttpContext({ scope: requestScope }); }
     }
     const ps = await runProtocolStage(psCtx, {
       target: o.target, kb, store, corpus,
@@ -892,19 +894,33 @@ async function subdomainPhase(o, kb, store, coverage, log) {
   return triaged;
 }
 
-function makeHttpContext() {
+function makeHttpContext(options = {}) {
+  const broker = new RequestBroker({
+    config: { scope: options.scope || [], headers: options.headers, throttle: options.throttle },
+    policy: options.headerPolicy || hpRef,
+    budget: options.budget,
+    transport: async ({ url, method, headers, body }) => {
+      const response = await fetch(url, { method, headers, body, redirect: 'manual' });
+      return { response, body: await response.text() };
+    },
+  });
   const req = async (url, opts = {}) => {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), opts.timeout || 12000);
     try {
-      const pol = opts.headerPolicy || hpRef;
-      if (pol && !pol.isAllowed(url)) return { status: () => 0, text: async () => '', url: () => url, headers: () => ({}) };
-      if (pol) await pol.take();
-      const init = { method: opts.method || 'GET', signal: ctrl.signal, redirect: 'follow', headers: pol ? pol.merge(opts.headers) : (opts.headers || {}) };
-      if (opts.data != null) { init.body = typeof opts.data === 'string' ? opts.data : JSON.stringify(opts.data); }
-      const res = await fetch(url, init);
-      const body = await res.text();
-      return { status: () => res.status, text: async () => body, url: () => res.url || url, headers: () => Object.fromEntries(res.headers) };
+      const body = opts.data != null ? (typeof opts.data === 'string' ? opts.data : JSON.stringify(opts.data)) : undefined;
+      const result = await broker.request({
+        url,
+        method: opts.method || 'GET',
+        headers: opts.headers,
+        body,
+        phase: opts.phase || 'hunt',
+        authorizationBasis: opts.authorizationBasis,
+        approval: opts.approval,
+      });
+      if (result.blocked) return { status: () => 0, text: async () => '', url: () => url, headers: () => ({}) };
+      const res = result.response;
+      return { status: () => res.status, text: async () => result.body, url: () => res.url || url, headers: () => Object.fromEntries(res.headers) };
     } finally { clearTimeout(timer); }
   };
   return {
