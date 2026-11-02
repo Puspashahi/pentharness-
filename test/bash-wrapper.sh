@@ -38,6 +38,10 @@ printf '%s\n' '{"url":"https://target.test/me","status":200,"body":"{\"id\":2}"}
 python_corpus_output="$("$ROOT/scripts/pentharness.sh" python-corpus "$TMP/alice.jsonl" "$TMP/bob.jsonl")"
 grep -q 'pentharness-python-corpus' <<<"$python_corpus_output"
 
+go_evidence_output="$("$ROOT/scripts/pentharness.sh" go-evidence "$TMP/alice.jsonl" "$TMP/bob.jsonl")"
+grep -q 'pentharness-go-evidence' <<<"$go_evidence_output"
+grep -q '"duplicateEvidence": 0' <<<"$go_evidence_output"
+
 secret_output="$("$ROOT/scripts/pentharness.sh" secrets "$TMP/app.js")"
 grep -q '"github-token"' <<<"$secret_output"
 ! grep -q 'abcdefghijklmnopqrstuvwxyz01' <<<"$secret_output"

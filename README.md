@@ -346,6 +346,18 @@ or semantic-body changes as candidates, and preserves line-level evidence plus
 bounded proof requirements. A difference is not treated as an IDOR unless
 ownership, intended role behavior, and exact replay are verified.
 
+For large capture sets, the Go evidence layer validates JSONL records in
+parallel, canonicalizes JSON bodies, computes SHA-256 body hashes, and reports
+duplicate evidence:
+
+```bash
+scripts/pentharness.sh go-evidence ./userA.jsonl ./userB.jsonl
+```
+
+It is a compiled evidence-integrity tool, not a vulnerability detector: bad
+records and duplicate observations are surfaced for review, never converted
+into findings.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
@@ -466,6 +478,8 @@ src/pretty-report.js human-readable confidence/proof output
 src/metamorphic.js   stable behavioral-relation evaluator
 src/openapi.js       OpenAPI request and lifecycle planner
 python/pentharness_api.py  dependency-free Python API analyzer
+python/pentharness_corpus.py  capture differential analyzer
+cmd/pentharness-evidence/  Go evidence validation and hashing tool
 
 test/                deterministic regression suites, plus optional browser and
                      online suites, including OpenAPI, metamorphic, and tenant proof tests
