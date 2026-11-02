@@ -22,6 +22,7 @@ Usage:
   scripts/pentharness.sh python-api SPEC
   scripts/pentharness.sh python-corpus CAPTURE.jsonl [CAPTURE.jsonl ...]
   scripts/pentharness.sh go-evidence CAPTURE.jsonl [CAPTURE.jsonl ...]
+  scripts/pentharness.sh contract REPORT.json [REPORT.json ...]
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -35,6 +36,7 @@ Commands:
   python-api  Analyze an OpenAPI JSON document with the Python companion.
   python-corpus Compare captured API responses across identities.
   go-evidence  Validate and hash large JSONL evidence sets with Go.
+  contract     Validate reports against the shared cross-language contract.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -226,6 +228,26 @@ NODE
     command -v "${GO_BIN:-go}" >/dev/null 2>&1 || die "Go is required for go-evidence"
     for capture in "${@:2}"; do [[ -e "$capture" ]] || die "capture does not exist: $capture"; done
     exec "${GO_BIN:-go}" run ./cmd/pentharness-evidence "${@:2}"
+    ;;
+  contract)
+    [[ $# -ge 2 ]] || die "contract requires at least one JSON report"
+    REPORTS=("${@:2}")
+    for report in "${REPORTS[@]}"; do [[ -e "$report" ]] || die "report does not exist: $report"; done
+    REPORTS="$(printf '%s\n' "${REPORTS[@]}")" "$NODE_BIN" - <<'NODE'
+const fs = require('fs');
+const C = require('./src/evidence-contract');
+const files = process.env.REPORTS.trim().split('\n').filter(Boolean);
+const results = files.map((file) => {
+  try {
+    const report = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return { file, valid: C.validate(report), schemaVersion: report.schemaVersion };
+  } catch (error) {
+    return { file, valid: [`invalid JSON: ${error.message}`] };
+  }
+});
+process.stdout.write(JSON.stringify({ schemaVersion: 1, tool: 'pentharness-contract', reports: results }, null, 2) + '\n');
+if (results.some((r) => r.valid.length)) process.exitCode = 1;
+NODE
     ;;
   help|-h|--help)
     usage

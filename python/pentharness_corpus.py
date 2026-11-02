@@ -98,6 +98,7 @@ def analyze(rows: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
                 })
 
     return {
+        "schemaVersion": 1,
         "tool": "pentharness-python-corpus",
         "safety": "passive capture analysis; no network requests; differences are candidates only",
         "rows": usable,
