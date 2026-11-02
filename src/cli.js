@@ -49,12 +49,13 @@ const { hunt } = require('./hunt');
 const discover = require('./discover');
 const secrets = require('./secrets');
 const tenantGraph = require('./tenant-graph');
+const metamorphic = require('./metamorphic');
 
 const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, skipChange: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0, secretsPath: null, tenantModel: null };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, skipChange: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0, secretsPath: null, tenantModel: null, metamorphicPath: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -68,6 +69,7 @@ function parseArgs(argv) {
       case '--js': o.js = next(); break;
       case '--secrets': o.secretsPath = next(); break;
       case '--tenant-model': o.tenantModel = next(); break;
+      case '--metamorphic': o.metamorphicPath = next(); break;
       case '--prove': o.prove = next(); break;
       case '--hunt': o.hunt = true; break;
       case '--concurrency': o.concurrency = parseInt(next(), 10) || o.concurrency; break;
@@ -138,6 +140,7 @@ Phases
   jslogic     extract client-side auth logic from local JS bundles (--js)
   secrets     scan local source/bundles for redacted secret candidates (--secrets PATH)
   tenant      model multi-tenant relationships from JSON records (--tenant-model FILE)
+  metamorphic evaluate explicit behavioral relations from observed JSON (--metamorphic FILE)
   prioritise  rank known parameters by predicted vuln class -> plan.json
   authz       dual-identity response diffing -> the authorization matrix (--identity x2)
   prove       deterministic validators + adversarial refutation (--prove obs.json)
@@ -539,6 +542,7 @@ function phaseTenant(o, store, dir) {
     notes.push(`tenant: SKIPPED — model file not found: ${file}`);
     return notes;
   }
+
   let records;
   try {
     const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -547,6 +551,7 @@ function phaseTenant(o, store, dir) {
     notes.push(`tenant: SKIPPED — invalid JSON model: ${error.message}`);
     return notes;
   }
+
   const model = tenantGraph.build(records);
   const captures = (o.identity || []).map((identity) => ({
     id: identity.id,
@@ -589,6 +594,35 @@ function phaseTenant(o, store, dir) {
   }
   notes.push(`tenant: ${model.nodes.length} node(s), ${model.edges.length} relationship(s), ${model.candidates.length} cross-tenant hypothesis/hypotheses, ${runtime.validated.length} runtime disclosure(s), ${model.contradictions.length} contradiction(s)`);
   return notes;
+}
+
+function phaseMetamorphic(o, store, dir) {
+  if (!o.metamorphicPath) return ['metamorphic: SKIPPED — provide --metamorphic cases.json'];
+  const file = path.resolve(o.metamorphicPath);
+  if (!fs.existsSync(file)) return [`metamorphic: SKIPPED — file not found: ${file}`];
+  let cases;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    cases = Array.isArray(parsed) ? parsed : (parsed.cases || []);
+  } catch (error) {
+    return [`metamorphic: SKIPPED — invalid JSON: ${error.message}`];
+  }
+  const result = metamorphic.evaluate(cases);
+  fs.writeFileSync(path.join(dir, 'metamorphic.json'), JSON.stringify(result, null, 2), { mode: 0o600 });
+  for (const candidate of result.candidates) {
+    store.add({
+      cls: 'business',
+      title: `Metamorphic relation violated: ${candidate.id}`,
+      url: o.target,
+      asset: o.target,
+      confidence: 'candidate',
+      evidence: candidate.reason,
+      proof_needed: candidate.proof_needed,
+      chain_hints: ['business'],
+      tags: ['metamorphic', candidate.relation],
+    });
+  }
+  return [`metamorphic: ${cases.length} case(s), ${result.candidates.length} candidate(s), ${result.contradictions.length} hold/invalid case(s)`];
 }
 
 async function phaseAuthz(o, store, kb, coverage, matrix) {
@@ -1178,6 +1212,7 @@ async function main() {
   if (runPhases.has('jslogic')) notes.push(...phaseJsLogic(o, store, kb));
   if (runPhases.has('secrets')) notes.push(...phaseSecrets(o, store));
   if (runPhases.has('tenant')) notes.push(...phaseTenant(o, store, dir));
+  if (runPhases.has('metamorphic')) notes.push(...phaseMetamorphic(o, store, dir));
   if (runPhases.has('authz')) notes.push(...await phaseAuthz(o, store, kb, coverage, matrix));
   if (runPhases.has('prioritise')) notes.push(...phasePrioritise(o, store, kb, coverage).notes);
   if (runPhases.has('prove')) notes.push(...await phaseProve(o, store, dir));
@@ -1189,7 +1224,7 @@ async function main() {
   if (matrix.identities.size > 1) for (const l of matrix.identities) coverage.lens('identity-diff');
 
   const chains = correlate(store);
-  if (runPhases.has('recon') || runPhases.has('scan') || runPhases.has('ingest') || runPhases.has('jslogic') || runPhases.has('tenant') || runPhases.has('authz') || runPhases.has('prioritise')) {
+  if (runPhases.has('recon') || runPhases.has('scan') || runPhases.has('ingest') || runPhases.has('jslogic') || runPhases.has('tenant') || runPhases.has('metamorphic') || runPhases.has('authz') || runPhases.has('prioritise')) {
     for (const n of notes) console.log(`  ${n}`);
     console.log('');
   }
