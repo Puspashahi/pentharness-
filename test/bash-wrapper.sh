@@ -45,6 +45,9 @@ printf '%s\n' "$go_evidence_output" > "$TMP/go-report.json"
 contract_output="$("$ROOT/scripts/pentharness.sh" contract "$TMP/go-report.json")"
 grep -q '"valid": \[\]' <<<"$contract_output"
 
+replay_output="$("$ROOT/scripts/pentharness.sh" replay https://target.test --capture alice="$TMP/alice.jsonl" --scope target.test)"
+grep -q 'pentharness-replay-plan' <<<"$replay_output"
+
 secret_output="$("$ROOT/scripts/pentharness.sh" secrets "$TMP/app.js")"
 grep -q '"github-token"' <<<"$secret_output"
 ! grep -q 'abcdefghijklmnopqrstuvwxyz01' <<<"$secret_output"

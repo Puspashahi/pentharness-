@@ -1,0 +1,39 @@
+'use strict';
+const assert = require('assert');
+const R = require('../src/replay');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+let pass = 0, fail = 0;
+function t(name, fn) {
+  try { fn(); console.log(`  ok  ${name}`); pass++; }
+  catch (e) { console.log(`  FAIL ${name}\n       ${e.message}`); fail++; }
+}
+
+console.log('\n== replay engine ==');
+t('scope-gates and blocks state changes by default', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pentharness-replay-'));
+  const file = path.join(dir, 'a.jsonl');
+  fs.writeFileSync(file, [
+    JSON.stringify({ method: 'GET', url: 'https://api.test/me', headers: { Authorization: 'Bearer secret' } }),
+    JSON.stringify({ method: 'POST', url: 'https://api.test/delete' }),
+    JSON.stringify({ method: 'GET', url: 'https://outside.test/x' }),
+  ].join('\n'));
+  const result = R.plan([{ identity: 'alice', file }], { scope: ['api.test'] });
+  assert.strictEqual(result.requests.length, 2);
+  assert.strictEqual(result.requests[1].replayable, false);
+  assert.strictEqual(result.blocked.length, 1);
+});
+t('executes safe requests and redacts ambient credentials', async () => {
+  const plan = R.plan([{ identity: 'alice', file: '/missing' }], { scope: ['api.test'] });
+  plan.requests = [{ identity: 'alice', method: 'GET', url: 'https://api.test/me', headers: { Authorization: 'Bearer secret' }, body: null, replayable: true }];
+  const report = await R.execute(plan, async () => ({ status: 200, body: '{"ok":true}' }));
+  assert.strictEqual(report.schemaVersion, 1);
+  assert.match(report.observations[0].evidence.request.headers.Authorization, /redacted/i);
+});
+
+Promise.resolve().then(() => {
+  console.log(`\n${pass} passed, ${fail} failed\n`);
+  process.exit(fail ? 1 : 0);
+});
