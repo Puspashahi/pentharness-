@@ -11,6 +11,7 @@ service Admin { rpc DeleteUser (DeleteRequest) returns (Reply); }
 PROTO
 printf '%s\n' '[{"userId":"alice","tenantId":"org-a","resourceId":"invoice-a","owner":true},{"userId":"bob","tenantId":"org-b","resourceId":"invoice-a"}]' > "$TMP/tenant.json"
 printf '%s\n' '{"cases":[{"id":"logout","relation":"logout-invalidation","before":[{"status":200,"body":"{\"id\":\"x\"}"},{"status":200,"body":"{\"id\":\"x\"}"}],"after":[{"status":200,"body":"{\"id\":\"x\"}"},{"status":200,"body":"{\"id\":\"x\"}"}]}]}' > "$TMP/metamorphic.json"
+printf '%s\n' '{"openapi":"3.0.3","paths":{"/health":{"get":{"operationId":"health"}}}}' > "$TMP/openapi.json"
 
 chmod +x "$ROOT/scripts/pentharness.sh" "$ROOT/scripts/pentharness-secrets.sh"
 output="$(PENTHARNESS_JSON=1 "$ROOT/scripts/pentharness.sh" local-scan "$TMP")"
@@ -25,6 +26,9 @@ grep -q 'hypothesis' <<<"$tenant_output"
 
 metamorphic_output="$("$ROOT/scripts/pentharness.sh" metamorphic https://target.test --cases "$TMP/metamorphic.json")"
 grep -q 'metamorphic:' <<<"$metamorphic_output"
+
+openapi_output="$("$ROOT/scripts/pentharness.sh" openapi https://target.test --spec "$TMP/openapi.json")"
+grep -q 'openapi:' <<<"$openapi_output"
 
 secret_output="$("$ROOT/scripts/pentharness.sh" secrets "$TMP/app.js")"
 grep -q '"github-token"' <<<"$secret_output"

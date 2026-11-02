@@ -305,6 +305,21 @@ Each side should contain at least two equivalent observations:
 The CLI writes `metamorphic.json` under the target state directory and feeds
 violations into the normal business-logic lead queue.
 
+## OpenAPI planning
+
+Generate a bounded, read-first API plan without sending requests:
+
+```bash
+scripts/pentharness.sh openapi https://target.test --spec ./openapi.json
+# or: pentharness https://target.test --phase openapi --openapi ./openapi.json
+```
+
+The plan writes `state/<target>/openapi-plan.json`, including request templates,
+parameter examples, lifecycle sequences, destructive-operation warnings, and a
+SHA-256 provenance fingerprint of the source specification. Read-only sequences
+are marked replay-safe; state-changing and delete operations require explicit
+approval and are never executed by this phase.
+
 ## Multi-tenant relationship modeling
 
 The `tenant` phase models users, tenants, projects, resources, roles,
@@ -423,9 +438,10 @@ src/websocket.js     WebSocket surface analysis
 src/grpc.js          gRPC/protobuf contract analysis
 src/pretty-report.js human-readable confidence/proof output
 src/metamorphic.js   stable behavioral-relation evaluator
+src/openapi.js       OpenAPI request and lifecycle planner
 
 test/                deterministic regression suites, plus optional browser and
-                     online suites, including metamorphic and tenant proof tests
+                     online suites, including OpenAPI, metamorphic, and tenant proof tests
 ```
 
 ---
