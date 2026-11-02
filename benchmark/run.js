@@ -6,42 +6,93 @@ const { performance } = require('perf_hooks');
 const { start } = require('./lab');
 const { create: createRunManifest } = require('../src/run-manifest');
 const { fromManifest } = require('../src/capabilities');
+const { RequestBroker } = require('../src/request-broker');
 
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
 
-async function request(base, route, headers = {}, options = {}) {
-  const response = await fetch(`${base}${route}`, {
-    method: options.method || 'GET',
-    headers: { ...(headers || {}), ...(options.body ? { 'content-type': 'application/json' } : {}) },
-    body: options.body,
-    redirect: 'manual',
+function createBenchmarkBroker() {
+  return new RequestBroker({
+    config: { scope: ['127.0.0.1'], maxRequests: 100, maxBytes: 1024 * 1024, maxConcurrency: 2 },
+    transport: async ({ url, method, headers, body, upgrade: wantsUpgrade }) => {
+      if (!wantsUpgrade) {
+        const response = await fetch(url, { method, headers, body, redirect: 'manual' });
+        return {
+          response: {
+            status: response.status,
+            headers: Object.fromEntries(response.headers.entries()),
+            url: response.url,
+          },
+          body: await response.text(),
+        };
+      }
+
+      const target = new URL(url);
+      return new Promise((resolve, reject) => {
+        const req = require('http').request({
+          hostname: target.hostname,
+          port: target.port,
+          path: target.pathname + target.search,
+          method,
+          headers: { Connection: 'Upgrade', Upgrade: 'websocket', ...headers },
+        });
+        req.on('upgrade', (response, socket) => {
+          let responseBody = '';
+          socket.on('data', (chunk) => { responseBody += chunk; });
+          socket.on('end', () => resolve({
+            response: {
+              status: response.statusCode,
+              headers: response.headers,
+              url,
+            },
+            body: responseBody,
+          }));
+        });
+        req.on('response', (response) => {
+          response.resume();
+          reject(new Error(`upgrade rejected with status ${response.statusCode}`));
+        });
+        req.on('error', reject);
+        req.end(body);
+      });
+    },
   });
-  return { status: response.status, body: await response.text(), headers: Object.fromEntries(response.headers.entries()) };
 }
 
-async function upgrade(base, route, headers = {}) {
-  const url = new URL(`${base}${route}`);
-  return new Promise((resolve, reject) => {
-    const req = require('http').request({
-      hostname: url.hostname,
-      port: url.port,
-      path: url.pathname + url.search,
-      headers: { Connection: 'Upgrade', Upgrade: 'websocket', ...headers },
+function createClient(broker) {
+  async function send(base, route, headers = {}, options = {}) {
+    const body = options.body;
+    const result = await broker.request({
+      url: `${base}${route}`,
+      method: options.method || 'GET',
+      headers: { ...(headers || {}), ...(body ? { 'content-type': 'application/json' } : {}) },
+      body,
+      phase: 'benchmark',
+      authorizationBasis: 'local-loopback-fixture',
+      approval: options.method && options.method !== 'GET' ? { approved: true, reason: 'benchmark fixture' } : undefined,
+      upgrade: options.upgrade === true,
     });
-    req.on('upgrade', (response, socket) => {
-      let body = '';
-      socket.on('data', (chunk) => { body += chunk; });
-      socket.on('end', () => resolve({ status: response.statusCode, body, headers: response.headers }));
-    });
-    req.on('error', reject);
-    req.end();
-  });
+    if (result.blocked) throw new Error(`benchmark request blocked: ${result.reason}`);
+    return {
+      status: result.response.status,
+      body: result.body,
+      headers: result.response.headers || {},
+    };
+  }
+
+  return {
+    request: send,
+    upgrade: (base, route, headers = {}) => send(base, route, headers, { upgrade: true }),
+  };
 }
 
 async function main() {
   const startedAt = new Date().toISOString();
   const fixture = await start();
   const base = `http://127.0.0.1:${fixture.port}`;
+  const broker = createBenchmarkBroker();
+  const client = createClient(broker);
+  const request = client.request;
+  const upgrade = client.upgrade;
   const executable = manifest.scenarios.filter((scenario) => scenario.status === 'executable');
   const results = [];
   let requests = 0;
@@ -192,6 +243,7 @@ async function main() {
       proofMs: Math.round((performance.now() - started) * 100) / 100,
       coverage: executable.length / manifest.scenarios.length,
     },
+    policy: broker.toJSON(),
     results,
   };
   await new Promise((resolve) => fixture.server.close(resolve));

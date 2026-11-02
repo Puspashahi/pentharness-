@@ -26,6 +26,10 @@ assert.strictEqual(report.metrics.falseNegatives, 0);
 assert.strictEqual(report.metrics.tested, 10);
 assert.strictEqual(report.metrics.notTested, 0);
 assert.strictEqual(report.metrics.coverage, 1);
+assert.strictEqual(report.policy.audit.length, report.metrics.requests);
+assert.ok(report.policy.audit.every((entry) => entry.decision === 'allow'));
+assert.ok(report.policy.audit.every((entry) => entry.phase === 'benchmark'));
+assert.strictEqual(report.policy.budget.requests, report.metrics.requests);
 assert.ok(report.results.some((item) => item.id === 'idor-cross-user' && item.outcome === 'true-positive'));
 assert.ok(report.results.some((item) => item.id === 'secure-owner-control' && item.expected === 'no-candidate'));
 
