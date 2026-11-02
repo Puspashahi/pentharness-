@@ -30,6 +30,9 @@ grep -q 'metamorphic:' <<<"$metamorphic_output"
 openapi_output="$("$ROOT/scripts/pentharness.sh" openapi https://target.test --spec "$TMP/openapi.json")"
 grep -q 'openapi:' <<<"$openapi_output"
 
+python_api_output="$("$ROOT/scripts/pentharness.sh" python-api "$TMP/openapi.json")"
+grep -q 'pentharness-python-api' <<<"$python_api_output"
+
 secret_output="$("$ROOT/scripts/pentharness.sh" secrets "$TMP/app.js")"
 grep -q '"github-token"' <<<"$secret_output"
 ! grep -q 'abcdefghijklmnopqrstuvwxyz01' <<<"$secret_output"
