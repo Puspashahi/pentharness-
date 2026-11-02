@@ -18,6 +18,7 @@ Usage:
   scripts/pentharness.sh grpc PATH
   scripts/pentharness.sh tenant TARGET --model FILE --identity id=FILE [--identity id=FILE]
   scripts/pentharness.sh metamorphic TARGET --cases FILE
+  scripts/pentharness.sh openapi TARGET --spec FILE
   scripts/pentharness.sh hunt https://target.tld [extra pentharness args...]
 
 Commands:
@@ -27,6 +28,7 @@ Commands:
   grpc        Analyze .proto files without making network requests.
   tenant      Build and optionally prove a multi-tenant model from captures.
   metamorphic Evaluate explicit behavioral relations from observed JSON.
+  openapi     Build safe, provenance-hashed API plans from an OpenAPI JSON file.
   recon       Run an optional scope-aware recon toolchain (requires --scope).
   hunt        Delegate an explicitly requested authorized hunt to the CLI.
 
@@ -186,6 +188,20 @@ NODE
     [[ -n "$CASES" ]] || die "metamorphic requires --cases FILE"
     [[ -e "$CASES" ]] || die "metamorphic cases do not exist: $CASES"
     exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase metamorphic --metamorphic "$CASES"
+    ;;
+  openapi)
+    [[ -n "${2:-}" ]] || die "openapi requires a target URL"
+    shift 2
+    SPEC=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --spec) [[ -n "${2:-}" ]] || die "--spec requires a JSON file"; SPEC="$2"; shift 2 ;;
+        *) die "unknown openapi option '$1'" ;;
+      esac
+    done
+    [[ -n "$SPEC" ]] || die "openapi requires --spec FILE"
+    [[ -e "$SPEC" ]] || die "OpenAPI spec does not exist: $SPEC"
+    exec "$NODE_BIN" "$ROOT/src/cli.js" "$TARGET" --phase openapi --openapi "$SPEC"
     ;;
   help|-h|--help)
     usage
