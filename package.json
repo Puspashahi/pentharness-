@@ -11,6 +11,9 @@
     "test": "node test/run.js && node test/validate-suites.js",
     "test:local": "node test/validate-suites.js",
     "test:online": "node test/validate-suites.js --online",
+    "test:python": "python3 -m unittest discover -s test -p 'python_*.py'",
+    "test:go": "go test ./...",
+    "test:all": "npm test && npm run test:python && npm run test:go && bash test/bash-wrapper.sh",
     "hunt": "node src/cli.js"
   },
   "engines": {
