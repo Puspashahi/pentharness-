@@ -4,6 +4,8 @@ const fs = require('fs');
 const { sanitizeEvidence } = require('./evidence');
 const { inScope } = require('./subdomains');
 const { HeaderPolicy } = require('./headerpolicy');
+const { verifyApprovalToken } = require('./approval');
+const { ResourceBudget } = require('./resource-budget');
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
@@ -40,6 +42,13 @@ function plan(captures, opts = {}) {
     if (!scope.ok) { blocked.push({ row, reason: scope.reason }); continue; }
     if (!policy.isAllowed(row.url)) { blocked.push({ row, reason: 'program-prohibited URL' }); continue; }
     const stateChanging = !SAFE_METHODS.has(row.method);
+    const approval = stateChanging
+      ? verifyApprovalToken(opts.approvalToken, {
+        action: 'state-change',
+        scope: host,
+        secret: opts.approvalSecret,
+      })
+      : { ok: true };
     requests.push({
       identity: row.identity,
       sourceIndex: row.index,
@@ -49,7 +58,8 @@ function plan(captures, opts = {}) {
       body: row.body,
       stateChanging,
       approvalRequired: stateChanging,
-      replayable: SAFE_METHODS.has(row.method) || opts.allowStateChange === true,
+      replayable: SAFE_METHODS.has(row.method) || (opts.allowStateChange === true && approval.ok),
+      approval: stateChanging ? { required: true, approved: approval.ok, reason: approval.reason } : { required: false },
     });
   }
   return {
@@ -58,6 +68,7 @@ function plan(captures, opts = {}) {
     requests,
     blocked,
     policy: policy.toJSON(),
+    budget: new ResourceBudget(opts.budget).toJSON(),
   };
 }
 
@@ -66,13 +77,20 @@ async function execute(replayPlan, transport, opts = {}) {
   if (typeof transport !== 'function') throw new TypeError('transport function is required');
   const observations = [];
   const limiter = new HeaderPolicy({ throttle: opts.throttle });
+  const budget = opts.budget instanceof ResourceBudget ? opts.budget : new ResourceBudget(opts.budget);
   for (const request of replayPlan.requests) {
     if (!request.replayable) {
       observations.push({ ...request, skipped: true, reason: 'state-changing request requires explicit approval' });
       continue;
     }
+    if (request.stateChanging && (!request.approval || request.approval.approved !== true)) {
+      observations.push({ ...request, skipped: true, reason: 'state-changing request requires a valid approval token' });
+      continue;
+    }
     await limiter.take();
-    const result = await transport(request);
+    const release = budget.acquire(Buffer.byteLength(String(request.body || '')));
+    let result;
+    try { result = await transport(request); } finally { release(); }
     const response = {
       status: Number(result && result.status || 0),
       headers: result && result.headers || {},
@@ -96,6 +114,7 @@ async function execute(replayPlan, transport, opts = {}) {
     safety: replayPlan.safety,
     observations,
     candidates: [],
+    budget: budget.toJSON(),
   };
 }
 

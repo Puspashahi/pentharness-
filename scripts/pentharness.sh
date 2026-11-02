@@ -258,12 +258,20 @@ NODE
     SCOPES=()
     EXECUTE=0
     THROTTLE=0
+    APPROVAL_TOKEN="${PENTHARNESS_APPROVAL_TOKEN:-}"
+    APPROVAL_SECRET="${PENTHARNESS_APPROVAL_SECRET:-}"
+    MAX_REQUESTS="${PENTHARNESS_MAX_REQUESTS:-100}"
+    MAX_BYTES="${PENTHARNESS_MAX_BYTES:-10485760}"
     while [[ $# -gt 0 ]]; do
       case "$1" in
         --capture) [[ -n "${2:-}" ]] || die "--capture requires id=file"; CAPTURES+=("$2"); shift 2 ;;
         --scope) [[ -n "${2:-}" ]] || die "--scope requires a host"; SCOPES+=("$2"); shift 2 ;;
         --execute) EXECUTE=1; shift ;;
         --throttle-per-min) [[ -n "${2:-}" ]] || die "--throttle-per-min requires a number"; THROTTLE="$2"; shift 2 ;;
+        --approval-token) [[ -n "${2:-}" ]] || die "--approval-token requires a token"; APPROVAL_TOKEN="$2"; shift 2 ;;
+        --approval-secret) [[ -n "${2:-}" ]] || die "--approval-secret requires a secret"; APPROVAL_SECRET="$2"; shift 2 ;;
+        --max-requests) [[ -n "${2:-}" ]] || die "--max-requests requires a number"; MAX_REQUESTS="$2"; shift 2 ;;
+        --max-bytes) [[ -n "${2:-}" ]] || die "--max-bytes requires a number"; MAX_BYTES="$2"; shift 2 ;;
         *) die "unknown replay option '$1'" ;;
       esac
     done
@@ -274,7 +282,7 @@ NODE
       file="${spec#*=}"
       [[ -e "$file" ]] || die "capture does not exist: $file"
     done
-    TARGET="$TARGET" CAPTURES="$(printf '%s\n' "${CAPTURES[@]}")" SCOPES="$(printf '%s\n' "${SCOPES[@]}")" EXECUTE="$EXECUTE" THROTTLE="$THROTTLE" \
+    TARGET="$TARGET" CAPTURES="$(printf '%s\n' "${CAPTURES[@]}")" SCOPES="$(printf '%s\n' "${SCOPES[@]}")" EXECUTE="$EXECUTE" THROTTLE="$THROTTLE" APPROVAL_TOKEN="$APPROVAL_TOKEN" APPROVAL_SECRET="$APPROVAL_SECRET" MAX_REQUESTS="$MAX_REQUESTS" MAX_BYTES="$MAX_BYTES" \
       "$NODE_BIN" - <<'NODE'
 const R = require('./src/replay');
 const captures = process.env.CAPTURES.trim().split('\n').map((spec) => {
@@ -282,7 +290,15 @@ const captures = process.env.CAPTURES.trim().split('\n').map((spec) => {
   return { identity: spec.slice(0, i), file: spec.slice(i + 1) };
 });
 const scope = process.env.SCOPES.split('\n').filter(Boolean);
-const p = R.plan(captures, { scope, execute: process.env.EXECUTE === '1', throttle: Number(process.env.THROTTLE || 0) });
+const p = R.plan(captures, {
+  scope,
+  execute: process.env.EXECUTE === '1',
+  throttle: Number(process.env.THROTTLE || 0),
+  approvalToken: process.env.APPROVAL_TOKEN,
+  approvalSecret: process.env.APPROVAL_SECRET,
+  allowStateChange: process.env.EXECUTE === '1',
+  budget: { maxRequests: Number(process.env.MAX_REQUESTS), maxBytes: Number(process.env.MAX_BYTES) },
+});
 if (process.env.EXECUTE !== '1') {
   process.stdout.write(JSON.stringify({ tool: 'pentharness-replay-plan', ...p }, null, 2) + '\n');
   process.exit(0);
@@ -290,7 +306,9 @@ if (process.env.EXECUTE !== '1') {
 R.execute(p, async (request) => {
   const response = await fetch(request.url, { method: request.method, headers: request.headers, body: request.body, redirect: 'manual' });
   return { status: response.status, headers: Object.fromEntries(response.headers.entries()), body: await response.text() };
-}).then((report) => process.stdout.write(JSON.stringify(report, null, 2) + '\n'));
+}, { budget: { maxRequests: Number(process.env.MAX_REQUESTS), maxBytes: Number(process.env.MAX_BYTES) } })
+  .then((report) => process.stdout.write(JSON.stringify(report, null, 2) + '\n'))
+  .catch((error) => { console.error(`pentharness: replay blocked: ${error.message}`); process.exitCode = 2; });
 NODE
     ;;
   help|-h|--help)

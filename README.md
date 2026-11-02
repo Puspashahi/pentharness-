@@ -386,8 +386,11 @@ scripts/pentharness.sh replay https://target.test \
 ```
 
 Replay is scope-gated before requests, rejects prohibited paths, redacts
-credentials in evidence, rate-limits execution, and skips state-changing
-methods unless the caller explicitly enables them in the library API.
+credentials in evidence, rate-limits execution, enforces hard request/byte
+budgets, and skips state-changing methods unless a scoped, expiring approval
+token is supplied. The CLI accepts `--approval-token`,
+`--approval-secret`, `--max-requests`, and `--max-bytes`; secrets should
+prefer environment variables over shell history.
 
 ## Multi-tenant relationship modeling
 
