@@ -51,13 +51,14 @@ const secrets = require('./secrets');
 const tenantGraph = require('./tenant-graph');
 const metamorphic = require('./metamorphic');
 const openapi = require('./openapi');
+const ai = require('./ai');
 const { AIClient, configFromEnv: aiConfigFromEnv } = require('./ai-client');
 
 const STATE = path.join(__dirname, '..', 'state');
 const C = { r: '\x1b[0m', b: '\x1b[1m', dim: '\x1b[2m', red: '\x1b[31m', yel: '\x1b[33m', grn: '\x1b[32m', cyn: '\x1b[36m' };
 
 function parseArgs(argv) {
-  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, skipChange: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0, secretsPath: null, tenantModel: null, metamorphicPath: null, openapiPath: null, aiProvider: null, aiModel: null, aiBaseUrl: null };
+  const o = { target: null, phases: ['report'], from: [], maxPages: 20, timeout: 300000, out: null, noScan: false, answer: null, identity: [], js: null, prove: null, hunt: false, concurrency: 6, oobServer: null, skipProbe: false, accounts: null, loginUrl: null, passA: null, passB: null, maxEnum: 8, enumSamples: 12, skipProtocols: false, skipCache: false, skipJs: false, skipBrowser: false, skipSubs: false, skipTakeover: false, skipChange: false, maxTakeover: 40, scope: [], domain: null, maxSubs: 0, maxBrowserPages: 12, maxScripts: 60, priorArt: [], oobOff: false, oobBin: 'interactsh-client', oobPollMs: 12000, authMode: 'form', recipe: null, researchHeader: [], ninja: null, throttle: 0, secretsPath: null, tenantModel: null, metamorphicPath: null, openapiPath: null, aiProvider: null, aiModel: null, aiBaseUrl: null, aiKeyEnv: null, aiLimit: 10, aiMaxTokens: 1200, aiTimeoutMs: 60000 };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i], next = () => argv[++i];
     switch (a) {
@@ -76,6 +77,10 @@ function parseArgs(argv) {
       case '--ai-provider': o.aiProvider = next(); break;
       case '--ai-model': o.aiModel = next(); break;
       case '--ai-base-url': o.aiBaseUrl = next(); break;
+      case '--ai-key-env': o.aiKeyEnv = next(); break;
+      case '--ai-limit': o.aiLimit = parseInt(next(), 10) || o.aiLimit; break;
+      case '--ai-max-tokens': o.aiMaxTokens = parseInt(next(), 10) || o.aiMaxTokens; break;
+      case '--ai-timeout-ms': o.aiTimeoutMs = parseInt(next(), 10) || o.aiTimeoutMs; break;
       case '--prove': o.prove = next(); break;
       case '--hunt': o.hunt = true; break;
       case '--concurrency': o.concurrency = parseInt(next(), 10) || o.concurrency; break;
@@ -148,6 +153,7 @@ Phases
   tenant      model multi-tenant relationships from JSON records (--tenant-model FILE)
   metamorphic evaluate explicit behavioral relations from observed JSON (--metamorphic FILE)
   openapi     build safe API request/sequence plans (--openapi FILE)
+  ai-triage   send a bounded queue to a configured AI provider -> ai-answers.json
   prioritise  rank known parameters by predicted vuln class -> plan.json
   authz       dual-identity response diffing -> the authorization matrix (--identity x2)
   prove       deterministic validators + adversarial refutation (--prove obs.json)
@@ -218,6 +224,10 @@ Examples
 
 Authorized targets only. Honour the program's scope, required headers and
 rate limits. See the skill's /POLICY.md.
+AI providers use the OpenAI-compatible chat API. Keys are read from environment
+variables only: nvidia, grok/xai, openai, openrouter, groq, together, deepseek,
+copilot (custom endpoint/token), ollama, or custom. Set --ai-provider and
+PENTHARNESS_<PROVIDER>_API_KEY; AI is never called unless ai-triage is selected.
 `);
 }
 
@@ -488,6 +498,36 @@ function buildQueue(store, chains, limit) {
   const out = queue.slice(0, limit);
   out.recon_suppressed = reconCount.total - reconCount.sampled;
   return out;
+}
+
+async function phaseAiTriage(o, dir) {
+  const queuePath = path.join(dir, 'queue.json');
+  if (!fs.existsSync(queuePath)) {
+    throw new Error(`AI triage requires an existing queue: ${queuePath}; run --phase queue first`);
+  }
+  const queue = JSON.parse(fs.readFileSync(queuePath, 'utf8'));
+  const result = await ai.triageQueue(queue, {
+    provider: o.aiProvider,
+    model: o.aiModel,
+    baseUrl: o.aiBaseUrl,
+    keyEnv: o.aiKeyEnv,
+    maxTokens: o.aiMaxTokens,
+    timeoutMs: o.aiTimeoutMs,
+    limit: o.aiLimit,
+  });
+  const output = {
+    schemaVersion: 1,
+    provider: result.provider,
+    model: result.model,
+    usage: result.usage,
+    answers: result.answers,
+    note: 'AI output is advisory. Review it and pass the file with --answer; the proof gate remains authoritative.',
+  };
+  const outputPath = path.join(dir, 'ai-answers.json');
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), { mode: 0o600 });
+  console.log(`${C.b}== AI triage ==${C.r} ${result.provider}/${result.model} -> ${outputPath}`);
+  console.log(`  ${C.dim}${Object.keys(result.answers).length} advisory answer(s); no finding was promoted automatically.${C.r}`);
+  return [`ai-triage: ${Object.keys(result.answers).length} answer(s)`];
 }
 
 /**
@@ -1291,6 +1331,10 @@ async function main() {
     console.log('');
   }
 
+  if (runPhases.has('ai-triage')) {
+    notes.push(...await phaseAiTriage(o, dir));
+  }
+
   if (runPhases.has('advise')) {
     const q = buildQueue(store, chains, 25);
     const aiConfig = aiConfigFromEnv(process.env, {
@@ -1405,7 +1449,10 @@ async function main() {
 
 /** answers.json: { "<lead-id>": { severity, impact, by_design, reproduction, proof, title } } */
 function loadAnswers(file) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return {}; }
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return parsed && parsed.answers && typeof parsed.answers === 'object' ? parsed.answers : parsed;
+  } catch { return {}; }
 }
 
 main().catch((e) => { console.error(`${C.red}harness error:${C.r} ${e.stack || e.message}`); process.exit(1); });

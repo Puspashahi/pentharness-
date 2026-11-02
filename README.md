@@ -248,6 +248,31 @@ diagnostics. It checks required runtimes and permissions, reports optional
 Python/Go/Playwright/browser capabilities without pretending they are present,
 and returns exit code 2 only for required failures.
 
+## Optional AI triage
+
+The harness can send only the bounded `queue.json` to an OpenAI-compatible chat
+provider for advisory triage. AI output is written to `ai-answers.json`; it
+never bypasses the proof gate or promotes a finding automatically.
+
+```bash
+export NVIDIA_API_KEY='...'
+pentharness https://target.tld --phase queue,ai-triage \
+  --ai-provider nvidia \
+  --ai-model meta/llama-3.1-8b-instruct
+
+# Other presets: grok/xai, openai, openrouter, groq, together, deepseek,
+# copilot, ollama, and custom (--ai-base-url).
+export XAI_API_KEY='...'
+pentharness https://target.tld --phase queue,ai-triage --ai-provider grok
+```
+
+Keys are read from environment variables only and are never stored in run
+state. The default presets use OpenAI-compatible `/chat/completions` endpoints;
+Ollama works locally without a key. Review `ai-answers.json` before passing it
+to the gate with `--answer`. Availability, pricing, and model names are
+provider-controlled and may change; the provider adapter does not claim that a
+service or key is free.
+
 ---
 
 ## Honesty rules
